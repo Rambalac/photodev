@@ -1,23 +1,35 @@
 ﻿using com.azi.tiff;
 namespace com.azi.image
 {
-    public class ImageFile
+    public abstract class ImageFile
     {
-        public Exif Exif { get; set; }
+        public Exif Exif;
+        public int Width;
+        public int Height;
+
+        abstract public byte[] GetBytesRgb24();
+
+        abstract public int GetStrideRgb24();
+    }
+
+    public class RgbImageFile : ImageFile
+    {
         public Color16[,] Pixels { get; set; }
-
-        public int Width { get { return Exif.ImageWidth; } }
-        public int Height { get { return Exif.ImageHeight; } }
-
-        public byte[] GetBytesRgb24()
+        override public byte[] GetBytesRgb24()
         {
-            throw new System.NotImplementedException();
+
+            return null;
         }
 
-        public int GetStrideRgb24()
+        override public int GetStrideRgb24()
         {
-            throw new System.NotImplementedException();
+            return 0;
         }
     }
+    public class RawImageFile : RgbImageFile
+    {
+        public ushort[,] Raw;
+    }
+
 }
 
