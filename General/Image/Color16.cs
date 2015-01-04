@@ -20,6 +20,21 @@ namespace com.azi.image
         {
             index += 3;
         }
+        public void Set(ushort[] values)
+        {
+            map.rgb[index + 0] = values[0];
+            map.rgb[index + 1] = values[1];
+            map.rgb[index + 2] = values[2];
+        }
+        public ushort[] Get()
+        {
+            return new ushort[3] {
+                map.rgb[index + 0],
+                map.rgb[index + 1],
+                map.rgb[index + 2]
+            };
+        }
+
         public ushort this[int i]
         {
             get

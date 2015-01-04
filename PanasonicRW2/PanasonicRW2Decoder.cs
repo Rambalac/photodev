@@ -9,13 +9,21 @@ using con.azi.decoder.panasonic.rw2;
 
 namespace com.azi.decoder.panasonic.rw2
 {
+
+    /// <summary>
+    /// Panasonic RW2 file decoder
+    /// Thanks to dcraw
+    /// </summary>
     public class PanasonicRW2Decoder
     {
+        /// <summary>
+        /// Panasonic specific bit stream
+        /// </summary>
         class BitStream
         {
             const int bufsize = 16384;
             byte[] buf = new byte[bufsize + 1];
-            int vbits;
+            int bitsLeft;
             Stream stream;
             int load_flags = 8200;
 
@@ -24,19 +32,24 @@ namespace com.azi.decoder.panasonic.rw2
                 this.stream = stream;
             }
 
-            public int read(int nbits)
+            /// <summary>
+            /// Reads up to 16 bits
+            /// </summary>
+            /// <param name="numberOfBits">Number of bots to read</param>
+            /// <returns>int with required number of bits on low part</returns>
+            public int read(int numberOfBits)
             {
                 unchecked
                 {
-                    if (vbits == 0)
+                    if (bitsLeft == 0)
                     {
                         stream.Read(buf, load_flags, bufsize - load_flags);
                         stream.Read(buf, 0, load_flags);
                     }
-                    vbits = (vbits - nbits) & 0x1ffff;
-                    var bytepos = vbits >> 3 ^ 0x3ff0;
+                    bitsLeft = (bitsLeft - numberOfBits) & 0x1ffff;
+                    var bytepos = bitsLeft >> 3 ^ 0x3ff0;
 
-                    return ((((int)buf[bytepos]) | ((int)buf[bytepos + 1]) << 8) >> (vbits & 7)) & (~(-1 << nbits));
+                    return ((((int)buf[bytepos]) | ((int)buf[bytepos + 1]) << 8) >> (bitsLeft & 7)) & (~(-1 << numberOfBits));
                 }
             }
         }

@@ -7,57 +7,66 @@ using System.Threading.Tasks;
 
 namespace General.Debayer
 {
-    class MatrixDebayer
+    class AverageDebayer
     {
         enum ColorComponent : int
         {
-            Red = 0,
-            Green = 1,
-            Blue = 2
+            R = 0,
+            G = 1,
+            B = 2
         }
-        int colorMapSize;
-        float[][,] colorMap;
-        public float[][,] ColorMap {get{
-            return colorMap;
-        } set{
-            if (value.GetUpperBound(0) != 3) 
-                throw new ArgumentException("ColorMap should be exctly three 2-dimensions arrays");
-            if (value[0].GetUpperBound(0) != value[0].GetUpperBound(1)) 
-                throw new ArgumentException("ColorMap should have should be square");
-            var size = value[0].GetUpperBound(0);
-            if (size % 2 != 1) throw new ArgumentException("ColorMap size should be even");
-            for (int i = 1; i < 3; i++)
-                if (value[0].GetUpperBound(0) != size || value[0].GetUpperBound(1) != size)
-                    throw new ArgumentException("ColorMap sizes should be same");
 
-            colorMapSize = size;
-            colorMap = value;
-        }}
+        ColorComponent[,] componentsMap = new ColorComponent[2, 2] {
+            {ColorComponent.G, ColorComponent.R},
+            {ColorComponent.B,ColorComponent.G}
+        };
+        bool invertRB = false;
 
-        int mapheight;
-        int mapwith;
-        ColorComponent[,] componentsMap;
-        public ColorComponent[,] ComponentsMap
+        public ColorMap16 Debayer(RawImageFile file)
         {
-            get { return componentsMap; }
-            set
+            ColorMap16 res = new ColorMap16(file.Width, file.Height);
+            ushort[] c = new ushort[3];
+            Color16 pix = res.GetPixel(0, 0);
+            for (int x = 0; x < file.Width; x++)
             {
-                componentsMap = value;
-                mapheight = componentsMap.GetUpperBound(0) + 1;
-                mapwith = componentsMap.GetUpperBound(1) + 1;
+                pix.Next();
+
             }
-        }
-
-        public Color16[,] debayer(RawImageFile file)
-        {
-            Color16[,] res = new Color16[file.Height, file.Width];
-
-            for (int y = 0; y < file.Height; y++)
-                for (int x = 0; x < file.Width; x++)
+            for (int y = 1; y < file.Height - 1; y++)
+            {
+                pix.Next();
+                for (int x = 1; x < file.Width - 1; x++)
                 {
-                    ColorComponent component = componentsMap[y % mapheight, x % mapwith];
-                    
+                    ColorComponent component = componentsMap[y % 2, x % 2];
+                    if (component == ColorComponent.G)
+                    {
+                        c[(invertRB) ? 2 : 0] = (ushort)((file.GetValue(x - 1, y) + file.GetValue(x + 1, y)) / 2);
+                        c[1] = file.GetValue(y, x);
+                        c[(invertRB) ? 0 : 2] = (ushort)((file.GetValue(x, y - 1) + file.GetValue(x, y + 1)) / 2);
+                    }
+                    else if (component == ColorComponent.R)
+                    {
+                        c[0] = file.GetValue(y, x);
+                        c[1] = (ushort)((file.GetValue(x - 1, y) + file.GetValue(x + 1, y) + file.GetValue(x, y - 1) + file.GetValue(x, y + 1)) / 4);
+                        c[2] = (ushort)((file.GetValue(x - 1, y - 1) + file.GetValue(x + 1, y - 1) + file.GetValue(x - 1, y + 1) + file.GetValue(x + 1, y + 1)) / 4);
+                    }
+                    else if (component == ColorComponent.B)
+                    {
+                        c[0] = (ushort)((file.GetValue(x - 1, y - 1) + file.GetValue(x + 1, y - 1) + file.GetValue(x - 1, y + 1) + file.GetValue(x + 1, y + 1)) / 4);
+                        c[1] = (ushort)((file.GetValue(x - 1, y) + file.GetValue(x + 1, y) + file.GetValue(x, y - 1) + file.GetValue(x, y + 1)) / 4);
+                        c[2] = file.GetValue(y, x);
+                    }
+
+                    pix.Next();
                 }
+                pix.Next();
+            }
+            for (int x = 0; x < file.Width; x++)
+            {
+                pix.Next();
+
+            }
+            return res;
         }
     }
 }

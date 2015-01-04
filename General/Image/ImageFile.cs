@@ -29,6 +29,15 @@ namespace com.azi.image
     public class RawImageFile : RgbImageFile
     {
         public ushort[,] Raw;
+
+        internal ushort GetValue(int y, int x)
+        {
+            if (x < 0) x = 0;
+            if (y < 0) y = 0;
+            if (x >= Width) x = Width - 1;
+            if (y >= Height) y = Height - 1;
+            return Raw[y, x];
+        }
     }
 
 }

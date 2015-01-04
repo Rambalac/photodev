@@ -8,7 +8,7 @@ namespace Tests
     public class Test
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestDecodeDoesNotFail()
         {
             var decoder = new com.azi.decoder.panasonic.rw2.PanasonicRW2Decoder();
 
