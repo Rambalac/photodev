@@ -14,7 +14,7 @@ namespace com.azi.image
 
     public class RgbImageFile : ImageFile
     {
-        public Color16[,] Pixels { get; set; }
+        public ColorMap16 Pixels { get; set; }
         override public byte[] GetBytesRgb24()
         {
 
