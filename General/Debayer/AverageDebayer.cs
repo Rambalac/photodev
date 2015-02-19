@@ -1,13 +1,13 @@
 ﻿using com.azi.image;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace General.Debayer
+namespace com.azi.Debayer
 {
-    class AverageDebayer
+    public interface IDebayer
+    {
+        ColorMap16 Debayer(RawImageFile file);
+    }
+
+    public class AverageDebayer: IDebayer
     {
         enum ColorComponent : int
         {
@@ -24,20 +24,20 @@ namespace General.Debayer
 
         public ColorMap16 Debayer(RawImageFile file)
         {
-            ColorMap16 res = new ColorMap16(file.Width, file.Height);
-            ushort[] c = new ushort[3];
-            Color16 pix = res.GetPixel(0, 0);
-            for (int x = 0; x < file.Width; x++)
+            var res = new ColorMap16(file.Width, file.Height);
+            var c = new ushort[3];
+            var pix = res.GetPixel(0, 0);
+            for (var x = 0; x < file.Width; x++)
             {
                 pix.Next();
 
             }
-            for (int y = 1; y < file.Height - 1; y++)
+            for (var y = 1; y < file.Height - 1; y++)
             {
                 pix.Next();
-                for (int x = 1; x < file.Width - 1; x++)
+                for (var x = 1; x < file.Width - 1; x++)
                 {
-                    ColorComponent component = componentsMap[y % 2, x % 2];
+                    var component = componentsMap[y % 2, x % 2];
                     if (component == ColorComponent.G)
                     {
                         c[(invertRB) ? 2 : 0] = (ushort)((file.GetValue(x - 1, y) + file.GetValue(x + 1, y)) / 2);
@@ -61,7 +61,7 @@ namespace General.Debayer
                 }
                 pix.Next();
             }
-            for (int x = 0; x < file.Width; x++)
+            for (var x = 0; x < file.Width; x++)
             {
                 pix.Next();
 

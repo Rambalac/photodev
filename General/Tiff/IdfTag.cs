@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-namespace com.azi.tiff
+﻿namespace com.azi.tiff
 {
     public enum IdfTag
     {

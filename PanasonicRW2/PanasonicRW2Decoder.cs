@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using com.azi.image;
-using com.azi.tiff;
-using con.azi.decoder.panasonic.rw2;
 
 namespace com.azi.decoder.panasonic.rw2
 {
@@ -37,7 +32,7 @@ namespace com.azi.decoder.panasonic.rw2
             /// </summary>
             /// <param name="numberOfBits">Number of bots to read</param>
             /// <returns>int with required number of bits on low part</returns>
-            public int read(int numberOfBits)
+            public int Read(int numberOfBits)
             {
                 unchecked
                 {
@@ -59,9 +54,9 @@ namespace com.azi.decoder.panasonic.rw2
             int row, col, i, j, sh = 0;
             int[] pred = new int[2], nonz = new int[2];
 
-            ushort[,] raw = new ushort[exif.ImageHeight, exif.ImageWidth];
+            var raw = new ushort[exif.ImageHeight, exif.ImageWidth];
 
-            BitStream bits = new BitStream(stream);
+            var bits = new BitStream(stream);
             for (row = 0; row < exif.ImageHeight; row++)
                 for (col = 0; col < exif.ImageWidth; col++)
                     unchecked
@@ -70,10 +65,10 @@ namespace com.azi.decoder.panasonic.rw2
                         if (i == 0)
                             pred[0] = pred[1] = nonz[0] = nonz[1] = 0;
                         if (i % 3 == 2)
-                            sh = 4 >> (3 - bits.read(2));
+                            sh = 4 >> (3 - bits.Read(2));
                         if (nonz[i & 1] != 0)
                         {
-                            j = bits.read(8);
+                            j = bits.Read(8);
                             if (j != 0)
                             {
                                 pred[i & 1] -= 0x80 << sh;
@@ -84,16 +79,16 @@ namespace com.azi.decoder.panasonic.rw2
                         }
                         else
                         {
-                            nonz[i & 1] = bits.read(8);
+                            nonz[i & 1] = bits.Read(8);
                             if (nonz[i & 1] != 0 || i > 11)
-                                pred[i & 1] = nonz[i & 1] << 4 | bits.read(4);
+                                pred[i & 1] = nonz[i & 1] << 4 | bits.Read(4);
                         }
                         raw[row, col] = (ushort)pred[col & 1];
 
                         if (raw[row, col] > 4098 && col < exif.CropRight)
                             throw new Exception("Decoding error");
                     }
-            RawImageFile result = new RawImageFile
+            var result = new RawImageFile
             {
                 Exif = exif,
                 Height = exif.ImageHeight,
@@ -103,9 +98,9 @@ namespace com.azi.decoder.panasonic.rw2
             return result;
         }
 
-        public ImageFile decode(Stream stream)
+        public RawImageFile Decode(Stream stream)
         {
-            PanasonicExif exif = PanasonicExif.parse(stream);
+            var exif = PanasonicExif.parse(stream);
 
             stream.Seek(exif.RawOffset, SeekOrigin.Begin);
 

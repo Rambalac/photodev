@@ -8,7 +8,7 @@
     <ProjectGuid>{61FDABA3-FAB6-4DFC-952D-EA13B45979E1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>General</RootNamespace>
+    <RootNamespace>com.azi</RootNamespace>
     <AssemblyName>General</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
@@ -34,7 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Debayer\MatrixDebayer.cs" />
+    <Compile Include="Debayer\AverageDebayer.cs" />
+    <Compile Include="Filters\RawToRGBFilter.cs" />
     <Compile Include="Image\Color16.cs" />
     <Compile Include="Image\ImageFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

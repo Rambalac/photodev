@@ -6,27 +6,23 @@ namespace com.azi.image
         public Exif Exif;
         public int Width;
         public int Height;
-
-        abstract public byte[] GetBytesRgb24();
-
-        abstract public int GetStrideRgb24();
     }
 
-    public class RgbImageFile : ImageFile
+    public class Rgb16ImageFile : ImageFile
     {
         public ColorMap16 Pixels { get; set; }
-        override public byte[] GetBytesRgb24()
+        public byte[] GetBytesRgb8()
         {
 
             return null;
         }
 
-        override public int GetStrideRgb24()
+        public int GetStrideRgb8()
         {
             return 0;
         }
     }
-    public class RawImageFile : RgbImageFile
+    public class RawImageFile : ImageFile
     {
         public ushort[,] Raw;
 

@@ -1,10 +1,6 @@
-﻿using con.azi;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace com.azi.tiff
 {
@@ -41,7 +37,7 @@ namespace com.azi.tiff
 
         protected Exif(Stream stream)
         {
-            BinaryReader reader = new BinaryReader(stream);
+            var reader = new BinaryReader(stream);
             var order = reader.ReadUInt16();
             if (order != 0x4949 && order != 0x4d4d) throw new ArgumentException("Wrong file");
             reader.ReadUInt16();
@@ -133,11 +129,11 @@ namespace com.azi.tiff
         }
         private void parseIfd(BinaryReader reader)
         {
-            ushort blocksnumber = reader.ReadUInt16();
+            var blocksnumber = reader.ReadUInt16();
             if (blocksnumber > 512) throw new ArgumentException("Too many items in ifd");
             while (blocksnumber-- > 0)
             {
-                IdfBlock block = IdfBlock.parse(reader);
+                var block = IdfBlock.parse(reader);
                 idfBlocks.Add(block);
                 parseIdfBlock(block, reader);
                 block.moveNext(reader);

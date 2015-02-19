@@ -8,7 +8,7 @@
     <ProjectGuid>{38678C2D-444F-4F69-AA59-61929EA1EC62}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>con.azi.decoder.panasonic.rw2</RootNamespace>
+    <RootNamespace>com.azi.decoder.panasonic</RootNamespace>
     <AssemblyName>PanasonicRW2</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>

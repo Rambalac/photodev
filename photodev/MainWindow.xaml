@@ -6,7 +6,7 @@
     <Grid>
         <DockPanel>
             <Menu VerticalAlignment="Top" DockPanel.Dock="Top">
-                <MenuItem Header="File"/>
+                <MenuItem Header="File" Click="MenuItem_Click"/>
             </Menu>
             <Grid>
                 <Grid.RowDefinitions>
@@ -37,7 +37,7 @@
                     </Grid>
                     <GridSplitter Width="10" Grid.Column="1" />
                     <DockPanel Grid.Column="2">
-                        <Image MouseDown="Image_MouseDown"/>
+                        <Image x:Name="MainImage"/>
                     </DockPanel>
                     <GridSplitter Width="10" Grid.Column="3" />
                     <Grid Grid.Column="4">

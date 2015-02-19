@@ -1,5 +1,4 @@
-﻿using con.azi;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -28,7 +27,7 @@ namespace com.azi.tiff
 
         public static IdfBlock parse(BinaryReader reader)
         {
-            IdfBlock result = new IdfBlock();
+            var result = new IdfBlock();
             result.rawtag = reader.ReadUInt16();
             IdfTag tag;
             result.tag = (TagMap.TryGetValue(result.rawtag, out tag)) ? (IdfTag?)tag : null;
@@ -65,7 +64,7 @@ namespace com.azi.tiff
 
         public ushort GetUInt16()
         {
-            uint res = GetUInt32();
+            var res = GetUInt32();
             if (res > ushort.MaxValue) throw new ArgumentException("rawdata", "GetUInt16 failed on value bigger than UInt16: " + res);
             return (ushort)res;
         }
@@ -451,7 +450,7 @@ namespace com.azi.tiff
         public Fraction GetFraction()
         {
             if (type == IdfType.UInt32Fraction)
-                return new con.azi.Fraction((int)BitConverter.ToUInt32(rawdata, 0), (int)BitConverter.ToUInt32(rawdata, 4));
+                return new com.azi.Fraction((int)BitConverter.ToUInt32(rawdata, 0), (int)BitConverter.ToUInt32(rawdata, 4));
             else
                 throw new ArgumentException("rawdata", "readFraction failed on wrong type: " + rawtype);
         }
