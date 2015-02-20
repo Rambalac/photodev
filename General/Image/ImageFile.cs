@@ -63,12 +63,12 @@ namespace com.azi.image
             get { return _height; }
         }
 
-        internal ushort GetValue(int y, int x)
+        internal ushort GetValue(int x, int y)
         {
-            if (x < 0) x = 0;
-            if (y < 0) y = 0;
-            if (x >= Width) x = Width - 1;
-            if (y >= Height) y = Height - 1;
+            //if (x < 0) x = 0;
+            //if (y < 0) y = 0;
+            //if (x >= Width) x = Width - 1;
+            //if (y >= Height) y = Height - 1;
             return Raw[y, x];
         }
     }

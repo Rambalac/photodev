@@ -36,6 +36,8 @@
   <ItemGroup>
     <Compile Include="Compressor\SimpleCompressor.cs" />
     <Compile Include="Debayer\AverageDebayer.cs" />
+    <Compile Include="Debayer\BinningDebayer.cs" />
+    <Compile Include="Debayer\IDebayer.cs" />
     <Compile Include="Filters\ColorMap16ToRgb8.cs" />
     <Compile Include="Filters\Filter.cs" />
     <Compile Include="Filters\RawToRgb16Filter.cs" />

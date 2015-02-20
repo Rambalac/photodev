@@ -19,9 +19,12 @@ namespace com.azi.Compressor
 
         private static void Function(Color<ushort> pixel, byte[] rgb, int offset, int maxBits)
         {
-            rgb[offset + 0] = (byte)(pixel[0] << (maxBits - 8));
-            rgb[offset + 1] = (byte)(pixel[1] << (maxBits - 8));
-            rgb[offset + 2] = (byte)(pixel[2] << (maxBits - 8));
+            //if (pixel[0] > (1 << maxBits)) throw new Exception("Exceeding value");
+            //if (pixel[1] > (1 << maxBits)) throw new Exception("Exceeding value");
+            //if (pixel[2] > (1 << maxBits)) throw new Exception("Exceeding value");
+            rgb[offset + 0] = (byte)((pixel[0] >> (maxBits - 8)));
+            rgb[offset + 1] = (byte)((pixel[1] >> (maxBits - 8)));
+            rgb[offset + 2] = (byte)((pixel[2] >> (maxBits - 8)));
         }
     }
 }

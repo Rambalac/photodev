@@ -4,11 +4,11 @@ namespace com.azi.image
 {
     public class Color<T>
     {
-        private readonly ColorMap<T> map;
+        private readonly ColorMap<T> _map;
         private int _index;
         internal Color(ColorMap<T> map, int x, int y)
         {
-            this.map = map;
+            this._map = map;
             _index = (y * map.Width + x) * 3;
         }
 
@@ -18,16 +18,16 @@ namespace com.azi.image
         }
         public void Set(T[] values)
         {
-            map.Rgb[_index + 0] = values[0];
-            map.Rgb[_index + 1] = values[1];
-            map.Rgb[_index + 2] = values[2];
+            _map.Rgb[_index + 0] = values[0];
+            _map.Rgb[_index + 1] = values[1];
+            _map.Rgb[_index + 2] = values[2];
         }
         public T[] Get()
         {
             return new T[3] {
-                map.Rgb[_index + 0],
-                map.Rgb[_index + 1],
-                map.Rgb[_index + 2]
+                _map.Rgb[_index + 0],
+                _map.Rgb[_index + 1],
+                _map.Rgb[_index + 2]
             };
         }
 
@@ -36,12 +36,12 @@ namespace com.azi.image
             get
             {
                 //if (i > 2) throw new ArgumentException("Should be less than 3");
-                return map.Rgb[_index + i];
+                return _map.Rgb[_index + i];
             }
             set
             {
                 //if (i > 2) throw new ArgumentException("Should be less than 3");
-                map.Rgb[_index + i] = value;
+                _map.Rgb[_index + i] = value;
             }
         }
     }

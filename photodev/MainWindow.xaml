@@ -6,7 +6,7 @@
     <Grid>
         <DockPanel>
             <Menu VerticalAlignment="Top" DockPanel.Dock="Top">
-                <MenuItem Header="File" Click="MenuItem_Click"/>
+                <MenuItem Header="File"/>
             </Menu>
             <Grid>
                 <Grid.RowDefinitions>
@@ -35,11 +35,11 @@
                             </TreeView>
                         </ScrollViewer>
                     </Grid>
-                    <GridSplitter Width="10" Grid.Column="1" />
+                    <GridSplitter Width="10" Grid.Column="1" HorizontalAlignment="Center" />
                     <DockPanel Grid.Column="2">
-                        <Image x:Name="MainImage"/>
+                        <Image x:Name="MainImage" Loaded="MainImage_Loaded"/>
                     </DockPanel>
-                    <GridSplitter Width="10" Grid.Column="3" />
+                    <GridSplitter Width="10" Grid.Column="3" HorizontalAlignment="Center" />
                     <Grid Grid.Column="4">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="97*"/>
