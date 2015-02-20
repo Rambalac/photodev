@@ -88,12 +88,9 @@ namespace com.azi.decoder.panasonic.rw2
                         if (raw[row, col] > 4098 && col < exif.CropRight)
                             throw new Exception("Decoding error");
                     }
-            var result = new RawImageFile
+            var result = new RawImageFile(exif.ImageWidth, exif.ImageHeight, raw, 12)
             {
                 Exif = exif,
-                Height = exif.ImageHeight,
-                Width = exif.ImageWidth,
-                Raw = raw
             };
             return result;
         }
