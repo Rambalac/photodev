@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using com.azi.image;
+using com.azi.decoder.panasonic;
 
 namespace com.azi.decoder.panasonic.rw2
 {
@@ -9,12 +10,12 @@ namespace com.azi.decoder.panasonic.rw2
     /// Panasonic RW2 file decoder
     /// Thanks to dcraw
     /// </summary>
-    public class PanasonicRW2Decoder
+    public class PanasonicRW2Decoder : IRawDecoder
     {
         /// <summary>
         /// Panasonic specific bit stream
         /// </summary>
-        class BitStream
+        private class PanasonicBitStream
         {
             const int bufsize = 16384;
             byte[] buf = new byte[bufsize + 1];
@@ -22,7 +23,7 @@ namespace com.azi.decoder.panasonic.rw2
             Stream stream;
             int load_flags = 8200;
 
-            public BitStream(Stream stream)
+            public PanasonicBitStream(Stream stream)
             {
                 this.stream = stream;
             }
@@ -49,14 +50,14 @@ namespace com.azi.decoder.panasonic.rw2
             }
         }
 
-        RawImageFile loadRaw(Stream stream, PanasonicExif exif)
+        private RawImageFile DecodeImagePart(Stream stream, PanasonicExif exif)
         {
             int row, col, i, j, sh = 0;
             int[] pred = new int[2], nonz = new int[2];
 
             var raw = new ushort[exif.ImageHeight, exif.ImageWidth];
 
-            var bits = new BitStream(stream);
+            var bits = new PanasonicBitStream(stream);
             for (row = 0; row < exif.ImageHeight; row++)
                 for (col = 0; col < exif.ImageWidth; col++)
                     unchecked
@@ -101,7 +102,7 @@ namespace com.azi.decoder.panasonic.rw2
 
             stream.Seek(exif.RawOffset, SeekOrigin.Begin);
 
-            return loadRaw(stream, exif);
+            return DecodeImagePart(stream, exif);
         }
 
     }
