@@ -27,9 +27,14 @@ namespace photodev
                     Debayer = new AverageBGGRDebayer()
                 };
                 var color16Image = debayer.Process(rawimage);
+
                 var light = new LightFilter();
                 light.AutoAdjust(color16Image);
                 color16Image = light.Process(color16Image);
+
+                var white = new WhiteBalanceFilter();
+                white.AutoAdjust(color16Image);
+                color16Image = white.Process(color16Image);
 
                 var compressor = new CompressorFilter
                 {

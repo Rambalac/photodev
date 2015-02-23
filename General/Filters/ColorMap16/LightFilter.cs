@@ -20,11 +20,11 @@ namespace com.azi.Filters.ColorMap16
             return new ColorImageFile<ushort>
             {
                 Exif = image.Exif,
-                Pixels = image.Pixels.UpdateColors(image.Pixels.MaxBits+Precision,
+                Pixels = image.Pixels.UpdateColors(image.Pixels.MaxBits,
                     delegate(int x, int y, Color<ushort> input, Color<ushort> output)
                     {
                         for (var c = 0; c < 3; c++)
-                            output[c] = (ushort)(input[c] * Multiply);
+                            output[c] = (ushort)((input[c] * Multiply) >> Precision);
                     })
             };
         }

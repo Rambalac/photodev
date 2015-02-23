@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace com.azi.image
 {
@@ -40,6 +41,11 @@ namespace com.azi.image
         {
             get { return _map.Rgb[_index + 2]; }
             set { _map.Rgb[_index + 2] = value; }
+        }
+
+        public T[] Get()
+        {
+            return new[] { R, G, B };
         }
 
         public T this[int i]
@@ -94,12 +100,45 @@ namespace com.azi.image
         {
             return this;
         }
+    }
 
-        public T MaxComponent()
+    public static class ColorExtension
+    {
+        public static ushort MaxComponent(this Color<ushort> c)
         {
-            return (R.CompareTo(G) > 0)
-                ? (R.CompareTo(B) > 0) ? R : B
-                : (G.CompareTo(B) > 0) ? G : B;
+            return (c.R > c.G)
+                ? (c.R > c.B) ? c.R : c.B
+                : (c.G > c.B) ? c.G : c.B;
+        }
+
+        public static double Brightness(this Color<ushort> c)
+        {
+            return c.R * (double)c.R + c.G * (double)c.G + c.B * (double)c.B;
+        }
+
+        public static double BrightnessSqrt(this Color<ushort> c)
+        {
+            return Math.Sqrt(c.Brightness());
+        }
+
+        public static double Brightness(this ushort[] c)
+        {
+            return c[0] * c[0] + c[1] * c[1] + c[2] * c[2];
+        }
+
+        public static double BrightnessSqrt(this ushort[] c)
+        {
+            return Math.Sqrt(c.Brightness());
+        }
+
+        public static ushort[] Normalize(this ushort[] color, int maxBits)
+        {
+            var maxBitsNormal = new[] { (ushort)(1 << maxBits), (ushort)(1 << maxBits), (ushort)(1 << maxBits) };
+            var maxBitsNorma = maxBitsNormal.BrightnessSqrt();
+            var colorNorma = color.BrightnessSqrt();
+            var enlarge = maxBitsNorma / colorNorma;
+
+            return maxBitsNormal.Select(v => (ushort)(v * enlarge)).ToArray();
         }
     }
 }
