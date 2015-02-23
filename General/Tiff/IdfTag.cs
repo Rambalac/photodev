@@ -338,6 +338,5 @@
         NewRawImageDigest,
         RawToPreviewGain,
         DefaultUserCrop
-
     }
 }

@@ -6,36 +6,31 @@ namespace com.azi.tiff
 {
     public class Exif
     {
-        List<IdfBlock> idfBlocks = new List<IdfBlock>();
+        private readonly List<IdfBlock> _idfBlocks = new List<IdfBlock>();
 
-        public int ImageWidth;
-        public int ImageHeight;
-        public string Maker;
-        public string Model;
-        public int StripOffset;
-        public int Orientation;
-        public int StripByteCounts;
-        public Fraction Shutter;
         public Fraction Aperture;
-        public int ExposureProgram;
-        public string ExifVersion;
-        public string DateTimeOriginal;
         public string DateTimeDigitized;
+        public string DateTimeOriginal;
+        public string ExifVersion;
         public Fraction ExposureBiasValue;
-        public Fraction MaxApertureValue;
-        public int MeteringMode;
+        public int ExposureProgram;
+        public int FileSource;
         public int Flash;
         public Fraction FocalLength;
-        public string SubsecTimeOriginal;
+        public int ImageHeight;
+        public int ImageWidth;
+        public string Maker;
+        public Fraction MaxApertureValue;
+        public int MeteringMode;
+        public string Model;
+        public int Orientation;
+        public Fraction Shutter;
+        public int StripByteCounts;
+        public int StripOffset;
         public string SubsecTimeDigitized;
-        public int FileSource;
+        public string SubsecTimeOriginal;
 
-        public static Exif parse(Stream stream)
-        {
-            return new Exif(stream);
-        }
-
-        protected Exif(Stream stream)
+        protected void InternalParse(Stream stream)
         {
             var reader = new BinaryReader(stream);
             var order = reader.ReadUInt16();
@@ -47,12 +42,18 @@ namespace com.azi.tiff
                 var offset = reader.ReadUInt32();
                 if (offset == 0) return;
                 reader.BaseStream.Seek(offset, SeekOrigin.Begin);
-                parseIfd(reader);
+                ParseIfd(reader);
             }
-
         }
 
-        protected virtual void parseIdfBlock(IdfBlock block, BinaryReader reader)
+        public static Exif Parse(Stream stream)
+        {
+            var result = new Exif();
+            result.InternalParse(stream);
+            return result;
+        }
+
+        protected virtual void ParseIdfBlock(IdfBlock block, BinaryReader reader)
         {
             switch (block.tag)
             {
@@ -78,8 +79,8 @@ namespace com.azi.tiff
                     StripByteCounts = (int)block.GetUInt32();
                     break;
                 case IdfTag.ExifIFD:
-                    reader.BaseStream.Seek((long)block.GetUInt32(), SeekOrigin.Begin);
-                    parseIfd(reader);
+                    reader.BaseStream.Seek(block.GetUInt32(), SeekOrigin.Begin);
+                    ParseIfd(reader);
                     break;
                 case IdfTag.ExposureTime:
                     Shutter = block.GetFraction();
@@ -127,18 +128,18 @@ namespace com.azi.tiff
                     break;
             }
         }
-        private void parseIfd(BinaryReader reader)
+
+        private void ParseIfd(BinaryReader reader)
         {
             var blocksnumber = reader.ReadUInt16();
             if (blocksnumber > 512) throw new ArgumentException("Too many items in ifd");
             while (blocksnumber-- > 0)
             {
                 var block = IdfBlock.parse(reader);
-                idfBlocks.Add(block);
-                parseIdfBlock(block, reader);
+                _idfBlocks.Add(block);
+                ParseIdfBlock(block, reader);
                 block.moveNext(reader);
             }
         }
-
     }
 }

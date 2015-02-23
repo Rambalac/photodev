@@ -1,34 +1,45 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace com.azi.image
 {
-    public class Color<T>
+    public class Color<T> : IEnumerator<Color<T>> where T : IComparable<T>
     {
+        private readonly int _limit;
         private readonly ColorMap<T> _map;
         private int _index;
+
         internal Color(ColorMap<T> map, int x, int y)
         {
-            this._map = map;
+            _map = map;
             _index = (y * map.Width + x) * 3;
+            _limit = _map.Height * _map.Width * 3;
         }
 
-        public void Next()
+        internal Color(ColorMap<T> map, int y)
         {
-            _index += 3;
+            _map = map;
+            _index = y * map.Width * 3;
+            _limit = _index + _map.Width * 3;
         }
-        public void Set(T[] values)
+
+        public T R
         {
-            _map.Rgb[_index + 0] = values[0];
-            _map.Rgb[_index + 1] = values[1];
-            _map.Rgb[_index + 2] = values[2];
+            get { return _map.Rgb[_index + 0]; }
+            set { _map.Rgb[_index + 0] = value; }
         }
-        public T[] Get()
+
+        public T G
         {
-            return new T[3] {
-                _map.Rgb[_index + 0],
-                _map.Rgb[_index + 1],
-                _map.Rgb[_index + 2]
-            };
+            get { return _map.Rgb[_index + 1]; }
+            set { _map.Rgb[_index + 1] = value; }
+        }
+
+        public T B
+        {
+            get { return _map.Rgb[_index + 2]; }
+            set { _map.Rgb[_index + 2] = value; }
         }
 
         public T this[int i]
@@ -44,79 +55,51 @@ namespace com.azi.image
                 _map.Rgb[_index + i] = value;
             }
         }
-    }
 
-    public class ColorMap<T>
-    {
-        public readonly int Width;
-        public readonly int Height;
-        public readonly T[] Rgb;
-        public readonly int MaxBits;
-        public ColorMap(int w, int h, int maxBits)
+        public bool MoveNext()
         {
-            Width = w;
-            Height = h;
-            MaxBits = maxBits;
-            Rgb = new T[w * h * 3];
+            _index += 3;
+            return _index < _limit;
         }
 
-        public Color<T> GetPixel()
+        public bool SetAndMoveNext(T r, T g, T b)
         {
-            return GetPixel(0, 0);
-        }
-        public Color<T> GetPixel(int x, int y)
-        {
-            return new Color<T>(this, x, y);
-        }
-    }
-
-    public class Rgb8Map
-    {
-        public readonly int Width;
-        public readonly int Height;
-        public readonly int Stride;
-        public readonly byte[] Rgb;
-        public const int BytesPerPixel = 3;
-
-        public static void CopyConvertor(Color<byte> pixel, byte[] rgb, int offset, int maxBits)
-        {
-            rgb[offset + 0] = pixel[0];
-            rgb[offset + 1] = pixel[1];
-            rgb[offset + 2] = pixel[2];
+            _map.Rgb[_index + 0] = r;
+            _map.Rgb[_index + 1] = g;
+            _map.Rgb[_index + 2] = b;
+            _index += 3;
+            return _index < _limit;
         }
 
-        private Rgb8Map(int width, int height, int stride, byte[] rgb)
+        public void Reset()
         {
-            Width = width;
-            Height = height;
-            Stride = stride;
-            Rgb = rgb;
+            _index = 0;
         }
 
-        public delegate void RgbConvertor<T>(Color<T> color, byte[] rgb, int offset, int maxBits);
-
-        public static Rgb8Map ConvertoToRgb<T>(ColorMap<T> map, int strideBytesAlign, RgbConvertor<T> rgbConvertor)
+        public Color<T> Current
         {
-            var width = map.Width;
-            var height = map.Height;
-            var stride = strideBytesAlign * (width * BytesPerPixel + strideBytesAlign - 1) / strideBytesAlign;
-            var rgb = new byte[height * stride];
+            get { return this; }
+        }
 
-            var result = new Rgb8Map(width, height, stride, rgb);
+        object IEnumerator.Current
+        {
+            get { return Current; }
+        }
 
-            var pixel = map.GetPixel();
-            for (var y = 0; y < height; y++)
-            {
-                var pos = y * stride;
-                for (var x = 0; x < width; x++)
-                {
-                    rgbConvertor(pixel, rgb, pos, map.MaxBits);
-                    pos += BytesPerPixel;
-                    pixel.Next();
-                }
-            }
+        public void Dispose()
+        {
+        }
 
-            return result;
+        public IEnumerator<Color<T>> GetEnumerator()
+        {
+            return this;
+        }
+
+        public T MaxComponent()
+        {
+            return (R.CompareTo(G) > 0)
+                ? (R.CompareTo(B) > 0) ? R : B
+                : (G.CompareTo(B) > 0) ? G : B;
         }
     }
 }

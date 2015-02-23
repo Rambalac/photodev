@@ -1,8 +1,8 @@
-﻿using com.azi.tiff;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using com.azi.tiff;
 
-namespace com.azi.decoder.panasonic.rw2
+namespace com.azi.Decoder.Panasonic
 {
     public enum PanasoncIdfTag
     {
@@ -17,35 +17,52 @@ namespace com.azi.decoder.panasonic.rw2
         Thumb,
         RawOffset,
     }
+
     public class PanasonicExif : Exif
     {
+        private static readonly Dictionary<int, PanasoncIdfTag> TagMap = new Dictionary<int, PanasoncIdfTag>
+        {
+            {5, PanasoncIdfTag.CropLeft},
+            {6, PanasoncIdfTag.CropTop},
+            {7, PanasoncIdfTag.CropWidth},
+            {8, PanasoncIdfTag.CropHeight},
+            {9, PanasoncIdfTag.Filters},
+            {23, PanasoncIdfTag.Iso},
+            {28, PanasoncIdfTag.Black},
+            {29, PanasoncIdfTag.Black},
+            {30, PanasoncIdfTag.Black},
+            {36, PanasoncIdfTag.CamMul},
+            {37, PanasoncIdfTag.CamMul},
+            {38, PanasoncIdfTag.CamMul},
+            {46, PanasoncIdfTag.Thumb},
+            {280, PanasoncIdfTag.RawOffset},
+        };
+
+        public ushort[] Black = new ushort[4];
+        public float[] CamMul = new float[3];
+        public int CropBottom;
+
         public int CropLeft;
         public int CropRight;
         public int CropTop;
-        public int CropBottom;
         public int Filters;
         public int Iso;
-        public ushort[] Black = new ushort[4];
-        public float[] CamMul = new float[3];
-        public byte[] Thumb;
         public int RawOffset;
+        public byte[] Thumb;
 
-        public PanasonicExif(Stream stream)
-            : base(stream)
+        public new static PanasonicExif Parse(Stream stream)
         {
+            var result = new PanasonicExif();
+            result.InternalParse(stream);
+            return result;
         }
 
-        new public static PanasonicExif parse(Stream stream)
-        {
-            return new PanasonicExif(stream);
-        }
-
-        override protected void parseIdfBlock(IdfBlock block, BinaryReader reader)
+        protected override void ParseIdfBlock(IdfBlock block, BinaryReader reader)
         {
             PanasoncIdfTag tag;
             if (!TagMap.TryGetValue(block.rawtag, out tag))
             {
-                base.parseIdfBlock(block, reader);
+                base.ParseIdfBlock(block, reader);
                 return;
             }
 
@@ -86,23 +103,5 @@ namespace com.azi.decoder.panasonic.rw2
                     break;
             }
         }
-
-        static Dictionary<int, PanasoncIdfTag> TagMap = new Dictionary<int, PanasoncIdfTag>()
-        {
-            {5, PanasoncIdfTag.CropLeft},
-            {6, PanasoncIdfTag.CropTop},
-            {7, PanasoncIdfTag.CropWidth},
-            {8, PanasoncIdfTag.CropHeight},
-            {9, PanasoncIdfTag.Filters},
-            {23, PanasoncIdfTag.Iso},
-            {28, PanasoncIdfTag.Black},
-            {29, PanasoncIdfTag.Black},
-            {30, PanasoncIdfTag.Black},
-            {36, PanasoncIdfTag.CamMul},
-            {37, PanasoncIdfTag.CamMul},
-            {38, PanasoncIdfTag.CamMul},
-            {46, PanasoncIdfTag.Thumb},
-            {280, PanasoncIdfTag.RawOffset},
-        };
     }
 }

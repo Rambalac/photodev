@@ -1,19 +1,18 @@
-﻿using System;
+﻿using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 using com.azi.Compressor;
 using com.azi.Debayer;
-using com.azi.decoder.panasonic.rw2;
-using System.IO;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using com.azi.Filters;
+using com.azi.Decoder.Panasonic.Rw2;
+using com.azi.Filters.ColorMap16;
+using com.azi.Filters.ColorMap16ToRgb8;
+using com.azi.Filters.RawToColorMap16;
 using com.azi.image;
 
 namespace photodev
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    ///     Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
@@ -25,10 +24,14 @@ namespace photodev
                 var rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new DebayerFilter
                 {
-                    Debayer = new BinningDebayer()
+                    Debayer = new AverageBGGRDebayer()
                 };
                 var color16Image = debayer.Process(rawimage);
-                var compressor = new ColorMap16ToRgb8CompressorFilter
+                var light = new LightFilter();
+                light.AutoAdjust(color16Image);
+                color16Image = light.Process(color16Image);
+
+                var compressor = new CompressorFilter
                 {
                     Compressor = new SimpleCompressor()
                 };

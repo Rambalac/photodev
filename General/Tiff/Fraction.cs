@@ -2,8 +2,8 @@
 {
     public class Fraction
     {
-        int numenator;
-        int denominator;
+        private readonly int denominator;
+        private readonly int numenator;
 
         public Fraction(int n, int d)
         {

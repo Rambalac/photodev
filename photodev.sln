@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Panasonic", "Panasonic", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanasonicRW2", "PanasonicRW2\PanasonicRW2.csproj", "{38678C2D-444F-4F69-AA59-61929EA1EC62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "PanasonicRW2.Tests\Tests.csproj", "{90E6F618-A95B-48D0-BFFD-70E96760EC24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanasonicRW2.Tests", "PanasonicRW2.Tests\PanasonicRW2.Tests.csproj", "{90E6F618-A95B-48D0-BFFD-70E96760EC24}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RAW", "RAW", "{59F6F48C-FFF0-44FD-9A63-ADC92891CA49}"
 EndProject
@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8475C5
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.Tests", "General.Tests\General.Tests.csproj", "{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,16 @@ Global
 		{61FDABA3-FAB6-4DFC-952D-EA13B45979E1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{61FDABA3-FAB6-4DFC-952D-EA13B45979E1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{61FDABA3-FAB6-4DFC-952D-EA13B45979E1}.Release|Win32.ActiveCfg = Release|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,5 +96,6 @@ Global
 		{90E6F618-A95B-48D0-BFFD-70E96760EC24} = {99095D65-D804-4CB8-9E2D-6E97EAF569A0}
 		{59F6F48C-FFF0-44FD-9A63-ADC92891CA49} = {108E5476-012E-4C79-9A17-40B434F4B347}
 		{61FDABA3-FAB6-4DFC-952D-EA13B45979E1} = {108E5476-012E-4C79-9A17-40B434F4B347}
+		{0A3A1B51-1F6E-4695-86CB-8AFE54199CA3} = {108E5476-012E-4C79-9A17-40B434F4B347}
 	EndGlobalSection
 EndGlobal
