@@ -23,7 +23,7 @@ namespace photodev
             {
                 Stream stream = new FileStream(p, FileMode.Open, FileAccess.Read);
                 var rawimage = new PanasonicRW2Decoder().Decode(stream);
-                var debayer = new RawToColorMap16DebayerFilter
+                var debayer = new DebayerFilter
                 {
                     Debayer = new BinningDebayer()
                 };

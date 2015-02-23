@@ -16,7 +16,7 @@ namespace Tests
 
             var file = new FileStream(@"..\..\P1350577.RW2", FileMode.Open, FileAccess.Read);
             var rawimage = decoder.Decode(file);
-            var debayer = new RawToColorMap16DebayerFilter
+            var debayer = new DebayerFilter
             {
                 Debayer = new AverageDebayer()
             };

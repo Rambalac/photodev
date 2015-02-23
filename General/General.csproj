@@ -38,10 +38,14 @@
     <Compile Include="Debayer\AverageDebayer.cs" />
     <Compile Include="Debayer\BinningDebayer.cs" />
     <Compile Include="Debayer\IDebayer.cs" />
-    <Compile Include="Filters\ColorMap16Filter.cs" />
-    <Compile Include="Filters\ColorMap16ToRgb8Filter.cs" />
+    <Compile Include="Filters\ColorMap16ToRgb8\ColorMap16ToRgb8Filter.cs" />
+    <Compile Include="Filters\ColorMap16ToRgb8\CompressorFilter.cs" />
+    <Compile Include="Filters\ColorMap16\ColorMap16Filter.cs" />
+    <Compile Include="Filters\ColorMap16\LightFilter.cs" />
     <Compile Include="Filters\Filter.cs" />
-    <Compile Include="Filters\RawToColorMap16Filter.cs" />
+    <Compile Include="Filters\IAutoAdjustableFilter.cs" />
+    <Compile Include="Filters\RawToColorMap16\RawToColorMap16DebayerFilter.cs" />
+    <Compile Include="Filters\RawToColorMap16\RawToColorMap16Filter.cs" />
     <Compile Include="Image\Color.cs" />
     <Compile Include="Image\ImageFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
