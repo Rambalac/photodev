@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using com.azi.tiff;
 
 namespace com.azi.Decoder.Panasonic
@@ -39,7 +41,7 @@ namespace com.azi.Decoder.Panasonic
         };
 
         public ushort[] Black = new ushort[4];
-        public float[] CamMul = new float[3];
+        public float[] CamMul;
         public int CropBottom;
 
         public int CropLeft;
@@ -54,6 +56,13 @@ namespace com.azi.Decoder.Panasonic
         {
             var result = new PanasonicExif();
             result.InternalParse(stream);
+
+            if (result.CamMul != null)
+            {
+                var max = result.CamMul.Max();
+                result.WhiteMultiplier = result.CamMul.Select(v => max / v).Reverse().ToArray();
+            }
+
             return result;
         }
 
@@ -93,6 +102,7 @@ namespace com.azi.Decoder.Panasonic
                     Black[3] = Black[1];
                     break;
                 case PanasoncIdfTag.CamMul:
+                    if (CamMul == null) CamMul = new float[3];
                     CamMul[block.rawtag - 36] = block.GetUInt16();
                     break;
                 case PanasoncIdfTag.Thumb:

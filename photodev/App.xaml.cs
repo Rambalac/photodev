@@ -28,13 +28,14 @@ namespace photodev
                 };
                 var color16Image = debayer.Process(rawimage);
 
+                var white = new WhiteBalanceFilter();
+                //white.AutoAdjust(color16Image);
+                color16Image = white.Process(color16Image);
+
                 var light = new LightFilter();
                 light.AutoAdjust(color16Image);
+                light.SetGamma(0.5, color16Image);
                 color16Image = light.Process(color16Image);
-
-                var white = new WhiteBalanceFilter();
-                white.AutoAdjust(color16Image);
-                color16Image = white.Process(color16Image);
 
                 var compressor = new CompressorFilter
                 {

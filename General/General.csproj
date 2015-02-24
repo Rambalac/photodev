@@ -43,7 +43,7 @@
     <Compile Include="Decoder\IRawDecoder.cs" />
     <Compile Include="Filters\ColorMap16ToRgb8\ColorMapToRgb8Filter.cs" />
     <Compile Include="Filters\ColorMap16ToRgb8\CompressorFilter.cs" />
-    <Compile Include="Filters\ColorMap16\ColorBalanceFilter.cs" />
+    <Compile Include="Filters\ColorMap16\WhiteBalanceFilter.cs" />
     <Compile Include="Filters\ColorMap16\ColorMap16Filter.cs" />
     <Compile Include="Filters\ColorMap16\LightFilter.cs" />
     <Compile Include="Filters\Filter.cs" />

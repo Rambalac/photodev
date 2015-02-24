@@ -14,7 +14,13 @@ namespace com.azi.Filters.ColorMap16
 
         public ColorImageFile<ushort> Process(ColorImageFile<ushort> image)
         {
-            var maxVal = 1 << image.Pixels.MaxBits;
+            var maxVal = (1 << image.Pixels.MaxBits) - 1;
+            if (WhiteColor == null && image.Exif.WhiteMultiplier != null)
+            {
+                WhiteColor = image.Exif.WhiteMultiplier.Select(v => (ushort)(maxVal * v)).ToArray();
+            }
+            if (WhiteColor == null) throw new Exception("WhiteColor is not defined neither in filter nor in Exif");
+
             return new ColorImageFile<ushort>
             {
                 Exif = image.Exif,
@@ -22,7 +28,7 @@ namespace com.azi.Filters.ColorMap16
                     delegate(int x, int y, Color<ushort> input, Color<ushort> output)
                     {
                         for (var c = 0; c < 3; c++)
-                            output[c] = (ushort)(input[c] * maxVal / WhiteColor[0]);
+                            output[c] = (ushort)(input[c] * maxVal / WhiteColor[c]);
                     })
             };
         }

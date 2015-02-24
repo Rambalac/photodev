@@ -3,7 +3,7 @@ using com.azi.image;
 
 namespace com.azi.Debayer
 {
-    public class AverageBGGRDebayer : IDebayer
+    public class AverageBGGRDebayer : IBGGRDebayer
     {
         // B G B G
         // G R G R

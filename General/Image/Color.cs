@@ -123,7 +123,7 @@ namespace com.azi.image
 
         public static double Brightness(this ushort[] c)
         {
-            return c[0] * c[0] + c[1] * c[1] + c[2] * c[2];
+            return c[0] * (double)c[0] + c[1] * (double)c[1] + c[2] * (double)c[2];
         }
 
         public static double BrightnessSqrt(this ushort[] c)
@@ -131,14 +131,22 @@ namespace com.azi.image
             return Math.Sqrt(c.Brightness());
         }
 
+        public static double Brightness(this double[] c)
+        {
+            return c[0] * c[0] + c[1] * c[1] + c[2] * c[2];
+        }
+
+        public static double BrightnessSqrt(this double[] c)
+        {
+            return Math.Sqrt(c.Brightness());
+        }
+
         public static ushort[] Normalize(this ushort[] color, int maxBits)
         {
-            var maxBitsNormal = new[] { (ushort)(1 << maxBits), (ushort)(1 << maxBits), (ushort)(1 << maxBits) };
-            var maxBitsNorma = maxBitsNormal.BrightnessSqrt();
             var colorNorma = color.BrightnessSqrt();
-            var enlarge = maxBitsNorma / colorNorma;
 
-            return maxBitsNormal.Select(v => (ushort)(v * enlarge)).ToArray();
+            var d = (double)((1 << maxBits) - 1);
+            return color.Select(v => (ushort)(v * d / colorNorma)).ToArray();
         }
     }
 }
