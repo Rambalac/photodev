@@ -14,7 +14,7 @@ namespace com.azi.Filters.ColorMap16
 
         public ColorImageFile<ushort> Process(ColorImageFile<ushort> image)
         {
-            var maxVal = (1 << image.Pixels.MaxBits) - 1;
+            var maxVal = image.Pixels.MaxValue;
             if (WhiteColor == null && image.Exif.WhiteMultiplier != null)
             {
                 WhiteColor = image.Exif.WhiteMultiplier.Select(v => (ushort)(maxVal * v)).ToArray();
@@ -24,12 +24,10 @@ namespace com.azi.Filters.ColorMap16
             return new ColorImageFile<ushort>
             {
                 Exif = image.Exif,
-                Pixels = image.Pixels.UpdateColors(image.Pixels.MaxBits,
-                    delegate(int x, int y, Color<ushort> input, Color<ushort> output)
-                    {
-                        for (var c = 0; c < 3; c++)
-                            output[c] = (ushort)(input[c] * maxVal / WhiteColor[c]);
-                    })
+                Pixels = image.Pixels.UpdateCurve(
+                    (component, index, input) => (ushort)(input * maxVal / WhiteColor[component]))
+
+
             };
         }
 
@@ -37,14 +35,14 @@ namespace com.azi.Filters.ColorMap16
         {
             double maxbright = 0;
             var whiteColor = new ushort[] { 1, 1, 1 };
-            foreach (var color in image.Pixels)
+            image.Pixels.Enumerate(color =>
             {
                 var bright = color.Brightness();
-                if (!(bright > maxbright)) continue;
+                if (!(bright > maxbright)) return;
 
                 maxbright = bright;
-                whiteColor = color.Get();
-            }
+                whiteColor = color.GetCopy();
+            });
 
             WhiteColor = whiteColor.Normalize(image.Pixels.MaxBits);
 

@@ -6,47 +6,34 @@ namespace com.azi.Filters.ColorMap16
 {
     public class LightFilter : IColorMap16Filter, IAutoAdjustableFilter
     {
-        public ushort Multiply { get; set; }
-        public int Precision = 3;
-        public ushort[,] Curve;
+        public double Multiply { get; set; }
+        public double Gamma { get; set; }
 
         public void AutoAdjust(ColorImageFile<ushort> image)
         {
-            var max = image.Pixels.Max(c => c.MaxComponent());
-            Multiply = (ushort)((1 << (image.Pixels.MaxBits + Precision)) / max);
-            if (Multiply == 0) Multiply = 1;
-
-            var maxVal = 1 << image.Pixels.MaxBits;
-            Curve = new ushort[3, maxVal];
-            for (var c = 0; c < 3; c++)
-                for (var v = 0; v < maxVal; v++)
-                    Curve[c, v] = (ushort)v;
-        }
-
-        public void SetGamma(double gamma, ColorImageFile<ushort> image)
-        {
-            var maxVal = 1 << image.Pixels.MaxBits;
-            Curve = new ushort[3, maxVal];
-            for (var c = 0; c < 3; c++)
-                for (var v = 0; v < maxVal; v++)
-                    Curve[c, v] = (ushort)(maxVal * (Math.Pow((v / (double)maxVal), gamma)));
+            var max = 0;
+            image.Pixels.Enumerate(color => max = Math.Max(max, color.MaxComponent()));
+            Multiply = image.Pixels.MaxValue / (double)max;
+            if (Multiply < 1) Multiply = 1;
         }
 
         public ColorImageFile<ushort> Process(ColorImageFile<ushort> image)
         {
+            var maxValue = image.Pixels.MaxValue;
+            const int precision = 8;
+            var multiply = (int)(Multiply * (1 << precision));
+            var powtable = new ushort[maxValue + 1];
+            for (var i = 0; i <= maxValue; i++)
+                powtable[i] = (ushort)(maxValue * Math.Pow((i / (double)maxValue), Gamma));
             return new ColorImageFile<ushort>
             {
                 Exif = image.Exif,
-                Pixels = image.Pixels.UpdateColors(image.Pixels.MaxBits,
-                    delegate(int x, int y, Color<ushort> input, Color<ushort> output)
-                    {
-                        for (var c = 0; c < 3; c++)
-                        {
-                            var outval = (ushort)((input[c] * Multiply) >> Precision);
-                            if (Curve != null) outval = Curve[c, outval];
-                            output[c] = outval;
-                        }
-                    })
+                Pixels = image.Pixels.UpdateCurve((component, index, input) =>
+                {
+                    var outval = (index * multiply) >> precision;
+                    if (outval > maxValue) outval = maxValue;
+                    return powtable[outval];
+                })
             };
         }
     }

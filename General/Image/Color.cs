@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace com.azi.image
 {
-    public class Color<T> : IEnumerator<Color<T>> where T : IComparable<T>
+    public class Color<T> where T : IComparable<T>
     {
         private readonly int _limit;
         private readonly ColorMap<T> _map;
@@ -43,7 +43,7 @@ namespace com.azi.image
             set { _map.Rgb[_index + 2] = value; }
         }
 
-        public T[] Get()
+        public T[] GetCopy()
         {
             return new[] { R, G, B };
         }
@@ -77,29 +77,6 @@ namespace com.azi.image
             return _index < _limit;
         }
 
-        public void Reset()
-        {
-            _index = 0;
-        }
-
-        public Color<T> Current
-        {
-            get { return this; }
-        }
-
-        object IEnumerator.Current
-        {
-            get { return Current; }
-        }
-
-        public void Dispose()
-        {
-        }
-
-        public IEnumerator<Color<T>> GetEnumerator()
-        {
-            return this;
-        }
     }
 
     public static class ColorExtension
@@ -111,9 +88,9 @@ namespace com.azi.image
                 : (c.G > c.B) ? c.G : c.B;
         }
 
-        public static double Brightness(this Color<ushort> c)
+        public static int Brightness(this Color<ushort> c)
         {
-            return c.R * (double)c.R + c.G * (double)c.G + c.B * (double)c.B;
+            return c.R * c.R + c.G * c.G + c.B * c.B;
         }
 
         public static double BrightnessSqrt(this Color<ushort> c)
@@ -121,9 +98,9 @@ namespace com.azi.image
             return Math.Sqrt(c.Brightness());
         }
 
-        public static double Brightness(this ushort[] c)
+        public static int Brightness(this ushort[] c)
         {
-            return c[0] * (double)c[0] + c[1] * (double)c[1] + c[2] * (double)c[2];
+            return c[0] * c[0] + c[1] * c[1] + c[2] * c[2];
         }
 
         public static double BrightnessSqrt(this ushort[] c)

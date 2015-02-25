@@ -1,26 +1,28 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using com.azi.Compressor;
 using com.azi.Debayer;
 using com.azi.Decoder.Panasonic.Rw2;
 using com.azi.Filters.ColorMap16;
 using com.azi.Filters.ColorMap16ToRgb8;
 using com.azi.Filters.RawToColorMap16;
-using com.azi.image;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace photodev
+namespace General.Tests
 {
-    /// <summary>
-    ///     Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    [TestClass]
+    public class PerfomanceTests
     {
-        internal static async Task<RgbImageFile> OpenFile(string p)
+        [TestMethod]
+        public void FullProcessTest()
         {
-            return await Task.Run(() =>
+            var stopwatch = Stopwatch.StartNew();
+            const int maxIter = 5;
+            for (var iter = 0; iter < maxIter; iter++)
             {
-                Stream stream = new FileStream(p, FileMode.Open, FileAccess.Read);
+                Stream stream = new FileStream(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2", FileMode.Open,
+                    FileAccess.Read);
                 var rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new DebayerFilter
                 {
@@ -34,15 +36,18 @@ namespace photodev
 
                 var light = new LightFilter();
                 light.AutoAdjust(color16Image);
-                light.Gamma = 0.6;
+                light.Gamma = 0.8;
                 color16Image = light.Process(color16Image);
 
                 var compressor = new CompressorFilter
                 {
                     Compressor = new SimpleCompressor()
                 };
-                return compressor.Process(color16Image);
-            });
+                compressor.Process(color16Image);
+            }
+            stopwatch.Stop();
+            Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds / maxIter + "ms");
+
         }
     }
 }

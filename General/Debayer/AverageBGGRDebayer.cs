@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using com.azi.image;
 
 namespace com.azi.Debayer
@@ -13,6 +14,7 @@ namespace com.azi.Debayer
         {
             if (file.Width % 2 != 0 || file.Height % 2 != 0) throw new ArgumentException("Width and Height should be even");
             var res = new ColorMap<ushort>(file.Width, file.Height, file.MaxBits + 1);
+            res.UpdateCurve((component, index, input) => (ushort)index);
             var pix = res.GetPixel();
 
             ProcessTopLine(file, pix, res);
