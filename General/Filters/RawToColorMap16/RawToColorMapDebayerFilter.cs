@@ -1,15 +1,15 @@
 ﻿using com.azi.Debayer;
 using com.azi.image;
 
-namespace com.azi.Filters.RawToColorMap
+namespace com.azi.Filters.RawToColorMap16
 {
-    public class DebayerFilter : IRawToColorMapFilter
+    public class DebayerFilter : IRawToColorMap16Filter
     {
         public IDebayer Debayer { set; get; }
 
-        public ColorImageFile Process(RawImageFile raw)
+        public ColorImageFile<ushort> Process(RawImageFile raw)
         {
-            return new ColorImageFile
+            return new ColorImageFile<ushort>
             {
                 Exif = raw.Exif,
                 Pixels = Debayer.Debayer(raw)

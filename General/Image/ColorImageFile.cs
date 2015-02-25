@@ -1,8 +1,10 @@
-﻿namespace com.azi.image
+﻿using System;
+
+namespace com.azi.image
 {
-    public class ColorImageFile: ImageFile
+    public class ColorImageFile<T> : ImageFile where T : IComparable<T>
     {
-        public ColorMap Pixels { get; set; }
+        public ColorMap<T> Pixels { get; set; }
 
         public override int Width
         {

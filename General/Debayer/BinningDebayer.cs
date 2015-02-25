@@ -4,11 +4,11 @@ namespace com.azi.Debayer
 {
     public class BinningBGGRDebayer : IDebayer
     {
-        public ColorMap Debayer(RawImageFile file)
+        public ColorMap<ushort> Debayer(RawImageFile file)
         {
-            var res = new ColorMap(file.Width/2, file.Height/2, file.MaxBits);
-            res.UpdateCurve((component, index, input) => index);
-            var c = new int[4];
+            var res = new ColorMap<ushort>(file.Width/2, file.Height/2, file.MaxBits);
+            res.UpdateCurve((component, index, input) => (ushort)index);
+            var c = new ushort[4];
             var pix = res.GetPixel();
             for (var y = 0; y < res.Height; y++)
             {

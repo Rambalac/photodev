@@ -4,6 +4,6 @@ namespace com.azi.Filters
 {
     internal interface IAutoAdjustableFilter
     {
-        void AutoAdjust(ColorImageFile image);
+        void AutoAdjust(ColorImageFile<ushort> image);
     }
 }

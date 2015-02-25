@@ -5,13 +5,13 @@ namespace com.azi.Compressor
 {
     public class SimpleCompressor : ICompressor
     {
-        public Rgb8Map Compress(ColorMap map, int strideBytesAlign)
+        public Rgb8Map Compress(ColorMap<ushort> map, int strideBytesAlign)
         {
             if (map.MaxBits < 8) throw new Exception("MaxBits cannot be less than 8");
             return Rgb8Map.ConvertoToRgb(map, strideBytesAlign, Function);
         }
 
-        private static void Function(Color pixel, int[,] curve, byte[] rgb, int offset, int maxBits)
+        private static void Function(Color<ushort> pixel, ushort[,] curve, byte[] rgb, int offset, int maxBits)
         {
             //if (pixel[0] > (1 << maxBits)) throw new Exception("Exceeding value");
             //if (pixel[1] > (1 << maxBits)) throw new Exception("Exceeding value");
