@@ -19,14 +19,14 @@ namespace com.azi.Decoder.Panasonic.Rw2
             return DecodeImagePart(stream, exif);
         }
 
-        private RawImageFile DecodeImagePart(Stream stream, PanasonicExif exif)
+        private static RawImageFile DecodeImagePart(Stream stream, PanasonicExif exif)
         {
             int row, col, i, j, sh = 0;
             int[] pred = new int[2], nonz = new int[2];
 
             var resultHeight = exif.ImageHeight;
             var resultWidth = exif.CropRight;
-            var raw = new ushort[resultHeight, resultWidth];
+            var raw = new int[resultHeight, resultWidth];
 
             var bits = new PanasonicBitStream(stream);
             for (row = 0; row < exif.ImageHeight; row++)
@@ -57,7 +57,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
                         }
                         if (col >= resultWidth) continue;
 
-                        raw[row, col] = (ushort) pred[col & 1];
+                        raw[row, col] = pred[col & 1];
 
                         if (raw[row, col] > 4098 && col < exif.CropRight)
                             throw new Exception("Decoding error");

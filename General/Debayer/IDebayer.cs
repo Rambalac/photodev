@@ -4,7 +4,7 @@ namespace com.azi.Debayer
 {
     public interface IDebayer
     {
-        ColorMap<ushort> Debayer(RawImageFile file);
+        ColorMap Debayer(RawImageFile file);
     }
 
     public interface IBGGRDebayer: IDebayer

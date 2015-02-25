@@ -16,11 +16,11 @@ namespace com.azi.Debayer
         //};
 
 
-        public ColorMap<ushort> Debayer(RawImageFile file)
+        public ColorMap Debayer(RawImageFile file)
         {
-            var res = new ColorMap<ushort>(file.Width, file.Height, file.MaxBits + 2);
-            res.UpdateCurve((component, index, input) => (ushort)index);
-            var c = new ushort[3];
+            var res = new ColorMap(file.Width, file.Height, file.MaxBits + 2);
+            res.UpdateCurve((component, index, input) => index);
+            var c = new int[3];
             var pix = res.GetPixel();
             for (var x = 0; x < res.Width; x++)
             {
@@ -39,19 +39,19 @@ namespace com.azi.Debayer
                     switch (component)
                     {
                         case ColorComponent.R:
-                            c[0] = (ushort)(file.GetValue(x, y) << 2);
-                            c[1] = (ushort)((file.GetValue(x - 1, y) + file.GetValue(x + 1, y) + file.GetValue(x, y - 1) + file.GetValue(x, y + 1)));
-                            c[2] = (ushort)((file.GetValue(x - 1, y - 1) + file.GetValue(x + 1, y - 1) + file.GetValue(x - 1, y + 1) + file.GetValue(x + 1, y + 1)));
+                            c[0] = (file.GetValue(x, y) << 2);
+                            c[1] = ((file.GetValue(x - 1, y) + file.GetValue(x + 1, y) + file.GetValue(x, y - 1) + file.GetValue(x, y + 1)));
+                            c[2] = ((file.GetValue(x - 1, y - 1) + file.GetValue(x + 1, y - 1) + file.GetValue(x - 1, y + 1) + file.GetValue(x + 1, y + 1)));
                             break;
                         case ColorComponent.G:
-                            c[(invertRb) ? 2 : 0] = (ushort)((file.GetValue(x - 1, y) + file.GetValue(x + 1, y)) << 1);
-                            c[1] = (ushort)(file.GetValue(x, y) << 2);
-                            c[(invertRb) ? 0 : 2] = (ushort)((file.GetValue(x, y - 1) + file.GetValue(x, y + 1)) << 1);
+                            c[(invertRb) ? 2 : 0] = ((file.GetValue(x - 1, y) + file.GetValue(x + 1, y)) << 1);
+                            c[1] = (file.GetValue(x, y) << 2);
+                            c[(invertRb) ? 0 : 2] = ((file.GetValue(x, y - 1) + file.GetValue(x, y + 1)) << 1);
                             break;
                         case ColorComponent.B:
-                            c[0] = (ushort)((file.GetValue(x - 1, y - 1) + file.GetValue(x + 1, y - 1) + file.GetValue(x - 1, y + 1) + file.GetValue(x + 1, y + 1)));
-                            c[1] = (ushort)((file.GetValue(x - 1, y) + file.GetValue(x + 1, y) + file.GetValue(x, y - 1) + file.GetValue(x, y + 1)));
-                            c[2] = (ushort)(file.GetValue(x, y) << 2);
+                            c[0] = ((file.GetValue(x - 1, y - 1) + file.GetValue(x + 1, y - 1) + file.GetValue(x - 1, y + 1) + file.GetValue(x + 1, y + 1)));
+                            c[1] = ((file.GetValue(x - 1, y) + file.GetValue(x + 1, y) + file.GetValue(x, y - 1) + file.GetValue(x, y + 1)));
+                            c[2] = (file.GetValue(x, y) << 2);
                             break;
                     }
                     pix[0] = c[0];

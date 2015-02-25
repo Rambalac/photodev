@@ -5,8 +5,8 @@ using com.azi.Compressor;
 using com.azi.Debayer;
 using com.azi.Decoder.Panasonic.Rw2;
 using com.azi.Filters.ColorMap16;
-using com.azi.Filters.ColorMap16ToRgb8;
-using com.azi.Filters.RawToColorMap16;
+using com.azi.Filters.ColorMapToRgb8;
+using com.azi.Filters.RawToColorMap;
 using com.azi.image;
 
 namespace photodev

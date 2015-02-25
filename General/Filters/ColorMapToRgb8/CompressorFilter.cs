@@ -1,13 +1,13 @@
 ﻿using com.azi.Compressor;
 using com.azi.image;
 
-namespace com.azi.Filters.ColorMap16ToRgb8
+namespace com.azi.Filters.ColorMapToRgb8
 {
-    public class CompressorFilter : IColorMap16ToRgb8Filter
+    public class CompressorFilter : IColorMapToRgb8Filter
     {
         public ICompressor Compressor { set; get; }
 
-        public RgbImageFile Process(ColorImageFile<ushort> image)
+        public RgbImageFile Process(ColorImageFile image)
         {
             return new RgbImageFile
             {

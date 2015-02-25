@@ -4,7 +4,7 @@ namespace com.azi.image
 {
     public class Rgb8Map
     {
-        public delegate void RgbConvertor<T>(Color<T> color, T[,] curve, byte[] rgb, int offset, int maxBits) where T : IComparable<T>;
+        public delegate void RgbConvertor(Color color, int[,] curve, byte[] rgb, int offset, int maxBits);
 
         public const int BytesPerPixel = 3;
 
@@ -21,14 +21,7 @@ namespace com.azi.image
             Rgb = rgb;
         }
 
-        public static void CopyConvertor(Color<byte> pixel, byte[] rgb, int offset, int maxBits)
-        {
-            rgb[offset + 0] = pixel[0];
-            rgb[offset + 1] = pixel[1];
-            rgb[offset + 2] = pixel[2];
-        }
-
-        public static Rgb8Map ConvertoToRgb<T>(ColorMap<T> map, int strideBytesAlign, RgbConvertor<T> rgbConvertor) where T : IComparable<T>
+        public static Rgb8Map ConvertoToRgb(ColorMap map, int strideBytesAlign, RgbConvertor rgbConvertor)
         {
             var width = map.Width;
             var height = map.Height;

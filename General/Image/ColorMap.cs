@@ -1,29 +1,27 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace com.azi.image
 {
-    public class ColorMap<T> where T : IComparable<T>
+    public class ColorMap
     {
-        public delegate void ColorMapProcessor(int x, int y, Color<T> input, Color<T> output);
-        public delegate T CurveProcessor(int component, int index, T input);
+        public delegate void ColorMapProcessor(int x, int y, Color input, Color output);
+        public delegate int CurveProcessor(int component, int index, int input);
 
         public readonly int Height;
         public readonly int MaxBits;
-        public readonly T[] Rgb;
+        public readonly int[] Rgb;
         public readonly int Width;
-        public readonly T[,] Curve;
+        public readonly int[,] Curve;
 
         public int MaxValue { get { return (1 << MaxBits) - 1; } }
 
         public ColorMap(int w, int h, int maxBits)
-            : this(w, h, maxBits, new T[w * h * 3], new T[3, 1 << maxBits])
+            : this(w, h, maxBits, new int[w * h * 3], new int[3, 1 << maxBits])
         {
 
         }
 
-        public ColorMap(int w, int h, int maxBits, T[] rgb, T[,] curve)
+        public ColorMap(int w, int h, int maxBits, int[] rgb, int[,] curve)
         {
             Width = w;
             Height = h;
@@ -32,33 +30,33 @@ namespace com.azi.image
             Curve = curve;
         }
 
-        public Color<T> GetPixel()
+        public Color GetPixel()
         {
             return GetPixel(0, 0);
         }
 
-        public Color<T> GetPixel(int x, int y)
+        public Color GetPixel(int x, int y)
         {
-            return new Color<T>(this, x, y);
+            return new Color(this, x, y);
         }
 
-        public Color<T> GetRow(int y)
+        public Color GetRow(int y)
         {
-            return new Color<T>(this, y);
+            return new Color(this, y);
         }
 
-        public ColorMap<T> UpdateCurve(CurveProcessor processor)
+        public ColorMap UpdateCurve(CurveProcessor processor)
         {
-            var newcurve = new T[3, 1 << MaxBits];
+            var newcurve = new int[3, 1 << MaxBits];
             for (var c = 0; c < 3; c++)
                 for (var i = 0; i <= MaxValue; i++)
                     newcurve[c, i] = processor(c, i, Curve[c, i]);
-            return new ColorMap<T>(Width, Height, MaxBits, Rgb, newcurve);
+            return new ColorMap(Width, Height, MaxBits, Rgb, newcurve);
         }
 
-        public ColorMap<T> UpdateColors(int newMaxBits, ColorMapProcessor processor)
+        public ColorMap UpdateColors(int newMaxBits, ColorMapProcessor processor)
         {
-            var result = new ColorMap<T>(Width, Height, newMaxBits);
+            var result = new ColorMap(Width, Height, newMaxBits);
             var input = GetPixel();
             var output = result.GetPixel();
             for (var y = 0; y < Height; y++)
@@ -71,7 +69,7 @@ namespace com.azi.image
             return result;
         }
 
-        internal void Enumerate(Action<Color<T>> action)
+        internal void Enumerate(Action<Color> action)
         {
             var pix = GetPixel();
             do

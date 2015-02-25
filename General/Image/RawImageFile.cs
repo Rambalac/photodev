@@ -3,11 +3,11 @@
     public class RawImageFile : ImageFile
     {
         public readonly int MaxBits;
-        public readonly ushort[,] Raw;
+        public readonly int[,] Raw;
         private readonly int _height;
         private readonly int _width;
 
-        public RawImageFile(int w, int h, ushort[,] raw, int maxBits)
+        public RawImageFile(int w, int h, int[,] raw, int maxBits)
         {
             Raw = raw;
             _width = w;
@@ -25,7 +25,7 @@
             get { return _height; }
         }
 
-        internal ushort GetValue(int x, int y)
+        internal int GetValue(int x, int y)
         {
             //if (x < 0) x = 0;
             //if (y < 0) y = 0;

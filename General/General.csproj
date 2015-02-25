@@ -41,15 +41,15 @@
     <Compile Include="Debayer\BinningDebayer.cs" />
     <Compile Include="Debayer\IDebayer.cs" />
     <Compile Include="Decoder\IRawDecoder.cs" />
-    <Compile Include="Filters\ColorMap16ToRgb8\ColorMapToRgb8Filter.cs" />
-    <Compile Include="Filters\ColorMap16ToRgb8\CompressorFilter.cs" />
-    <Compile Include="Filters\ColorMap16\WhiteBalanceFilter.cs" />
-    <Compile Include="Filters\ColorMap16\ColorMap16Filter.cs" />
-    <Compile Include="Filters\ColorMap16\LightFilter.cs" />
+    <Compile Include="Filters\ColorMapToRgb8\IColorMapToRgb8Filter.cs" />
+    <Compile Include="Filters\ColorMapToRgb8\CompressorFilter.cs" />
+    <Compile Include="Filters\ColorMap\WhiteBalanceFilter.cs" />
+    <Compile Include="Filters\ColorMap\IColorMapFilter.cs" />
+    <Compile Include="Filters\ColorMap\LightFilter.cs" />
     <Compile Include="Filters\Filter.cs" />
     <Compile Include="Filters\IAutoAdjustableFilter.cs" />
-    <Compile Include="Filters\RawToColorMap16\RawToColorMapDebayerFilter.cs" />
-    <Compile Include="Filters\RawToColorMap16\RawToColorMap16Filter.cs" />
+    <Compile Include="Filters\RawToColorMap\RawToColorMapDebayerFilter.cs" />
+    <Compile Include="Filters\RawToColorMap\IRawToColorMapFilter.cs" />
     <Compile Include="Image\Color.cs" />
     <Compile Include="Image\ColorImageFile.cs" />
     <Compile Include="Image\ColorMap.cs" />
@@ -63,9 +63,7 @@
     <Compile Include="Tiff\IdfBlock.cs" />
     <Compile Include="Tiff\IdfTag.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Filters\ColorMapToRgb8\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
