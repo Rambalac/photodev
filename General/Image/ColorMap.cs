@@ -47,7 +47,7 @@ namespace com.azi.image
             return new Color<T>(this, y);
         }
 
-        public ColorMap<T> UpdateCurve(CurveProcessor processor)
+        public ColorMap<T> CopyAndUpdateCurve(CurveProcessor processor)
         {
             var newcurve = new T[3, 1 << MaxBits];
             for (var c = 0; c < 3; c++)
@@ -56,7 +56,15 @@ namespace com.azi.image
             return new ColorMap<T>(Width, Height, MaxBits, Rgb, newcurve);
         }
 
-        public ColorMap<T> UpdateColors(int newMaxBits, ColorMapProcessor processor)
+        public void UpdateCurve(CurveProcessor processor)
+        {
+            var newcurve = new T[3, 1 << MaxBits];
+            for (var c = 0; c < 3; c++)
+                for (var i = 0; i <= MaxValue; i++)
+                    Curve[c, i] = processor(c, i, Curve[c, i]);
+        }
+
+        public ColorMap<T> CopyAndUpdateColors(int newMaxBits, ColorMapProcessor processor)
         {
             var result = new ColorMap<T>(Width, Height, newMaxBits);
             var input = GetPixel();

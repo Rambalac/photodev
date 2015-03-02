@@ -15,19 +15,14 @@ namespace com.azi.Filters.ColorMap16
         public ColorImageFile<ushort> Process(ColorImageFile<ushort> image)
         {
             var maxVal = image.Pixels.MaxValue;
-            if (WhiteColor == null && image.Exif.WhiteMultiplier != null)
-            {
-                WhiteColor = image.Exif.WhiteMultiplier.Select(v => (ushort)(maxVal * v)).ToArray();
-            }
-            if (WhiteColor == null) throw new Exception("WhiteColor is not defined neither in filter nor in Exif");
+            var whiteColor = image.Exif.WhiteColor ?? new[] { (ushort)maxVal, (ushort)maxVal, (ushort)maxVal };
+            var mult = whiteColor.Select(v => maxVal / (float)v).ToArray();
 
             return new ColorImageFile<ushort>
             {
                 Exif = image.Exif,
-                Pixels = image.Pixels.UpdateCurve(
-                    (component, index, input) => (ushort)(input * maxVal / WhiteColor[component]))
-
-
+                Pixels = image.Pixels.CopyAndUpdateCurve(
+                    (component, index, input) => (ushort)Math.Min(maxVal, input * mult[component]))
             };
         }
 
@@ -35,16 +30,17 @@ namespace com.azi.Filters.ColorMap16
         {
             double maxbright = 0;
             var whiteColor = new ushort[] { 1, 1, 1 };
+            var maxVal = (ushort)image.Pixels.MaxValue;
             image.Pixels.Enumerate(color =>
             {
                 var bright = color.Brightness();
-                if (!(bright > maxbright)) return;
+                if (bright < maxbright || color.MaxComponent() == maxVal) return;
 
                 maxbright = bright;
                 whiteColor = color.GetCopy();
             });
-
-            WhiteColor = whiteColor.Normalize(image.Pixels.MaxBits);
+            var maxComp = whiteColor.Max();
+            WhiteColor = whiteColor.Select(v => (ushort)(v * maxVal / maxComp)).ToArray();
 
         }
     }

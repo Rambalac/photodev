@@ -40,6 +40,8 @@ namespace com.azi.Decoder.Panasonic
             {280, PanasoncIdfTag.RawOffset},
         };
 
+        public const int MaxBits = 12;
+
         public ushort[] Black = new ushort[4];
         public float[] CamMul;
         public int CropBottom;
@@ -60,7 +62,8 @@ namespace com.azi.Decoder.Panasonic
             if (result.CamMul != null)
             {
                 var max = result.CamMul.Max();
-                result.WhiteMultiplier = result.CamMul.Select(v => max / v).Reverse().ToArray();
+                result.WhiteColor = result.CamMul.Select(v => (ushort)((1 << MaxBits) * max / v)).Reverse().ToArray();
+                result.Multiplier = max;
             }
 
             return result;

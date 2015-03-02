@@ -6,34 +6,37 @@ namespace com.azi.Filters.ColorMap16
 {
     public class LightFilter : IColorMap16Filter, IAutoAdjustableFilter
     {
-        public double Multiply { get; set; }
-        public double Gamma { get; set; }
+        public double? Multiplier { get; set; }
+        public double? Gamma { get; set; }
 
         public void AutoAdjust(ColorImageFile<ushort> image)
         {
-            var max = 0;
+            var max = 1;
             image.Pixels.Enumerate(color => max = Math.Max(max, color.MaxComponent()));
-            Multiply = image.Pixels.MaxValue / (double)max;
-            if (Multiply < 1) Multiply = 1;
+            Multiplier = image.Pixels.MaxValue / (double)max;
+            if (Multiplier < 1) Multiplier = 1;
         }
 
         public ColorImageFile<ushort> Process(ColorImageFile<ushort> image)
         {
             var maxValue = image.Pixels.MaxValue;
-            const int precision = 8;
-            var multiply = (int)(Multiply * (1 << precision));
+            var multiply = Multiplier ?? image.Exif.Multiplier ?? 1;
+            var gamma = Gamma ?? 1.0;
             var powtable = new ushort[maxValue + 1];
-            for (var i = 0; i <= maxValue; i++)
-                powtable[i] = (ushort)(maxValue * Math.Pow((i / (double)maxValue), Gamma));
+            if (Math.Abs(gamma - 1) > 0.0001)
+            {
+                for (var i = 0; i <= maxValue; i++)
+                    powtable[i] = (ushort)Math.Min(maxValue, maxValue * multiply * Math.Pow((i / (double)maxValue), gamma));
+            }
+            else
+            {
+                for (var i = 0; i <= maxValue; i++)
+                    powtable[i] = (ushort)Math.Min(maxValue, i * multiply);
+            }
             return new ColorImageFile<ushort>
             {
                 Exif = image.Exif,
-                Pixels = image.Pixels.UpdateCurve((component, index, input) =>
-                {
-                    var outval = (index * multiply) >> precision;
-                    if (outval > maxValue) outval = maxValue;
-                    return powtable[outval];
-                })
+                Pixels = image.Pixels.CopyAndUpdateCurve((component, index, input) => powtable[input])
             };
         }
     }

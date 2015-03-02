@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices.WindowsRuntime;
 using com.azi.image;
 
 namespace com.azi.Debayer
@@ -15,6 +14,7 @@ namespace com.azi.Debayer
             if (file.Width % 2 != 0 || file.Height % 2 != 0) throw new ArgumentException("Width and Height should be even");
             var res = new ColorMap<ushort>(file.Width, file.Height, file.MaxBits + 1);
             res.UpdateCurve((component, index, input) => (ushort)index);
+
             var pix = res.GetPixel();
 
             ProcessTopLine(file, pix, res);
@@ -61,7 +61,8 @@ namespace com.azi.Debayer
 
                 pix.SetAndMoveNext(
                     (ushort)((xy12 + file.GetValue(x + 2, y - 1) + file.GetValue(x + 2, y + 1)) >> 1),
-                    (ushort)((xy + file.GetValue(x + 2, y) + file.GetValue(x + 1, y - 1) + file.GetValue(x + 1, y + 1)) >> 1),
+                    (ushort)
+                        ((xy + file.GetValue(x + 2, y) + file.GetValue(x + 1, y - 1) + file.GetValue(x + 1, y + 1)) >> 1),
                     (ushort)(x1y << 1));
             }
 
@@ -101,7 +102,8 @@ namespace com.azi.Debayer
             // First right pixel
             pix.SetAndMoveNext(
                 (ushort)(file.GetValue(lastX, y) << 1),
-                (ushort)((file.GetValue(lastX, y - 1) + file.GetValue(lastX, y + 1) + file.GetValue(lastX - 1, y) << 1) >> 1),
+                (ushort)
+                    ((file.GetValue(lastX, y - 1) + file.GetValue(lastX, y + 1) + file.GetValue(lastX - 1, y) << 1) >> 1),
                 (ushort)((file.GetValue(lastX - 1, y - 1) + file.GetValue(lastX - 1, y + 1))));
         }
 
@@ -154,7 +156,9 @@ namespace com.azi.Debayer
             {
                 pix.SetAndMoveNext(
                     (ushort)(file.GetValue(x, lastY) << 1),
-                    (ushort)((file.GetValue(x - 1, lastY) + file.GetValue(x + 1, lastY) + file.GetValue(x, lastY - 1) << 1) >> 1),
+                    (ushort)
+                        ((file.GetValue(x - 1, lastY) + file.GetValue(x + 1, lastY) + file.GetValue(x, lastY - 1) << 1) >>
+                         1),
                     (ushort)((file.GetValue(x - 1, lastY) + file.GetValue(x + 1, lastY))));
 
                 pix.SetAndMoveNext(

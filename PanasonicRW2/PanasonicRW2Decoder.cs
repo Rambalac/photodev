@@ -19,7 +19,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
             return DecodeImagePart(stream, exif);
         }
 
-        private RawImageFile DecodeImagePart(Stream stream, PanasonicExif exif)
+        private static RawImageFile DecodeImagePart(Stream stream, PanasonicExif exif)
         {
             int row, col, i, j, sh = 0;
             int[] pred = new int[2], nonz = new int[2];
@@ -33,10 +33,10 @@ namespace com.azi.Decoder.Panasonic.Rw2
                 for (col = 0; col < exif.ImageWidth; col++)
                     unchecked
                     {
-                        i = col%14;
+                        i = col % 14;
                         if (i == 0)
                             pred[0] = pred[1] = nonz[0] = nonz[1] = 0;
-                        if (i%3 == 2)
+                        if (i % 3 == 2)
                             sh = 4 >> (3 - bits.Read(2));
                         if (nonz[i & 1] != 0)
                         {
@@ -57,7 +57,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
                         }
                         if (col >= resultWidth) continue;
 
-                        raw[row, col] = (ushort) pred[col & 1];
+                        raw[row, col] = (ushort)pred[col & 1];
 
                         if (raw[row, col] > 4098 && col < exif.CropRight)
                             throw new Exception("Decoding error");
@@ -74,15 +74,15 @@ namespace com.azi.Decoder.Panasonic.Rw2
         /// </summary>
         private class PanasonicBitStream
         {
-            private const int bufsize = 16384;
-            private readonly byte[] buf = new byte[bufsize + 1];
-            private readonly Stream stream;
-            private int bitsLeft;
-            private int load_flags = 8200;
+            private const int Bufsize = 16384;
+            private readonly byte[] _buf = new byte[Bufsize + 1];
+            private readonly Stream _stream;
+            private int _bitsLeft;
+            private const int LoadFlags = 8200;
 
             public PanasonicBitStream(Stream stream)
             {
-                this.stream = stream;
+                this._stream = stream;
             }
 
             /// <summary>
@@ -94,15 +94,15 @@ namespace com.azi.Decoder.Panasonic.Rw2
             {
                 unchecked
                 {
-                    if (bitsLeft == 0)
+                    if (_bitsLeft == 0)
                     {
-                        stream.Read(buf, load_flags, bufsize - load_flags);
-                        stream.Read(buf, 0, load_flags);
+                        _stream.Read(_buf, LoadFlags, Bufsize - LoadFlags);
+                        _stream.Read(_buf, 0, LoadFlags);
                     }
-                    bitsLeft = (bitsLeft - numberOfBits) & 0x1ffff;
-                    var bytepos = bitsLeft >> 3 ^ 0x3ff0;
+                    _bitsLeft = (_bitsLeft - numberOfBits) & 0x1ffff;
+                    var bytepos = _bitsLeft >> 3 ^ 0x3ff0;
 
-                    return ((buf[bytepos] | buf[bytepos + 1] << 8) >> (bitsLeft & 7)) & (~(-1 << numberOfBits));
+                    return ((_buf[bytepos] | _buf[bytepos + 1] << 8) >> (_bitsLeft & 7)) & (~(-1 << numberOfBits));
                 }
             }
         }

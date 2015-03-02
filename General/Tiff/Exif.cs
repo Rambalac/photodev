@@ -29,7 +29,8 @@ namespace com.azi.tiff
         public int StripOffset;
         public string SubsecTimeDigitized;
         public string SubsecTimeOriginal;
-        public float[] WhiteMultiplier;
+        public ushort[] WhiteColor;
+        public float? Multiplier;
 
         protected void InternalParse(Stream stream)
         {

@@ -33,8 +33,9 @@ namespace photodev
                 color16Image = white.Process(color16Image);
 
                 var light = new LightFilter();
-                light.AutoAdjust(color16Image);
-                light.Gamma = 0.6;
+                //light.AutoAdjust(color16Image);
+                light.Multiplier = 2;
+                //light.Gamma = 0.3;
                 color16Image = light.Process(color16Image);
 
                 var compressor = new CompressorFilter
