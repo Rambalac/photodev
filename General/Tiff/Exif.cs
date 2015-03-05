@@ -31,6 +31,7 @@ namespace com.azi.tiff
         public string SubsecTimeOriginal;
         public ushort[] WhiteColor;
         public float? Multiplier;
+        public float[,] ColorMatrix;
 
         protected void InternalParse(Stream stream)
         {

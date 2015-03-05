@@ -46,7 +46,7 @@
     <Compile Include="Filters\ColorMap16\WhiteBalanceFilter.cs" />
     <Compile Include="Filters\ColorMap16\ColorMap16Filter.cs" />
     <Compile Include="Filters\ColorMap16\LightFilter.cs" />
-    <Compile Include="Filters\Filter.cs" />
+    <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Filters\IAutoAdjustableFilter.cs" />
     <Compile Include="Filters\RawToColorMap16\RawToColorMapDebayerFilter.cs" />
     <Compile Include="Filters\RawToColorMap16\RawToColorMap16Filter.cs" />

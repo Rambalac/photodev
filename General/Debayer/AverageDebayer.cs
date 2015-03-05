@@ -18,7 +18,7 @@ namespace com.azi.Debayer
 
         public ColorMap<ushort> Debayer(RawImageFile file)
         {
-            var res = new ColorMap<ushort>(file.Width, file.Height, file.MaxBits + 2);
+            var res = new ColorMap<ushort>(file.Width, file.Height, file.MaxBits + 2, file.Exif.ColorMatrix);
             res.UpdateCurve((component, index, input) => (ushort)index);
             var c = new ushort[3];
             var pix = res.GetPixel();

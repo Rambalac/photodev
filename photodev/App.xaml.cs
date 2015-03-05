@@ -34,7 +34,8 @@ namespace photodev
 
                 var light = new LightFilter();
                 //light.AutoAdjust(color16Image);
-                light.Multiplier = 2;
+                light.Contrast = 2;
+                light.Brightness = 0;
                 //light.Gamma = 0.3;
                 color16Image = light.Process(color16Image);
 

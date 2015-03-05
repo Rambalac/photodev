@@ -12,7 +12,7 @@ namespace com.azi.Debayer
         public ColorMap<ushort> Debayer(RawImageFile file)
         {
             if (file.Width % 2 != 0 || file.Height % 2 != 0) throw new ArgumentException("Width and Height should be even");
-            var res = new ColorMap<ushort>(file.Width, file.Height, file.MaxBits + 1);
+            var res = new ColorMap<ushort>(file.Width, file.Height, file.MaxBits + 1, file.Exif.ColorMatrix);
             res.UpdateCurve((component, index, input) => (ushort)index);
 
             var pix = res.GetPixel();

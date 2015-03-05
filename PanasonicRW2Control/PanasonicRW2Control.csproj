@@ -4,18 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F3A694FD-F46E-42D0-8CB3-0C4F6F59B5A8}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{3487157A-0F70-49F5-A318-0F751B09C673}</ProjectGuid>
+    <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>photodev</RootNamespace>
-    <AssemblyName>photodev</AssemblyName>
+    <RootNamespace>PanasonicRW2Control</RootNamespace>
+    <AssemblyName>PanasonicRW2Control</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -25,7 +24,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -49,20 +47,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="PanasonicRW2Control.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="PanasonicRW2Control.xaml.cs">
+      <DependentUpon>PanasonicRW2Control.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -91,17 +81,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\General\General.csproj">
-      <Project>{61fdaba3-fab6-4dfc-952d-ea13b45979e1}</Project>
-      <Name>General</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PanasonicRW2Control\PanasonicRW2Control.csproj">
-      <Project>{3487157a-0f70-49f5-a318-0f751b09c673}</Project>
-      <Name>PanasonicRW2Control</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PanasonicRW2\PanasonicRW2.csproj">
       <Project>{38678c2d-444f-4f69-aa59-61929ea1ec62}</Project>
       <Name>PanasonicRW2</Name>

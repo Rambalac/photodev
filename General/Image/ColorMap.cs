@@ -14,22 +14,54 @@ namespace com.azi.image
         public readonly T[] Rgb;
         public readonly int Width;
         public readonly T[,] Curve;
+        public readonly float[,] ColorMatrix;
 
         public int MaxValue { get { return (1 << MaxBits) - 1; } }
 
-        public ColorMap(int w, int h, int maxBits)
-            : this(w, h, maxBits, new T[w * h * 3], new T[3, 1 << maxBits])
+        public ColorMap(int w, int h, int maxBits, float[,] colorMatrix)
+            : this(w, h, maxBits, new T[w * h * 3], new T[3, 1 << maxBits], colorMatrix)
         {
 
         }
 
-        public ColorMap(int w, int h, int maxBits, T[] rgb, T[,] curve)
+        public ColorMap(int w, int h, int maxBits, T[] rgb, T[,] curve, float[,] colorMatrix)
         {
             Width = w;
             Height = h;
             MaxBits = maxBits;
             Rgb = rgb;
             Curve = curve;
+            ColorMatrix = colorMatrix;
+        }
+
+        public ColorMap(ColorMap<T> m, T[,] curve)
+        {
+            Width = m.Width;
+            Height = m.Height;
+            MaxBits = m.MaxBits;
+            Rgb = m.Rgb;
+            Curve = curve;
+            ColorMatrix = m.ColorMatrix;
+        }
+
+        public ColorMap(ColorMap<T> m, T[] rgb)
+        {
+            Width = m.Width;
+            Height = m.Height;
+            MaxBits = m.MaxBits;
+            Rgb = rgb;
+            Curve = m.Curve;
+            ColorMatrix = m.ColorMatrix;
+        }
+
+        public ColorMap(ColorMap<T> m, float[,] colorMatrix)
+        {
+            Width = m.Width;
+            Height = m.Height;
+            MaxBits = m.MaxBits;
+            Rgb = m.Rgb;
+            Curve = m.Curve;
+            ColorMatrix = colorMatrix;
         }
 
         public Color<T> GetPixel()
@@ -53,7 +85,7 @@ namespace com.azi.image
             for (var c = 0; c < 3; c++)
                 for (var i = 0; i <= MaxValue; i++)
                     newcurve[c, i] = processor(c, i, Curve[c, i]);
-            return new ColorMap<T>(Width, Height, MaxBits, Rgb, newcurve);
+            return new ColorMap<T>(this, newcurve);
         }
 
         public void UpdateCurve(CurveProcessor processor)
@@ -66,7 +98,7 @@ namespace com.azi.image
 
         public ColorMap<T> CopyAndUpdateColors(int newMaxBits, ColorMapProcessor processor)
         {
-            var result = new ColorMap<T>(Width, Height, newMaxBits);
+            var result = new ColorMap<T>(Width, Height, newMaxBits, new T[Width * Height * 3], Curve, ColorMatrix);
             var input = GetPixel();
             var output = result.GetPixel();
             for (var y = 0; y < Height; y++)
@@ -79,13 +111,22 @@ namespace com.azi.image
             return result;
         }
 
-        internal void Enumerate(Action<Color<T>> action)
+        public void Enumerate(Action<Color<T>> action)
         {
             var pix = GetPixel();
             do
             {
                 action(pix);
             } while (pix.MoveNext());
+        }
+
+        public static T[,] MakeCurve(int maxBits, Func<int, int, T> processor)
+        {
+            var newcurve = new T[3, 1 << maxBits];
+            for (var c = 0; c < 3; c++)
+                for (var i = 0; i < (1 << maxBits); i++)
+                    newcurve[c, i] = processor(c, i);
+            return newcurve;
         }
     }
 }
