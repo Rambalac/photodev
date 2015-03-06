@@ -1,7 +1,7 @@
 #photodev#
 
 ##Photo Developer##
-In current state Photo Developer can process Panasonic LImix GH4 RW2 file into this
+In current state Photo Developer can process Panasonic Lumix GH4 RW2 file into this
 ![Alt text](docs/images/P1350577thumb.jpg "Optional title")
 
 ###List of filters applied to RW2 file###
@@ -12,7 +12,7 @@ In current state Photo Developer can process Panasonic LImix GH4 RW2 file into t
 * Color range expansion
 * Contrast 0.5
 * Color matrix 
-|       |       |       |
+|   R   |   G   |   B   |
 |-------|-------|-------|
 |  1.87 | -0.81 | -0.06 |
 | -0.16 |  1.55 | -0.39 |
