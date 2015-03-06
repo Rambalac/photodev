@@ -120,6 +120,16 @@ namespace com.azi.image
             } while (pix.MoveNext());
         }
 
+        public void Enumerate(Action<int, T> action)
+        {
+            var pix = GetPixel();
+            do
+            {
+                for (var c = 0; c < 3; c++)
+                    action(c, pix[c]);
+            } while (pix.MoveNext());
+        }
+
         public static T[,] MakeCurve(int maxBits, Func<int, int, T> processor)
         {
             var newcurve = new T[3, 1 << maxBits];
