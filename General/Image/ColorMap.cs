@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using com.azi.Image;
 
 namespace com.azi.image
 {
@@ -147,10 +148,11 @@ namespace com.azi.image
 
     public static class ColorMapExtensions
     {
-        public static int[,] Histogram(this ColorMap<ushort> map, out int maxValue)
+        public static Histogram GetHistogram(this ColorMap<ushort> map)
         {
-            var result = new int[3, map.MaxValue + 1];
-            map.Enumerate((comp, value) => result[comp, map.Curve[comp, value]]++);
+            var result = new Histogram(map.MaxValue);
+
+            map.Enumerate((comp, value) => result.AddValue(comp, map.Curve[comp, value]));
             return result;
         }
     }

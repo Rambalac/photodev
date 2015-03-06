@@ -20,15 +20,11 @@ namespace com.azi.Filters.ColorMap16
             var maxValue = image.Pixels.MaxValue;
             var min = new[] { (ushort)maxValue, (ushort)maxValue, (ushort)maxValue };
             var max = new ushort[] { 1, 1, 1 };
-            image.Pixels.Enumerate((component, value) =>
-            {
-                max[component] = Math.Max(max[component], image.Pixels.Curve[component, value]);
-                min[component] = Math.Min(min[component], image.Pixels.Curve[component, value]);
-            });
+            var histogram = image.Pixels.GetHistogram();
 
             var gamma = Gamma ?? _defaultGamma;
-            MaxIn = max.Select((v, c) => GammaFix(v, maxValue, gamma[c])).ToArray();
-            MinIn = min.Select((v, c) => GammaFix(v, maxValue, gamma[c])).ToArray();
+            MaxIn = histogram.FindLastValueIndex(0.01).Select((v, c) => GammaFix(v, maxValue, gamma[c])).ToArray();
+            MinIn = histogram.FindFirstValueIndex(0.01).Select((v, c) => GammaFix(v, maxValue, gamma[c])).ToArray();
 
             //Contrast = max.Zip(gamma, (m, g) => 1 / GammaFix(m, maxValue, g)).ToArray();
         }

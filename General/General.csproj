@@ -53,6 +53,7 @@
     <Compile Include="Image\Color.cs" />
     <Compile Include="Image\ColorImageFile.cs" />
     <Compile Include="Image\ColorMap.cs" />
+    <Compile Include="Image\Histogram.cs" />
     <Compile Include="Image\ImageFile.cs" />
     <Compile Include="Image\RawImageFile.cs" />
     <Compile Include="Image\Rgb8Map.cs" />

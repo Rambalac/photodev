@@ -36,7 +36,6 @@ namespace General.Tests
 
                 var light = new LightFilter();
                 light.AutoAdjust(color16Image);
-                light.Gamma = 0.8;
                 color16Image = light.Process(color16Image);
 
                 var compressor = new CompressorFilter

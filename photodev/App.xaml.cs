@@ -29,7 +29,7 @@ namespace photodev
                 var color16Image = debayer.Process(rawimage);
 
                 var white = new WhiteBalanceFilter();
-                //white.AutoAdjust(color16Image);
+                white.AutoAdjust(color16Image);
                 color16Image = white.Process(color16Image);
 
                 var light = new LightFilter();
