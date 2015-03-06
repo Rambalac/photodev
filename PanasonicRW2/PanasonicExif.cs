@@ -60,9 +60,9 @@ namespace com.azi.Decoder.Panasonic
             result.InternalParse(stream);
 
             result.ColorMatrix = new[,] {
-                {1.19f,-0.12f, -0.07f},
-                {-0.22f,1.52f,-0.3f},
-                {0.07f,-0.63f,1.57f}
+                {1.87f,-0.81f, -0.06f},
+                {-0.16f,1.55f,-0.39f},
+                {0.05f,-0.47f,1.42f}
             };
 
             if (result.CamMul == null) return result;

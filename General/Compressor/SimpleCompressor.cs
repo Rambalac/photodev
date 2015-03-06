@@ -23,13 +23,13 @@ namespace com.azi.Compressor
                     var rg = curve[1, color[1]];
                     var rb = curve[2, color[2]];
 
-                    //var r = (ushort)Math.Min(maxVal, matrix[0, 0] * rr + matrix[0, 1] * rg + matrix[0, 2] * rb);
-                    //var g = (ushort)Math.Min(maxVal, matrix[1, 0] * rr + matrix[1, 1] * rg + matrix[1, 2] * rb);
-                    //var b = (ushort)Math.Min(maxVal, matrix[2, 0] * rr + matrix[2, 1] * rg + matrix[2, 2] * rb);
+                    var r = (ushort)Math.Max(0,Math.Min(maxVal, matrix[0, 0] * rr + matrix[0, 1] * rg + matrix[0, 2] * rb));
+                    var g = (ushort)Math.Max(0,Math.Min(maxVal, matrix[1, 0] * rr + matrix[1, 1] * rg + matrix[1, 2] * rb));
+                    var b = (ushort)Math.Max(0,Math.Min(maxVal, matrix[2, 0] * rr + matrix[2, 1] * rg + matrix[2, 2] * rb));
 
-                    rgb[i + 0] = (byte)((rr >> (bits - 8)));
-                    rgb[i + 1] = (byte)((rg >> (bits - 8)));
-                    rgb[i + 2] = (byte)((rb >> (bits - 8)));
+                    rgb[i + 0] = (byte)((r >> (bits - 8)));
+                    rgb[i + 1] = (byte)((g >> (bits - 8)));
+                    rgb[i + 2] = (byte)((b >> (bits - 8)));
                 });
         }
     }

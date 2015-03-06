@@ -125,8 +125,9 @@ namespace com.azi.image
             var pix = GetPixel();
             do
             {
-                for (var c = 0; c < 3; c++)
-                    action(c, pix[c]);
+                action(0, pix[0]);
+                action(1, pix[1]);
+                action(2, pix[2]);
             } while (pix.MoveNext());
         }
 
