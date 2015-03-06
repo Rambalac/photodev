@@ -4,7 +4,7 @@ namespace com.azi.image
 {
     public class Rgb8Map
     {
-        public delegate void RgbConvertor<T>(Color<T> color, T[,] curve, byte[] rgb, int offset, int maxBits) where T : IComparable<T>;
+        public delegate void RgbConvertor<T>(Color<T> color, T[,] curve, byte[] rgb, int rgbOffset) where T : IComparable<T>;
 
         public const int BytesPerPixel = 3;
 
@@ -43,7 +43,7 @@ namespace com.azi.image
                 var pos = y * stride;
                 for (var x = 0; x < width; x++)
                 {
-                    rgbConvertor(pixel, map.Curve, rgb, pos, map.MaxBits);
+                    rgbConvertor(pixel, map.Curve, rgb, pos);
                     pos += BytesPerPixel;
                     pixel.MoveNext();
                 }

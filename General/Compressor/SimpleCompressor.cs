@@ -5,7 +5,7 @@ namespace com.azi.Compressor
 {
     public class SimpleCompressor : ICompressor
     {
-        private static readonly float[,] defaultMatrix =
+        private static readonly float[,] DefaultMatrix =
         {
             {1f,0f,0f},
             {0f,1f,0f},
@@ -13,11 +13,12 @@ namespace com.azi.Compressor
         };
         public Rgb8Map Compress(ColorMap<ushort> map, int strideBytesAlign)
         {
-            var matrix = map.ColorMatrix ?? defaultMatrix;
+            var matrix = map.ColorMatrix ?? DefaultMatrix;
             var maxVal = map.MaxValue;
+            var bits = map.MaxBits;
             if (map.MaxBits < 8) throw new Exception("MaxBits cannot be less than 8");
             return Rgb8Map.ConvertoToRgb(map, strideBytesAlign,
-                (color, curve, rgb, i, bits) =>
+                (color, curve, rgb, i) =>
                 {
                     var rr = curve[0, color[0]];
                     var rg = curve[1, color[1]];

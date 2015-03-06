@@ -7,6 +7,7 @@ namespace com.azi.image
     public class ColorMap<T> where T : IComparable<T>
     {
         public delegate void ColorMapProcessor(int x, int y, Color<T> input, Color<T> output);
+
         public delegate T CurveProcessor(int component, int index, T input);
 
         public readonly int Height;
@@ -16,7 +17,10 @@ namespace com.azi.image
         public readonly T[,] Curve;
         public readonly float[,] ColorMatrix;
 
-        public int MaxValue { get { return (1 << MaxBits) - 1; } }
+        public int MaxValue
+        {
+            get { return (1 << MaxBits) - 1; }
+        }
 
         public ColorMap(int w, int h, int maxBits, float[,] colorMatrix)
             : this(w, h, maxBits, new T[w * h * 3], new T[3, 1 << maxBits], colorMatrix)
@@ -138,6 +142,16 @@ namespace com.azi.image
                 for (var i = 0; i < (1 << maxBits); i++)
                     newcurve[c, i] = processor(c, i);
             return newcurve;
+        }
+    }
+
+    public static class ColorMapExtensions
+    {
+        public static int[,] Histogram(this ColorMap<ushort> map, out int maxValue)
+        {
+            var result = new int[3, map.MaxValue + 1];
+            map.Enumerate((comp, value) => result[comp, map.Curve[comp, value]]++);
+            return result;
         }
     }
 }

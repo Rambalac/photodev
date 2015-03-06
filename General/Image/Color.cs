@@ -79,7 +79,7 @@ namespace com.azi.image
 
     }
 
-    public static class ColorExtension
+    public static class ColorExtensions
     {
         public static ushort MaxComponent(this Color<ushort> c)
         {

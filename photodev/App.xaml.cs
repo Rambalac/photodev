@@ -33,10 +33,10 @@ namespace photodev
                 color16Image = white.Process(color16Image);
 
                 var light = new LightFilter();
-                //light.AutoAdjust(color16Image);
-                light.MinIn = new[] { 78 / 255.0, 55 / 255.0, 72 / 255.0 };
-                light.MaxIn = new[] { 161 / 255.0, 148 / 255.0, 149 / 255.0 };
-                light.Contrast = new[] { 0.5, 0.53, 0.51 };
+                light.AutoAdjust(color16Image);
+                //light.MinIn = new[] { 78 / 255.0, 55 / 255.0, 72 / 255.0 };
+                //light.MaxIn = new[] { 161 / 255.0, 148 / 255.0, 149 / 255.0 };
+                //light.Contrast = new[] { 0.5, 0.53, 0.51 };
 
                 //light.Contrast = 2;
                 //light.Brightness = 0;
