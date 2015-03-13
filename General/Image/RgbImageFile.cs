@@ -1,8 +1,8 @@
-﻿namespace com.azi.image
+﻿namespace com.azi.Image
 {
     public class RgbImageFile : ImageFile
     {
-        public Rgb8Map Pixels { get; set; }
+        public RGB8Map Pixels { get; set; }
 
         public override int Width
         {

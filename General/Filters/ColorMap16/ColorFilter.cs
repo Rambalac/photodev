@@ -1,13 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace com.azi.Filters.ColorMap16ToRgb8
+namespace com.azi.Filters.ColorMap16
 {
-    public interface IColorToRGBFilter : IFilter
+    public interface IColorFilter : IFilter
     {
         void ProcessColor(float[] input, int inputOffset, float[] output, int outputOffset);
     }
 
-    public abstract class ColorToRgbFilter : IColorToRGBFilter
+    public abstract class ColorFilter : IColorFilter
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public abstract void ProcessColor(float[] input, int inputOffset, float[] output, int outputOffset);
@@ -17,8 +17,8 @@ namespace com.azi.Filters.ColorMap16ToRgb8
             ProcessColor(input, 0, output, 0);
         }
     }
-    
-    public abstract class IndependentColorComponentToRGBFilter
+
+    public abstract class IndependentColorComponentFilter
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public abstract float ProcessColor(float input, int component);
@@ -30,5 +30,4 @@ namespace com.azi.Filters.ColorMap16ToRgb8
             output[outputOffset + 2] = ProcessColor(input[inputOffset + 1], 2);
         }
     }
-
 }

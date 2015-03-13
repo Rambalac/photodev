@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using com.azi.tiff;
 
 namespace com.azi.Decoder.Panasonic

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace com.azi.image
+namespace com.azi.Image
 {
     public class ColorImageFile<T> : ImageFile where T : IComparable<T>
     {

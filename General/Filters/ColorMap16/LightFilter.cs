@@ -1,61 +1,58 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using com.azi.image;
+﻿using System.Linq;
+using System.Runtime.CompilerServices;
+using com.azi.Image;
 
 namespace com.azi.Filters.ColorMap16
 {
-    public class LightFilter : IColorMap16Filter, IAutoAdjustableFilter
+    public class LightFilter : IndependentColorComponentFilter, IAutoAdjustableFilter
     {
-        private readonly double[] _defaultGamma = { 2.2, 2.2, 2.2 };
-        public double[] Gamma { get; set; }
-        public double[] Contrast { get; set; }
-        public double[] MinIn { get; set; }
-        public double[] MaxIn { get; set; }
-        public double[] MinOut { get; set; }
-        public double[] MaxOut { get; set; }
+        private float[] _inoutLen;
+        private float[] _minIn = { 0f, 0f, 0f };
+        private float[] _maxIn = { 1f, 1f, 1f };
+        private float[] _minOut = { 0f, 0f, 0f };
+        private float[] _maxOut = { 1f, 1f, 1f };
 
-        public void AutoAdjust(ColorImageFile<ushort> image)
+        public float[] MinIn
         {
-            var maxValue = image.Pixels.MaxValue;
-            var min = new[] { (ushort)maxValue, (ushort)maxValue, (ushort)maxValue };
-            var max = new ushort[] { 1, 1, 1 };
-            var histogram = image.Pixels.GetHistogram();
-
-            var gamma = Gamma ?? _defaultGamma;
-            MaxIn = histogram.FindLastValueIndex(0.01).Select((v, c) => GammaFix(v, maxValue, gamma[c])).ToArray();
-            MinIn = histogram.FindFirstValueIndex(0.01).Select((v, c) => GammaFix(v, maxValue, gamma[c])).ToArray();
-
-            //Contrast = max.Zip(gamma, (m, g) => 1 / GammaFix(m, maxValue, g)).ToArray();
+            get { return _minIn; }
+            set { _minIn = value; Recalculate(); }
         }
 
-        public ColorImageFile<ushort> Process(ColorImageFile<ushort> image)
+        public float[] MaxIn
         {
-            var maxValue = image.Pixels.MaxValue;
-            var gamma = Gamma ?? _defaultGamma;
-            var contrast = Contrast ?? new[] { 1.0, 1.0, 1.0 };
-            var minIn = MinIn ?? new[] { 0.0, 0.0, 0.0 };
-            var maxIn = MaxIn ?? new[] { 1.0, 1.0, 1.0 };
-            var minOut = MinOut ?? new[] { 0.0, 0.0, 0.0 };
-            var maxOut = MaxOut ?? new[] { 1.0, 1.0, 1.0 };
-
-            var inLen = maxIn.Select((v, c) => v - minIn[c]).ToArray();
-            var outLen = maxOut.Zip(minOut, (v1, v2) => v1 - v2).ToArray();
-
-            return new ColorImageFile<ushort>
-            {
-                Exif = image.Exif,
-                Pixels = image.Pixels.CopyAndUpdateCurve((component, index, input) => (ushort)Math.Max(0, Math.Min(maxValue,
-                    maxValue * (
-                        Math.Pow(Math.Max(0, (GammaFix(input, maxValue, gamma[component]) - minIn[component])) / inLen[component], contrast[component]) * outLen[component] + minOut[component]
-                    )
-                )))
-            };
+            get { return _maxIn; }
+            set { _maxIn = value; Recalculate(); }
         }
 
-        private static double GammaFix(ushort input, int maxValue, double gamma)
+        public float[] MinOut
         {
-            return Math.Pow((input / (double)maxValue), 1 / gamma);
+            get { return _minOut; }
+            set { _minOut = value; Recalculate(); }
+        }
+
+        public float[] MaxOut
+        {
+            get { return _maxOut; }
+            set { _maxOut = value; Recalculate(); }
+        }
+
+        private void Recalculate()
+        {
+            _inoutLen = MaxIn.Select((v, c) => (_maxOut[c] - _minOut[c]) / (v - MinIn[c])).ToArray();
+        }
+
+        public void AutoAdjust(ColorMap<ushort> map)
+        {
+            var histogram = map.GetHistogram();
+
+            MaxIn = histogram.FindLastValueIndex(0.01).ToFloat(map.MaxBits);
+            MinIn = histogram.FindFirstValueIndex(0.01).ToFloat(map.MaxBits);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override float ProcessColor(float input, int component)
+        {
+            return (input - _minIn[component]) * _inoutLen[component] + _minOut[component];
         }
     }
 }

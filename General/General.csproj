@@ -34,18 +34,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Compressor\ICompressor.cs" />
-    <Compile Include="Compressor\SimpleCompressor.cs" />
     <Compile Include="Debayer\AverageBGGRDebayer.cs" />
     <Compile Include="Debayer\AverageDebayer.cs" />
     <Compile Include="Debayer\BinningDebayer.cs" />
     <Compile Include="Debayer\IDebayer.cs" />
     <Compile Include="Decoder\IRawDecoder.cs" />
     <Compile Include="Filters\ColorMap16ToRgb8\ColorMapToRgb8Filter.cs" />
-    <Compile Include="Filters\ColorMap16ToRgb8\CompressorFilter.cs" />
+    <Compile Include="Filters\ColorMap16ToRgb8\RGBCompressorFilter.cs" />
+    <Compile Include="Filters\ColorMap16\ColorFilter.cs" />
+    <Compile Include="Filters\ColorMap16\ColorMatrix.cs" />
+    <Compile Include="Filters\ColorMap16\GammaFilter.cs" />
     <Compile Include="Filters\ColorMap16\WhiteBalanceFilter.cs" />
     <Compile Include="Filters\ColorMap16\ColorMap16Filter.cs" />
     <Compile Include="Filters\ColorMap16\LightFilter.cs" />
+    <Compile Include="Filters\FiltersPipeline.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Filters\IAutoAdjustableFilter.cs" />
     <Compile Include="Filters\RawToColorMap16\RawToColorMapDebayerFilter.cs" />
@@ -56,6 +58,7 @@
     <Compile Include="Image\Histogram.cs" />
     <Compile Include="Image\ImageFile.cs" />
     <Compile Include="Image\RawImageFile.cs" />
+    <Compile Include="Image\RawMap.cs" />
     <Compile Include="Image\Rgb8Map.cs" />
     <Compile Include="Image\RgbImageFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,9 +67,7 @@
     <Compile Include="Tiff\IdfBlock.cs" />
     <Compile Include="Tiff\IdfTag.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Filters\ColorMapToRgb8\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

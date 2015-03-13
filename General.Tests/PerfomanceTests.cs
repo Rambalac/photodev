@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using com.azi.Compressor;
 using com.azi.Debayer;
 using com.azi.Decoder.Panasonic.Rw2;
 using com.azi.Filters.ColorMap16;
@@ -38,7 +37,7 @@ namespace General.Tests
                 light.AutoAdjust(color16Image);
                 color16Image = light.Process(color16Image);
 
-                var compressor = new CompressorFilter
+                var compressor = new RGBCompressorFilter
                 {
                     Compressor = new SimpleCompressor()
                 };

@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using com.azi.Image;
 
-namespace com.azi.image
+namespace com.azi.Image
 {
     public class ColorMap<T> where T : IComparable<T>
     {
@@ -12,41 +10,27 @@ namespace com.azi.image
         public delegate T CurveProcessor(int component, int index, T input);
 
         public readonly int Height;
-        public readonly int MaxBits;
         public readonly T[] Rgb;
         public readonly int Width;
-        public readonly T[,] Curve;
-        public readonly float[,] ColorMatrix;
+        public readonly int MaxBits;
 
         public int MaxValue
         {
             get { return (1 << MaxBits) - 1; }
         }
 
-        public ColorMap(int w, int h, int maxBits, float[,] colorMatrix)
-            : this(w, h, maxBits, new T[w * h * 3], new T[3, 1 << maxBits], colorMatrix)
+        public ColorMap(int w, int h, int maxBits)
+            : this(w, h, maxBits, new T[w * h * 3])
         {
 
         }
 
-        public ColorMap(int w, int h, int maxBits, T[] rgb, T[,] curve, float[,] colorMatrix)
+        public ColorMap(int w, int h, int maxBits, T[] rgb)
         {
             Width = w;
             Height = h;
             MaxBits = maxBits;
             Rgb = rgb;
-            Curve = curve;
-            ColorMatrix = colorMatrix;
-        }
-
-        public ColorMap(ColorMap<T> m, T[,] curve)
-        {
-            Width = m.Width;
-            Height = m.Height;
-            MaxBits = m.MaxBits;
-            Rgb = m.Rgb;
-            Curve = curve;
-            ColorMatrix = m.ColorMatrix;
         }
 
         public ColorMap(ColorMap<T> m, T[] rgb)
@@ -55,18 +39,6 @@ namespace com.azi.image
             Height = m.Height;
             MaxBits = m.MaxBits;
             Rgb = rgb;
-            Curve = m.Curve;
-            ColorMatrix = m.ColorMatrix;
-        }
-
-        public ColorMap(ColorMap<T> m, float[,] colorMatrix)
-        {
-            Width = m.Width;
-            Height = m.Height;
-            MaxBits = m.MaxBits;
-            Rgb = m.Rgb;
-            Curve = m.Curve;
-            ColorMatrix = colorMatrix;
         }
 
         public Color<T> GetPixel()
@@ -84,26 +56,9 @@ namespace com.azi.image
             return new Color<T>(this, y);
         }
 
-        public ColorMap<T> CopyAndUpdateCurve(CurveProcessor processor)
-        {
-            var newcurve = new T[3, 1 << MaxBits];
-            for (var c = 0; c < 3; c++)
-                for (var i = 0; i <= MaxValue; i++)
-                    newcurve[c, i] = processor(c, i, Curve[c, i]);
-            return new ColorMap<T>(this, newcurve);
-        }
-
-        public void UpdateCurve(CurveProcessor processor)
-        {
-            var newcurve = new T[3, 1 << MaxBits];
-            for (var c = 0; c < 3; c++)
-                for (var i = 0; i <= MaxValue; i++)
-                    Curve[c, i] = processor(c, i, Curve[c, i]);
-        }
-
         public ColorMap<T> CopyAndUpdateColors(int newMaxBits, ColorMapProcessor processor)
         {
-            var result = new ColorMap<T>(Width, Height, newMaxBits, new T[Width * Height * 3], Curve, ColorMatrix);
+            var result = new ColorMap<T>(Width, Height, newMaxBits, new T[Width * Height * 3]);
             var input = GetPixel();
             var output = result.GetPixel();
             for (var y = 0; y < Height; y++)
@@ -116,7 +71,7 @@ namespace com.azi.image
             return result;
         }
 
-        public void Enumerate(Action<Color<T>> action)
+        public void ForEachPixel(Action<Color<T>> action)
         {
             var pix = GetPixel();
             do
@@ -125,7 +80,7 @@ namespace com.azi.image
             } while (pix.MoveNext());
         }
 
-        public void Enumerate(Action<int, T> action)
+        public void ForEachPixel(Action<int, T> action)
         {
             var pix = GetPixel();
             do
@@ -152,7 +107,7 @@ namespace com.azi.image
         {
             var result = new Histogram(map.MaxValue);
 
-            map.Enumerate((comp, value) => result.AddValue(comp, map.Curve[comp, value]));
+            map.ForEachPixel(result.AddValue);
             return result;
         }
     }

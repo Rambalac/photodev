@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using com.azi.Decoder;
-using com.azi.image;
+using com.azi.Image;
 
 namespace com.azi.WpfFilters
 {

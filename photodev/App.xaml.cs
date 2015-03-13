@@ -1,13 +1,12 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using com.azi.Compressor;
 using com.azi.Debayer;
 using com.azi.Decoder.Panasonic.Rw2;
 using com.azi.Filters.ColorMap16;
 using com.azi.Filters.ColorMap16ToRgb8;
 using com.azi.Filters.RawToColorMap16;
-using com.azi.image;
+using com.azi.Image;
 
 namespace photodev
 {
@@ -43,10 +42,7 @@ namespace photodev
                 //light.Gamma = 0.3;
                 color16Image = light.Process(color16Image);
 
-                var compressor = new CompressorFilter
-                {
-                    Compressor = new SimpleCompressor()
-                };
+                var compressor = new RGBCompressorFilter();
                 return compressor.Process(color16Image);
             });
         }

@@ -1,6 +1,6 @@
 ﻿using com.azi.tiff;
 
-namespace com.azi.image
+namespace com.azi.Image
 {
     public abstract class ImageFile
     {

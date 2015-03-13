@@ -1,10 +1,10 @@
 using System;
 
-namespace com.azi.image
+namespace com.azi.Image
 {
-    public class Rgb8Map
+    public class RGB8Map
     {
-        public delegate void RgbConvertor<T>(Color<T> color, T[,] curve, byte[] rgb, int rgbOffset) where T : IComparable<T>;
+        public delegate void RgbConvertor<T>(Color<T> color, byte[] rgb, int rgbOffset) where T : IComparable<T>;
 
         public const int BytesPerPixel = 3;
 
@@ -13,7 +13,13 @@ namespace com.azi.image
         public readonly int Stride;
         public readonly int Width;
 
-        private Rgb8Map(int width, int height, int stride, byte[] rgb)
+        public RGB8Map(int w, int h)
+            : this(w, h, (4 * (w * 3 + 3) / 4), new byte[w * h * 3])
+        {
+
+        }
+
+        private RGB8Map(int width, int height, int stride, byte[] rgb)
         {
             Width = width;
             Height = height;
@@ -21,21 +27,20 @@ namespace com.azi.image
             Rgb = rgb;
         }
 
-        public static void CopyConvertor(Color<byte> pixel, byte[] rgb, int offset, int maxBits)
+        public Color<byte> GetRow(int y)
         {
-            rgb[offset + 0] = pixel[0];
-            rgb[offset + 1] = pixel[1];
-            rgb[offset + 2] = pixel[2];
+            return new Color<byte>(this, y);
         }
 
-        public static Rgb8Map ConvertoToRgb<T>(ColorMap<T> map, int strideBytesAlign, RgbConvertor<T> rgbConvertor) where T : IComparable<T>
+
+        public static RGB8Map ConvertoToRgb<T>(ColorMap<T> map, int strideBytesAlign, RgbConvertor<T> rgbConvertor) where T : IComparable<T>
         {
             var width = map.Width;
             var height = map.Height;
-            var stride = strideBytesAlign * (width * BytesPerPixel + strideBytesAlign - 1) / strideBytesAlign;
+            var stride = 4 * (width * 3 + 3) / 4;
             var rgb = new byte[height * stride];
 
-            var result = new Rgb8Map(width, height, stride, rgb);
+            var result = new RGB8Map(width, height, stride, rgb);
 
             var pixel = map.GetPixel();
             for (var y = 0; y < height; y++)
@@ -43,7 +48,7 @@ namespace com.azi.image
                 var pos = y * stride;
                 for (var x = 0; x < width; x++)
                 {
-                    rgbConvertor(pixel, map.Curve, rgb, pos);
+                    rgbConvertor(pixel, rgb, pos);
                     pos += BytesPerPixel;
                     pixel.MoveNext();
                 }

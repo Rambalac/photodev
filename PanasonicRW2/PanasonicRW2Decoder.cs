@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using com.azi.image;
+using com.azi.Image;
 
 namespace com.azi.Decoder.Panasonic.Rw2
 {
@@ -8,9 +8,9 @@ namespace com.azi.Decoder.Panasonic.Rw2
     ///     Panasonic RW2 file decoder
     ///     Thanks to dcraw
     /// </summary>
-    public class PanasonicRW2Decoder : IRawDecoder
+    public class PanasonicRW2Decoder : IRawDecoder<ushort>
     {
-        public RawImageFile Decode(Stream stream)
+        public RawImageFile<ushort> Decode(Stream stream)
         {
             var exif = PanasonicExif.Parse(stream);
 
@@ -19,15 +19,16 @@ namespace com.azi.Decoder.Panasonic.Rw2
             return DecodeImagePart(stream, exif);
         }
 
-        private static RawImageFile DecodeImagePart(Stream stream, PanasonicExif exif)
+        private static RawImageFile<ushort> DecodeImagePart(Stream stream, PanasonicExif exif)
         {
             int row, col, i, j, sh = 0;
             int[] pred = new int[2], nonz = new int[2];
 
             var resultHeight = exif.ImageHeight;
             var resultWidth = exif.CropRight;
-            var raw = new ushort[resultHeight, resultWidth];
-
+            var map = new RawBGGRMap<ushort>(resultWidth, resultHeight, 12);
+            var raw = map.GetPixel();
+            ushort value;
             var bits = new PanasonicBitStream(stream);
             for (row = 0; row < exif.ImageHeight; row++)
                 for (col = 0; col < exif.ImageWidth; col++)
@@ -57,12 +58,14 @@ namespace com.azi.Decoder.Panasonic.Rw2
                         }
                         if (col >= resultWidth) continue;
 
-                        raw[row, col] = (ushort)pred[col & 1];
+                        value = (ushort)pred[col & 1];
 
-                        if (raw[row, col] > 4098 && col < exif.CropRight)
+                        if (value > 4098 && col < exif.CropRight)
                             throw new Exception("Decoding error");
+
+                        raw.SetAndMoveNext(value);
                     }
-            var result = new RawImageFile(resultWidth, resultHeight, raw, 12)
+            var result = new RawImageFile<ushort>(map)
             {
                 Exif = exif,
             };

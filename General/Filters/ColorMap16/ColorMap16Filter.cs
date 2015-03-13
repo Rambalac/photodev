@@ -1,4 +1,4 @@
-﻿using com.azi.image;
+﻿using com.azi.Image;
 
 namespace com.azi.Filters.ColorMap16
 {

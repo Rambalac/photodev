@@ -1,13 +1,14 @@
-using com.azi.image;
+using System;
+using com.azi.Image;
 
 namespace com.azi.Debayer
 {
-    public interface IDebayer
+    public interface IDebayer<in T> where T : RawMap<ushort>
     {
-        ColorMap<ushort> Debayer(RawImageFile file);
+        ColorMap<ushort> Debayer(T map);
     }
 
-    public interface IBGGRDebayer: IDebayer
+    public interface IBGGRDebayer : IDebayer<RawBGGRMap<ushort>>
     {
     }
 }

@@ -1,37 +1,32 @@
-﻿namespace com.azi.image
+﻿using System;
+namespace com.azi.Image
 {
-    public class RawImageFile : ImageFile
+    public class RawImageFile<T> : ImageFile where T : IComparable<T>
     {
-        public readonly int MaxBits;
-        public readonly ushort[,] Raw;
-        private readonly int _height;
-        private readonly int _width;
+        public readonly RawMap<T> Raw;
 
-        public RawImageFile(int w, int h, ushort[,] raw, int maxBits)
+        public RawImageFile(RawMap<T> raw)
         {
             Raw = raw;
-            _width = w;
-            _height = h;
-            MaxBits = maxBits;
         }
 
         public override int Width
         {
-            get { return _width; }
+            get { return Raw.Width; }
         }
 
         public override int Height
         {
-            get { return _height; }
+            get { return Raw.Height; }
         }
 
-        internal ushort GetValue(int x, int y)
-        {
-            //if (x < 0) x = 0;
-            //if (y < 0) y = 0;
-            //if (x >= Width) x = Width - 1;
-            //if (y >= Height) y = Height - 1;
-            return Raw[y, x];
-        }
+        //internal ushort GetValue(int x, int y)
+        //{
+        //    //if (x < 0) x = 0;
+        //    //if (y < 0) y = 0;
+        //    //if (x >= Width) x = Width - 1;
+        //    //if (y >= Height) y = Height - 1;
+        //    return Raw[y, x];
+        //}
     }
 }

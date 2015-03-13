@@ -1,9 +1,9 @@
-﻿using com.azi.image;
+﻿using com.azi.Image;
 
 namespace com.azi.Filters.RawToColorMap16
 {
     public interface IRawToColorMap16Filter
     {
-        ColorImageFile<ushort> Process(RawImageFile raw);
+        ColorMap<ushort> Process(RawMap<ushort> raw);
     }
 }
