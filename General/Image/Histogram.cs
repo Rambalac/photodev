@@ -8,7 +8,8 @@ namespace com.azi.Image
         public readonly int[] MinIndex;
         public readonly int[] MaxIndex;
         public readonly int[][] Values;
-        private int _maxIndex;
+        public int TotalPixels;
+        private readonly int _maxIndex;
 
         public Histogram(int maxIndex)
         {
@@ -19,45 +20,69 @@ namespace com.azi.Image
             MaxIndex = new[] { 0, 0, 0 };
         }
 
-        public void AddValue(int comp, ushort index)
+        public void AddValue(int comp, int index)
         {
+            if (comp == 0) TotalPixels++;
             MinIndex[comp] = Math.Min(MinIndex[comp], index);
             MaxIndex[comp] = Math.Max(MaxIndex[comp], index);
             var val = Values[comp][index]++;
             MaxValues[comp] = Math.Max(MaxValues[comp], val);
         }
 
-        public ushort[] FindFirstValueIndex(double e)
+        public ushort[] FindWeightCenter(ushort[] min, ushort[] max)
         {
-            var result = new ushort[] { 0, 0, 0 };
+            var result = new ushort[3];
             for (var c = 0; c < 3; c++)
             {
                 var vals = Values[c];
-                for (var i = MinIndex[c]; i <= MaxIndex[c]; i++)
-                    if ((vals[i] / (double)MaxValues[c]) > e)
-                    {
-                        result[c] = (ushort)i;
-                        break;
-                    }
-            }
+                var minsum = 0;
+                var maxsum = 0;
+                var mini = min[c];
+                var maxi = max[c];
 
+                do
+                {
+                    while (minsum <= maxsum && mini < maxi) minsum += vals[mini++];
+                    while (maxsum < minsum && maxi > mini) maxsum += vals[maxi--];
+                } while (mini < maxi);
+
+                result[c] = mini;
+            }
             return result;
         }
-        public ushort[] FindLastValueIndex(double e)
+
+        public void FindMinMax(out ushort[] min, out ushort[] max)
         {
-            var result = new ushort[] { (ushort)_maxIndex, (ushort)_maxIndex, (ushort)_maxIndex };
+            max = new[] { (ushort)_maxIndex, (ushort)_maxIndex, (ushort)_maxIndex };
+            min = new ushort[] { 0, 0, 0 };
+
+            const float e = 0.005f;
+            var amount = (int)(e * TotalPixels);
             for (var c = 0; c < 3; c++)
             {
                 var vals = Values[c];
-                for (var i = MaxIndex[c]; i >= MinIndex[c]; i--)
-                    if ((vals[i] / (double)MaxValues[c]) > e)
+                var minsum = 0;
+                var maxsum = 0;
+                var start = Math.Min(1, Math.Min(MinIndex[c], _maxIndex - MaxIndex[c]));
+
+                for (var i = start; i < _maxIndex; i++)
+                {
+                    minsum += vals[i];
+                    if (minsum < amount)
                     {
-                        result[c] = (ushort)i;
-                        break;
+                        min[c] = (ushort)i;
                     }
+
+                    maxsum += vals[_maxIndex - i];
+                    if (maxsum < amount)
+                    {
+                        max[c] = (ushort)(_maxIndex - i);
+                    }
+
+                }
             }
 
-            return result;
         }
+
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using com.azi.Debayer;
 using com.azi.Decoder.Panasonic.Rw2;
+using com.azi.Filters.RawToColorMap16.Demosaic;
+using com.azi.Image;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace General.Tests
@@ -23,7 +24,7 @@ namespace General.Tests
             var stopwatch = Stopwatch.StartNew();
             const int maxIter = 3;
             for (var iter = 0; iter < maxIter; iter++)
-                debayer.Debayer(raw);
+                debayer.Process((RawBGGRMap<ushort>)raw.Raw);
             stopwatch.Stop();
 
             Console.WriteLine("AverageBGGRDebayer: " + stopwatch.ElapsedMilliseconds / 3 + "ms");

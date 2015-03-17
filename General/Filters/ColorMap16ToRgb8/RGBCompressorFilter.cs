@@ -2,7 +2,7 @@
 {
     public class RGBCompressorFilter : IndependentColorComponentToRGBFilter
     {
-        public override float ProcessColor(float input, int component)
+        public override byte ProcessColor(float input, int component)
         {
             return (byte)(input * 255);
         }

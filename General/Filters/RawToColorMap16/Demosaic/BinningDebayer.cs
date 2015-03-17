@@ -1,10 +1,10 @@
 ﻿using com.azi.Image;
 
-namespace com.azi.Debayer
+namespace com.azi.Filters.RawToColorMap16.Demosaic
 {
-    public class BinningBGGRDebayer : IDebayer<RawMap<ushort>>
+    public class BinningBGGRDebayer : IDebayer<RawMap<ushort>, ushort>
     {
-        public ColorMap<ushort> Debayer(RawMap<ushort> map)
+        public ColorMap<ushort> Process(RawMap<ushort> map)
         {
             var res = new ColorMap<ushort>(map.Width / 2, map.Height / 2, map.MaxBits);
             var c = new ushort[4];

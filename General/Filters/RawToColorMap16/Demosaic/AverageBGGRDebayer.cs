@@ -1,15 +1,15 @@
 using System;
 using com.azi.Image;
 
-namespace com.azi.Debayer
+namespace com.azi.Filters.RawToColorMap16.Demosaic
 {
-    public class AverageBGGRDebayer : IBGGRDebayer
+    public class AverageBGGRDebayer : IBGGRDebayer<ushort>
     {
         // B G B G
         // G R G R
         // B G B G
         // G R G R
-        public ColorMap<ushort> Debayer(RawBGGRMap<ushort> file)
+        public ColorMap<ushort> Process(RawBGGRMap<ushort> file)
         {
             if (file.Width % 2 != 0 || file.Height % 2 != 0) throw new ArgumentException("Width and Height should be even");
             var res = new ColorMap<ushort>(file.Width, file.Height, file.MaxBits + 1);
@@ -32,7 +32,7 @@ namespace com.azi.Debayer
 
                 y++;
 
-                ProcessMiddleEvenRows(file.GetRow(y), res.Height, res.GetRow(y));
+                ProcessMiddleEvenRows(file.GetRow(y), res.Width, res.GetRow(y));
             }
         }
 
@@ -71,6 +71,7 @@ namespace com.azi.Debayer
                 (ushort)((raw.GetRel(0, -1) + raw.GetRel(0, +1))),
                 (ushort)(raw.Value << 1),
                 (ushort)(raw.GetRel(-1, 0) << 1));
+            raw.MoveNext();
         }
 
         private static void ProcessMiddleOddRows(RawPixel<ushort> raw, int width, Color<ushort> pix)
@@ -107,12 +108,13 @@ namespace com.azi.Debayer
                 (ushort)(raw.Value << 1),
                 (ushort)((raw.GetRel(0, -1) + raw.GetRel(0, +1) + raw.GetRel(-1, 0) << 1) >> 1),
                 (ushort)((raw.GetRel(-1, -1) + raw.GetRel(-1, +1))));
+            raw.MoveNext();
         }
 
         private static void ProcessTopLine(RawBGGRMap<ushort> map, ColorMap<ushort> res)
         {
             var pix = res.GetPixel();
-            var raw = map.GetPixel();
+            var raw = map.GetRow(0);
             // Top Left pixel
 
             pix.SetAndMoveNext(
@@ -142,6 +144,7 @@ namespace com.azi.Debayer
                 (ushort)(raw.GetRel(res.Width - 1, 1) << 1),
                 (ushort)(raw.GetRel(res.Width - 1, 0) << 1),
                 (ushort)(raw.GetRel(res.Width - 2, 0) << 1));
+            raw.MoveNext();
         }
 
         // B G B G
@@ -184,6 +187,8 @@ namespace com.azi.Debayer
                 (ushort)(raw.GetRel(-1, 0) << 1),
                 (ushort)((raw.GetRel(-1, -1) + raw.GetRel(-2, 0))),
                 (ushort)(raw.GetRel(-2, -1) << 1));
+            raw.MoveNext();
         }
+
     }
 }

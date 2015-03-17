@@ -29,7 +29,7 @@ namespace com.azi.tiff
         public int StripOffset;
         public string SubsecTimeDigitized;
         public string SubsecTimeOriginal;
-        public ushort[] WhiteColor;
+        public float[] WhiteColor;
         public float? Multiplier;
         public float[,] ColorMatrix;
 

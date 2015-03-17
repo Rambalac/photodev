@@ -1,8 +1,8 @@
 ﻿using com.azi.Image;
 
-namespace com.azi.Debayer
+namespace com.azi.Filters.RawToColorMap16.Demosaic
 {
-    public class AverageDebayer : IDebayer<RawMap<ushort>>
+    public class AverageDebayer : IDebayer<RawMap<ushort>, ushort>
     {
         private readonly ColorComponent[,] _componentsMap =
         {
@@ -16,7 +16,7 @@ namespace com.azi.Debayer
         //};
 
 
-        public ColorMap<ushort> Debayer(RawMap<ushort> map)
+        public ColorMap<ushort> Process(RawMap<ushort> map)
         {
             var res = new ColorMap<ushort>(map.Width, map.Height, map.MaxBits + 2);
             var pix = res.GetPixel();

@@ -1,11 +1,12 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using com.azi.Debayer;
 using com.azi.Decoder.Panasonic.Rw2;
+using com.azi.Filters;
 using com.azi.Filters.ColorMap16;
 using com.azi.Filters.ColorMap16ToRgb8;
 using com.azi.Filters.RawToColorMap16;
+using com.azi.Filters.RawToColorMap16.Demosaic;
 using com.azi.Image;
 
 namespace photodev
@@ -15,35 +16,35 @@ namespace photodev
     /// </summary>
     public partial class App : Application
     {
-        internal static async Task<RgbImageFile> OpenFile(string p)
+        internal static async Task<RGB8Map> OpenFile(string p)
         {
             return await Task.Run(() =>
             {
                 Stream stream = new FileStream(p, FileMode.Open, FileAccess.Read);
                 var rawimage = new PanasonicRW2Decoder().Decode(stream);
-                var debayer = new DebayerFilter
-                {
-                    Debayer = new AverageBGGRDebayer()
-                };
-                var color16Image = debayer.Process(rawimage);
+                var debayer = new AverageBGGRDebayer();
 
                 var white = new WhiteBalanceFilter();
-                white.AutoAdjust(color16Image);
-                color16Image = white.Process(color16Image);
+                //white.WhiteColor = rawimage.Exif.WhiteColor;
+                //white.AutoAdjust(color16Image);
+
+                var gamma = new GammaFilter();
 
                 var light = new LightFilter();
-                light.AutoAdjust(color16Image);
-                //light.MinIn = new[] { 78 / 255.0, 55 / 255.0, 72 / 255.0 };
-                //light.MaxIn = new[] { 161 / 255.0, 148 / 255.0, 149 / 255.0 };
-                //light.Contrast = new[] { 0.5, 0.53, 0.51 };
-
-                //light.Contrast = 2;
-                //light.Brightness = 0;
-                //light.Gamma = 0.3;
-                color16Image = light.Process(color16Image);
+                //light.AutoAdjust(color16Image);
 
                 var compressor = new RGBCompressorFilter();
-                return compressor.Process(color16Image);
+                var pipeline = new FiltersPipeline(new IFilter[] {
+                    debayer,
+                    white,
+                    gamma,
+                    light,
+                    compressor
+                });
+                pipeline.AutoAjust(rawimage.Raw, white);
+                pipeline.AutoAjust(rawimage.Raw, light);
+
+                return pipeline.RawMapToRGB(rawimage.Raw);
             });
         }
     }

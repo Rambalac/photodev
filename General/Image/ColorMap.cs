@@ -1,9 +1,9 @@
 using System;
-using com.azi.Image;
+using System.Reflection;
 
 namespace com.azi.Image
 {
-    public class ColorMap<T> where T : IComparable<T>
+    public class ColorMap<T> : IColorMap where T : IComparable<T>
     {
         public delegate void ColorMapProcessor(int x, int y, Color<T> input, Color<T> output);
 
@@ -77,7 +77,7 @@ namespace com.azi.Image
             do
             {
                 action(pix);
-            } while (pix.MoveNext());
+            } while (pix.MoveNextAndCheck());
         }
 
         public void ForEachPixel(Action<int, T> action)
@@ -88,7 +88,7 @@ namespace com.azi.Image
                 action(0, pix[0]);
                 action(1, pix[1]);
                 action(2, pix[2]);
-            } while (pix.MoveNext());
+            } while (pix.MoveNextAndCheck());
         }
 
         public static T[,] MakeCurve(int maxBits, Func<int, int, T> processor)
@@ -107,7 +107,14 @@ namespace com.azi.Image
         {
             var result = new Histogram(map.MaxValue);
 
-            map.ForEachPixel(result.AddValue);
+            map.ForEachPixel((comp, b) => result.AddValue(comp, b));
+            return result;
+        }
+        public static Histogram GetHistogram(this RGB8Map map)
+        {
+            var result = new Histogram(255);
+
+            map.ForEachPixel((comp, b) => result.AddValue(comp, b));
             return result;
         }
     }

@@ -4,107 +4,58 @@ using System.Runtime.CompilerServices;
 
 namespace com.azi.Image
 {
-    public class RawPixel<T> where T : IComparable<T>
-    {
-        private readonly int _limit;
-        private readonly RawMap<T> _map;
-        private int _index;
-
-        public RawPixel(RawMap<T> map, int x, int y, int limit)
-        {
-            _map = map;
-            _limit = limit;
-            _index = y * map.Width + x;
-        }
-
-        public RawPixel(RawMap<T> map)
-            : this(map, 0, 0, map.Width * map.Height)
-        {
-        }
-
-        public RawPixel(RawMap<T> map, int x, int y)
-            : this(map, x, y, map.Width * map.Height)
-        {
-        }
-
-        public T Value
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _map.Raw[_index]; }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set { _map.Raw[_index] = value; }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetRel(int x, int y)
-        {
-            return _map.Raw[_index + x + y * _map.Width];
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T SetRel(int x, int y, T val)
-        {
-            return _map.Raw[_index + x + y * _map.Width] = val;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext()
-        {
-            _index += 1;
-            return _index < _limit;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SetAndMoveNext(T val)
-        {
-            _map.Raw[_index] = val;
-            return MoveNext();
-        }
-    }
-
     public class Color<T> where T : IComparable<T>
     {
         private readonly int _limit;
-        private readonly ColorMap<T> _map;
-        private int _index;
+        public readonly T[] Map;
+        public int Offset;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Color(ColorMap<T> map, int x, int y)
         {
-            _map = map;
-            _index = (y * map.Width + x) * 3;
-            _limit = _map.Height * _map.Width * 3;
+            Map = map.Rgb;
+            Offset = (y * map.Width + x) * 3;
+            _limit = map.Height * map.Width * 3;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Color(ColorMap<T> map, int y)
         {
-            _map = map;
-            _index = y * map.Width * 3;
-            _limit = _index + _map.Width * 3;
+            Map = map.Rgb;
+            Offset = y * map.Width * 3;
+            _limit = Offset + map.Width * 3;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal Color(T[] map, int offset, int limit)
+        {
+            Map = map;
+            Offset = offset;
+            _limit = limit;
         }
 
         public T R
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _map.Rgb[_index + 0]; }
+            get { return Map[Offset + 0]; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set { _map.Rgb[_index + 0] = value; }
+            set { Map[Offset + 0] = value; }
         }
 
         public T G
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _map.Rgb[_index + 1]; }
+            get { return Map[Offset + 1]; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set { _map.Rgb[_index + 1] = value; }
+            set { Map[Offset + 1] = value; }
         }
 
         public T B
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _map.Rgb[_index + 2]; }
+            get { return Map[Offset + 2]; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set { _map.Rgb[_index + 2] = value; }
+            set { Map[Offset + 2] = value; }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -119,30 +70,36 @@ namespace com.azi.Image
             get
             {
                 //if (i > 2) throw new ArgumentException("Should be less than 3");
-                return _map.Rgb[_index + i];
+                return Map[Offset + i];
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 //if (i > 2) throw new ArgumentException("Should be less than 3");
-                _map.Rgb[_index + i] = value;
+                Map[Offset + i] = value;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext()
+        public void MoveNext()
         {
-            _index += 3;
-            return _index < _limit;
+            Offset += 3;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SetAndMoveNext(T r, T g, T b)
+        public bool MoveNextAndCheck()
         {
-            _map.Rgb[_index + 0] = r;
-            _map.Rgb[_index + 1] = g;
-            _map.Rgb[_index + 2] = b;
-            return MoveNext();
+            Offset += 3;
+            return Offset < _limit;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetAndMoveNext(T r, T g, T b)
+        {
+            Map[Offset + 0] = r;
+            Map[Offset + 1] = g;
+            Map[Offset + 2] = b;
+            MoveNext();
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using com.azi.Decoder;
 using com.azi.Image;
 
@@ -9,9 +10,9 @@ namespace com.azi.WpfFilters
 
     }
 
-    abstract class AWpfRawDecoder : WpfFilter, IRawDecoder
+    abstract class AWpfRawDecoder<T> : WpfFilter, IRawDecoder<T> where T : IComparable<T>
     {
-        IRawDecoder Decoder { get; set; }
-        public abstract RawImageFile Decode(Stream stream);
+        IRawDecoder<T> Decoder { get; set; }
+        public abstract RawImageFile<T> Decode(Stream stream);
     }
 }

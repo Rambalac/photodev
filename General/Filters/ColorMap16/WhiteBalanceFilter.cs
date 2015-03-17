@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using com.azi.Image;
 
@@ -9,10 +10,16 @@ namespace com.azi.Filters.ColorMap16
         public float[] WhiteColor
         {
             get { return _whiteColor; }
-            private set { _whiteColor = value; }
+            set
+            {
+                if (value.Length != 3) throw new ArgumentException("Should be array of 3");
+                _whiteColor = value;
+                _whiteColor1 = _whiteColor.Select(v => 1 / v).ToArray();
+            }
         }
 
         private float[] _whiteColor = { 1f, 1f, 1f };
+        private float[] _whiteColor1 = { 1f, 1f, 1f };
 
 
         public void AutoAdjust(ColorMap<ushort> map)
@@ -35,7 +42,7 @@ namespace com.azi.Filters.ColorMap16
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override float ProcessColor(float input, int component)
         {
-            return input / _whiteColor[component];
+            return input * _whiteColor1[component];
         }
     }
 }

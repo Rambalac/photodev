@@ -19,7 +19,7 @@ namespace photodev
         {
             var image = await App.OpenFile(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2");
             var bmp = BitmapSource.Create(image.Width, image.Height, 75, 75, PixelFormats.Rgb24, null,
-               image.Pixels.Rgb, image.Pixels.Stride);
+               image.Rgb, image.Stride);
             Save(bmp);
             MainImage.Source = bmp;
         }

@@ -2,10 +2,8 @@ using System;
 
 namespace com.azi.Image
 {
-    public class RGB8Map
+    public class RGB8Map : IColorMap
     {
-        public delegate void RgbConvertor<T>(Color<T> color, byte[] rgb, int rgbOffset) where T : IComparable<T>;
-
         public const int BytesPerPixel = 3;
 
         public readonly int Height;
@@ -14,9 +12,9 @@ namespace com.azi.Image
         public readonly int Width;
 
         public RGB8Map(int w, int h)
-            : this(w, h, (4 * (w * 3 + 3) / 4), new byte[w * h * 3])
+            : this(w, h, (4 * (w * 3 + 3) / 4), null)
         {
-
+            Rgb = new byte[Stride * h * 3];
         }
 
         private RGB8Map(int width, int height, int stride, byte[] rgb)
@@ -29,32 +27,35 @@ namespace com.azi.Image
 
         public Color<byte> GetRow(int y)
         {
-            return new Color<byte>(this, y);
+            return new Color<byte>(Rgb, y * Stride, y * Stride + Width * 3);
         }
 
-
-        public static RGB8Map ConvertoToRgb<T>(ColorMap<T> map, int strideBytesAlign, RgbConvertor<T> rgbConvertor) where T : IComparable<T>
+        public void ForEachPixel(Action<Color<byte>> action)
         {
-            var width = map.Width;
-            var height = map.Height;
-            var stride = 4 * (width * 3 + 3) / 4;
-            var rgb = new byte[height * stride];
-
-            var result = new RGB8Map(width, height, stride, rgb);
-
-            var pixel = map.GetPixel();
-            for (var y = 0; y < height; y++)
+            for (var y = 0; y < Height; y++)
             {
-                var pos = y * stride;
-                for (var x = 0; x < width; x++)
-                {
-                    rgbConvertor(pixel, rgb, pos);
-                    pos += BytesPerPixel;
-                    pixel.MoveNext();
-                }
-            }
+                var pix = GetRow(y);
 
-            return result;
+                do
+                {
+                    action(pix);
+                } while (pix.MoveNextAndCheck());
+            }
+        }
+
+        public void ForEachPixel(Action<int, byte> action)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                var pix = GetRow(y);
+
+                do
+                {
+                    action(0, pix[0]);
+                    action(1, pix[1]);
+                    action(2, pix[2]);
+                } while (pix.MoveNextAndCheck());
+            }
         }
     }
 }

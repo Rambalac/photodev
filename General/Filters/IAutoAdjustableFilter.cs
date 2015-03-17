@@ -2,7 +2,7 @@
 
 namespace com.azi.Filters
 {
-    internal interface IAutoAdjustableFilter
+    public interface IAutoAdjustableFilter
     {
         void AutoAdjust(ColorMap<ushort> map);
     }

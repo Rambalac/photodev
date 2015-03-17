@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace com.azi.Image
 {
@@ -14,10 +10,8 @@ namespace com.azi.Image
         }
     }
 
-    public class RawMap<T> where T : IComparable<T>
+    public class RawMap<T> : IColorMap where T : IComparable<T>
     {
-        public const int BytesPerPixel = 3;
-
         public readonly int Height;
         public readonly T[] Raw;
         public readonly int Width;
@@ -48,7 +42,7 @@ namespace com.azi.Image
 
         public RawPixel<T> GetRow(int y)
         {
-            return new RawPixel<T>(this, 0, y, Width);
+            return new RawPixel<T>(this, 0, y, (y + 1) * Width);
         }
     }
 }

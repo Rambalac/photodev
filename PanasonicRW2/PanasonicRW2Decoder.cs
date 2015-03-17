@@ -60,7 +60,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
 
                         value = (ushort)pred[col & 1];
 
-                        if (value > 4098 && col < exif.CropRight)
+                        if (value > 4098)
                             throw new Exception("Decoding error");
 
                         raw.SetAndMoveNext(value);

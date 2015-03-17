@@ -18,16 +18,16 @@ namespace com.azi.Filters.ColorMap16
         }
     }
 
-    public abstract class IndependentColorComponentFilter
+    public abstract class IndependentColorComponentFilter : ColorFilter
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public abstract float ProcessColor(float input, int component);
 
-        public void ProcessColor(float[] input, int inputOffset, float[] output, int outputOffset)
+        public override void ProcessColor(float[] input, int inputOffset, float[] output, int outputOffset)
         {
             output[outputOffset + 0] = ProcessColor(input[inputOffset + 0], 0);
             output[outputOffset + 1] = ProcessColor(input[inputOffset + 1], 1);
-            output[outputOffset + 2] = ProcessColor(input[inputOffset + 1], 2);
+            output[outputOffset + 2] = ProcessColor(input[inputOffset + 2], 2);
         }
     }
 }
