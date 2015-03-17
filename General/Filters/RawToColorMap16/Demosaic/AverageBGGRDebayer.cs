@@ -41,8 +41,8 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             // Second left pixel
             pix.SetAndMoveNext(
                 (ushort)((raw.GetRel(1, -1) + raw.GetRel(1, +1))),
-                (ushort)(raw.GetRel(0, -1) + raw.GetRel(0, +1) + raw.GetRel(1, 0)),
-                (ushort)(raw.GetRel(0, 0) << 1));
+                (ushort)((raw.GetRel(0, -1) + raw.GetRel(0, +1) + (raw.GetRel(1, 0) << 1)) >> 1),
+                (ushort)(raw.Value << 1));
             raw.MoveNext();
 
             var lastX = width - 1;
@@ -106,7 +106,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             // First right pixel
             pix.SetAndMoveNext(
                 (ushort)(raw.Value << 1),
-                (ushort)((raw.GetRel(0, -1) + raw.GetRel(0, +1) + raw.GetRel(-1, 0) << 1) >> 1),
+                (ushort)((raw.GetRel(0, -1) + raw.GetRel(0, +1) + (raw.GetRel(-1, 0) << 1)) >> 1),
                 (ushort)((raw.GetRel(-1, -1) + raw.GetRel(-1, +1))));
             raw.MoveNext();
         }
@@ -128,12 +128,12 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             {
                 pix.SetAndMoveNext(
                     (ushort)(raw.GetRel(0, 1) << 1),
-                    (ushort)(raw.GetRel(0, 0) << 1),
+                    (ushort)(raw.Value << 1),
                     (ushort)((raw.GetRel(-1, 0) + raw.GetRel(+1, 0))));
 
                 pix.SetAndMoveNext(
                     (ushort)((raw.GetRel(0, 1) + raw.GetRel(+2, 1))),
-                    (ushort)((raw.GetRel(0, 0) + raw.GetRel(+2, 0) + raw.GetRel(+1, 1))),
+                    (ushort)((raw.Value + raw.GetRel(+2, 0) + (raw.GetRel(+1, 1) << 1)) >> 1),
                     (ushort)(raw.GetRel(+1, 0) << 1));
                 raw.MoveNext();
                 raw.MoveNext();
@@ -161,7 +161,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
 
             pix.SetAndMoveNext(
                 (ushort)(raw.GetRel(1, 0) << 1),
-                (ushort)(raw.GetRel(0, 0) << 1),
+                (ushort)(raw.Value << 1),
                 (ushort)(raw.GetRel(0, -1) << 1));
             raw.MoveNext();
 

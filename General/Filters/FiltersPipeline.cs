@@ -4,6 +4,8 @@ using com.azi.Filters.ColorMap16;
 using com.azi.Filters.ColorMap16ToRgb8;
 using com.azi.Filters.RawToColorMap16;
 using com.azi.Image;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace com.azi.Filters
 {
@@ -82,22 +84,25 @@ namespace com.azi.Filters
             var result = new RGB8Map(map.Width, map.Height);
             var maxValue = map.MaxValue;
             var curve = new[] { new byte[maxValue + 1], new byte[maxValue + 1], new byte[maxValue + 1] };
-            var rgb = new float[3];
-            for (var i = 0; i <= maxValue; i++)
+
+            Parallel.For(0, maxValue + 1, (i) =>
             {
-                rgb[0] = i / (float)maxValue;
-                rgb[1] = i / (float)maxValue;
-                rgb[2] = i / (float)maxValue;
+                var fi = i / (float)maxValue;
+                var r = fi;
+                var g = fi;
+                var b = fi;
 
                 for (var f = 0; f < indColorFilters.Length; f++)
                 {
-                    indColorFilters[f].ProcessColor(rgb, rgb);
+                    r = indColorFilters[f].ProcessColor(r, 0);
+                    g = indColorFilters[f].ProcessColor(g, 1);
+                    b = indColorFilters[f].ProcessColor(b, 2);
                 }
-                curve[0][i] = rgbFilter.ProcessColor(Math.Max(0, Math.Min(1f, rgb[0])), 0);
-                curve[1][i] = rgbFilter.ProcessColor(Math.Max(0, Math.Min(1f, rgb[1])), 1);
-                curve[2][i] = rgbFilter.ProcessColor(Math.Max(0, Math.Min(1f, rgb[2])), 2);
-            }
-            for (var y = 0; y < result.Height; y++)
+                curve[0][i] = rgbFilter.ProcessColor(Math.Max(0, Math.Min(1f, r)), 0);
+                curve[1][i] = rgbFilter.ProcessColor(Math.Max(0, Math.Min(1f, g)), 1);
+                curve[2][i] = rgbFilter.ProcessColor(Math.Max(0, Math.Min(1f, b)), 2);
+            });
+            Parallel.For(0, result.Height, (y) =>
             {
                 var input = map.GetRow(y);
                 var output = result.GetRow(y);
@@ -106,7 +111,7 @@ namespace com.azi.Filters
                     output.SetAndMoveNext(curve[0][input.R], curve[1][input.G], curve[2][input.B]);
                     input.MoveNext();
                 }
-            }
+            });
             return result;
         }
 
@@ -117,22 +122,27 @@ namespace com.azi.Filters
             var result = new ColorMap<ushort>(map.Width, map.Height, map.MaxBits);
             var maxValue = map.MaxValue;
             var curve = new[] { new ushort[maxValue + 1], new ushort[maxValue + 1], new ushort[maxValue + 1] };
-            var rgb = new float[3];
-            for (var i = 0; i <= maxValue; i++)
+
+            Parallel.For(0, maxValue + 1, (i) =>
             {
-                rgb[0] = i / (float)maxValue;
-                rgb[1] = i / (float)maxValue;
-                rgb[2] = i / (float)maxValue;
+                var fi = i / (float)maxValue;
+                var r = fi;
+                var g = fi;
+                var b = fi;
+
                 for (var f = 0; f < indColorFilters.Length; f++)
                 {
-                    indColorFilters[f].ProcessColor(rgb, rgb);
+                    r = indColorFilters[f].ProcessColor(r, 0);
+                    g = indColorFilters[f].ProcessColor(g, 1);
+                    b = indColorFilters[f].ProcessColor(b, 2);
                 }
 
-                curve[0][i] = (ushort)(maxValue * Math.Max(0, Math.Min(1f, rgb[0])));
-                curve[1][i] = (ushort)(maxValue * Math.Max(0, Math.Min(1f, rgb[1])));
-                curve[2][i] = (ushort)(maxValue * Math.Max(0, Math.Min(1f, rgb[2])));
-            }
-            for (var y = 0; y < result.Height; y++)
+                curve[0][i] = (ushort)(maxValue * Math.Max(0, Math.Min(1f, r)));
+                curve[1][i] = (ushort)(maxValue * Math.Max(0, Math.Min(1f, g)));
+                curve[2][i] = (ushort)(maxValue * Math.Max(0, Math.Min(1f, b)));
+            });
+
+            Parallel.For(0, result.Height, (y) =>
             {
                 var input = map.GetRow(y);
                 var output = result.GetRow(y);
@@ -141,7 +151,7 @@ namespace com.azi.Filters
                     output.SetAndMoveNext(curve[0][input.R], curve[1][input.G], curve[2][input.B]);
                     input.MoveNext();
                 }
-            }
+            });
             return result;
         }
 

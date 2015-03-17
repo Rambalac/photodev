@@ -53,6 +53,44 @@ namespace General.Tests
         }
 
         [TestMethod]
+        public void FullProcessP1460461Test()
+        {
+            var stopwatch = Stopwatch.StartNew();
+            const int maxIter = 1;
+            for (var iter = 0; iter < maxIter; iter++)
+            {
+                Stream stream = new FileStream(@"..\..\..\PanasonicRW2.Tests\P1460461.RW2", FileMode.Open,
+                    FileAccess.Read);
+                var rawimage = new PanasonicRW2Decoder().Decode(stream);
+                var debayer = new AverageBGGRDebayer();
+
+                var white = new WhiteBalanceFilter();
+                //white.AutoAdjust(color16Image);
+                var gamma = new GammaFilter();
+
+
+                var light = new LightFilter();
+                //light.AutoAdjust(color16Image);
+
+                var compressor = new RGBCompressorFilter();
+                var pipeline = new FiltersPipeline(new IFilter[] {
+                    debayer,
+                    white,
+                    gamma,
+                    light,
+                    compressor
+                });
+                pipeline.RawMapToRGB(rawimage.Raw);
+            }
+            stopwatch.Stop();
+            Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds / maxIter + "ms");
+
+            //Before Curve - Release 3756ms
+            //After Curve - Release 1900ms
+        }
+                
+
+        [TestMethod]
         public void FullProcessWithAutoAdjustTest()
         {
             var stopwatch = Stopwatch.StartNew();
