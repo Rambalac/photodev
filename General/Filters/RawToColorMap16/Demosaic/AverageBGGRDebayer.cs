@@ -1,5 +1,6 @@
 using System;
 using com.azi.Image;
+using System.Threading.Tasks;
 
 namespace com.azi.Filters.RawToColorMap16.Demosaic
 {
@@ -26,14 +27,15 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
         private static void ProcessMiddleRows(RawBGGRMap<ushort> file, ColorMap<ushort> res)
         {
             // Middle Rows
-            for (var y = 1; y < res.Height - 1; y++)
+            Parallel.For(0, (res.Height - 2) / 2, (yy) =>
             {
+                var y = yy * 2 + 1;
                 ProcessMiddleOddRows(file.GetRow(y), res.Width, res.GetRow(y));
 
                 y++;
 
                 ProcessMiddleEvenRows(file.GetRow(y), res.Width, res.GetRow(y));
-            }
+            });
         }
 
         private static void ProcessMiddleEvenRows(RawPixel<ushort> raw, int width, Color<ushort> pix)
