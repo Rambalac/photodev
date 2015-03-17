@@ -7,7 +7,7 @@
     <Grid>
         <DockPanel>
             <Menu VerticalAlignment="Top" DockPanel.Dock="Top">
-                <MenuItem Header="File" />
+                <MenuItem Header="File" Click="MenuItem_Click" />
             </Menu>
             <Grid>
                 <Grid.RowDefinitions>

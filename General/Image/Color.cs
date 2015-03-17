@@ -76,6 +76,9 @@ namespace com.azi.Image
             set
             {
                 //if (i > 2) throw new ArgumentException("Should be less than 3");
+#if DEBUG
+                if (value as int? >= (1 << 13)) throw new ArgumentException("Too big value");
+#endif
                 Map[Offset + i] = value;
             }
         }
@@ -96,6 +99,12 @@ namespace com.azi.Image
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAndMoveNext(T r, T g, T b)
         {
+#if DEBUG
+            if (r as ushort? >= (1 << 13)) throw new ArgumentException("Too big value");
+            if (g as ushort? >= (1 << 13)) throw new ArgumentException("Too big value");
+            if (b as ushort? >= (1 << 13)) throw new ArgumentException("Too big value");
+#endif
+
             Map[Offset + 0] = r;
             Map[Offset + 1] = g;
             Map[Offset + 2] = b;

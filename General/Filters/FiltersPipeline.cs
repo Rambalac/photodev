@@ -39,10 +39,17 @@ namespace com.azi.Filters
                     {
                         indColorFilter.Add((IndependentColorComponentFilter)filter);
                     }
-                    else if (filter is IndependentColorComponentToRGBFilter)
+                    else if (filter is IndependentColorComponentToRGBFilter && indColorFilter.Count != 0)
                     {
                         currentMap = ApplyIndependentColorFiltersWithRGB((ColorMap<ushort>)currentMap,
                             indColorFilter.ToArray(), (IndependentColorComponentToRGBFilter)filter);
+                        indColorFilter.Clear();
+                    }
+                    else if (filter is IColorFilter)
+                    {
+                        currentMap = ApplyIndependentColorFilters((ColorMap<ushort>)currentMap, indColorFilter.ToArray());
+                        indColorFilter.Clear();
+                        currentMap = ApplySingleColorFilter((ColorMap<ushort>)currentMap, (IColorFilter)filter);
                     }
                     else
                     {
@@ -56,6 +63,13 @@ namespace com.azi.Filters
             }
 
             return (RGB8Map)currentMap;
+        }
+
+        private IColorMap ApplySingleColorFilter(ColorMap<ushort> map, IColorFilter colorFilter)
+        {
+            var result = new RGB8Map(map.Width, map.Height);
+            var maxValue = map.MaxValue;
+            return result;
         }
 
         private static IColorMap ApplyRawBGGRToColorMapFilter(RawBGGRMap<ushort> map, IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort> filter)
@@ -131,7 +145,7 @@ namespace com.azi.Filters
             return result;
         }
 
-        public void AutoAjust(RawMap<ushort> map, IAutoAdjustableFilter autofilter)
+        public void AutoAdjust(RawMap<ushort> map, IAutoAdjustableFilter autofilter)
         {
             var indColorFilter = new List<IndependentColorComponentFilter>();
             IColorMap currentMap = map;

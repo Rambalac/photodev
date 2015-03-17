@@ -77,7 +77,8 @@ namespace com.azi.Filters.ColorMap16
             _maxIn = max.ToFloat(map.MaxBits);
             _minIn = min.ToFloat(map.MaxBits);
             var wcenterf = wcenter.ToFloat(map.MaxBits).Select((v, c) => (v - _minIn[c]) / (_maxIn[c] - _minIn[c]));
-            _contrast = wcenterf.Select(v => (float)Math.Log(0.5, v)).ToArray();
+            _contrast = Enumerable.Repeat(wcenterf.Select(v => (float)Math.Log(0.3, v)).Average(), 3).ToArray();
+            //_contrast = wcenterf.Select(v => (float)Math.Log(0.3, v)).ToArray();
             Recalculate();
         }
 

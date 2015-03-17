@@ -28,7 +28,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
             var resultWidth = exif.CropRight;
             var map = new RawBGGRMap<ushort>(resultWidth, resultHeight, 12);
             var raw = map.GetPixel();
-            ushort value;
+            int value;
             var bits = new PanasonicBitStream(stream);
             for (row = 0; row < exif.ImageHeight; row++)
                 for (col = 0; col < exif.ImageWidth; col++)
@@ -58,12 +58,12 @@ namespace com.azi.Decoder.Panasonic.Rw2
                         }
                         if (col >= resultWidth) continue;
 
-                        value = (ushort)pred[col & 1];
+                        value = pred[col & 1];
 
                         if (value > 4098)
                             throw new Exception("Decoding error");
 
-                        raw.SetAndMoveNext(value);
+                        raw.SetAndMoveNext((ushort)Math.Min(4095, value));
                     }
             var result = new RawImageFile<ushort>(map)
             {
