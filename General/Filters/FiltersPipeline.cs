@@ -20,15 +20,37 @@ namespace com.azi.Filters
 
         public RGB8Map RawMapToRGB(RawMap<ushort> map)
         {
+            var currentMap = ProcessFilters(map);
+
+            return (RGB8Map)currentMap;
+        }
+
+        private IColorMap ProcessFilters(RawMap<ushort> map, IAutoAdjustableFilter autoFilter = null)
+        {
             var indColorFilter = new List<IndependentColorComponentFilter>();
             IColorMap currentMap = map;
             foreach (var filter in _filters)
             {
+                if (filter == null)
+                    throw new ArgumentNullException("Cannot have null");
+
+                if (filter == autoFilter)
+                {
+                    if (indColorFilter.Count > 0)
+                    {
+                        currentMap = ApplyIndependentColorFilters((ColorMap<ushort>)currentMap,
+                            indColorFilter.ToArray());
+                    }
+                    autoFilter.AutoAdjust((ColorMap<ushort>)currentMap);
+                    return currentMap;
+                }
+
                 if (currentMap is RawBGGRMap<ushort>)
                 {
                     if (filter is IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort>)
                     {
-                        currentMap = ApplyRawBGGRToColorMapFilter((RawBGGRMap<ushort>)currentMap, (IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort>)filter);
+                        currentMap = ApplyRawBGGRToColorMapFilter((RawBGGRMap<ushort>)currentMap,
+                            (IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort>)filter);
                     }
                     else
                     {
@@ -41,11 +63,14 @@ namespace com.azi.Filters
                     {
                         indColorFilter.Add((IndependentColorComponentFilter)filter);
                     }
-                    else if (filter is IndependentColorComponentToRGBFilter && indColorFilter.Count != 0)
+                    else if (filter is IndependentColorComponentToRGBFilter)
                     {
-                        currentMap = ApplyIndependentColorFiltersWithRGB((ColorMap<ushort>)currentMap,
-                            indColorFilter.ToArray(), (IndependentColorComponentToRGBFilter)filter);
-                        indColorFilter.Clear();
+                        if (indColorFilter.Count != 0)
+                        {
+                            currentMap = ApplyIndependentColorFiltersWithRGB((ColorMap<ushort>)currentMap,
+                                indColorFilter.ToArray(), (IndependentColorComponentToRGBFilter)filter);
+                            indColorFilter.Clear();
+                        }
                     }
                     else if (filter is IColorFilter)
                     {
@@ -55,7 +80,8 @@ namespace com.azi.Filters
                     }
                     else
                     {
-                        throw new NotSupportedException("Not supported Filter: " + filter.GetType() + " for Map: " + currentMap.GetType());
+                        throw new NotSupportedException("Not supported Filter: " + filter.GetType() + " for Map: " +
+                                                        currentMap.GetType());
                     }
                 }
                 else
@@ -63,9 +89,14 @@ namespace com.azi.Filters
                     throw new NotSupportedException("Not supported Map: " + currentMap.GetType());
                 }
             }
-
-            return (RGB8Map)currentMap;
+            return currentMap;
         }
+
+        public void AutoAdjust(RawMap<ushort> map, IAutoAdjustableFilter autoFilter)
+        {
+            ProcessFilters(map, autoFilter);
+        }
+
 
         private IColorMap ApplySingleColorFilter(ColorMap<ushort> map, IColorFilter colorFilter)
         {
@@ -155,56 +186,6 @@ namespace com.azi.Filters
             return result;
         }
 
-        public void AutoAdjust(RawMap<ushort> map, IAutoAdjustableFilter autofilter)
-        {
-            var indColorFilter = new List<IndependentColorComponentFilter>();
-            IColorMap currentMap = map;
-            foreach (var filter in _filters)
-            {
-                if (filter == autofilter)
-                {
-                    var result = ApplyIndependentColorFilters((ColorMap<ushort>)currentMap,
-                        indColorFilter.ToArray());
-                    autofilter.AutoAdjust(result);
-                    return;
-                }
-                if (currentMap is RawBGGRMap<ushort>)
-                {
-                    if (filter is IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort>)
-                    {
-                        currentMap = ApplyRawBGGRToColorMapFilter((RawBGGRMap<ushort>)currentMap,
-                            (IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort>)filter);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Not supported Filter: " + filter.GetType() + " for Map: " +
-                                                        currentMap.GetType());
-                    }
-                }
-                else if (currentMap is ColorMap<ushort>)
-                {
-                    if (filter is IndependentColorComponentFilter)
-                    {
-                        indColorFilter.Add((IndependentColorComponentFilter)filter);
-                    }
-                    else if (filter is IndependentColorComponentToRGBFilter)
-                    {
-                        currentMap = ApplyIndependentColorFiltersWithRGB((ColorMap<ushort>)currentMap,
-                            indColorFilter.ToArray(), (IndependentColorComponentToRGBFilter)filter);
-                    }
-                    else
-                    {
-                        throw new NotSupportedException("Not supported Filter: " + filter.GetType() + " for Map: " +
-                                                        currentMap.GetType());
-                    }
-                }
-                else
-                {
-                    throw new NotSupportedException("Not supported Map: " + currentMap.GetType());
-                }
-            }
-
-        }
     }
 
 }
