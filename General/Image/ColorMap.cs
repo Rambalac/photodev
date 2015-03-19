@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace com.azi.Image
 {
-    public class ColorMap<T> : IColorMap where T : IComparable<T>
+    public class ColorMap<T> : IColorMap
     {
         public delegate void ColorMapProcessor(int x, int y, Color<T> input, Color<T> output);
 
@@ -12,24 +12,17 @@ namespace com.azi.Image
         public readonly int Height;
         public readonly T[] Rgb;
         public readonly int Width;
-        public readonly int MaxBits;
 
-        public int MaxValue
-        {
-            get { return (1 << MaxBits) - 1; }
-        }
-
-        public ColorMap(int w, int h, int maxBits)
-            : this(w, h, maxBits, new T[w * h * 3])
+        public ColorMap(int w, int h)
+            : this(w, h, new T[w * h * 3])
         {
 
         }
 
-        public ColorMap(int w, int h, int maxBits, T[] rgb)
+        public ColorMap(int w, int h, T[] rgb)
         {
             Width = w;
             Height = h;
-            MaxBits = maxBits;
             Rgb = rgb;
         }
 
@@ -37,7 +30,6 @@ namespace com.azi.Image
         {
             Width = m.Width;
             Height = m.Height;
-            MaxBits = m.MaxBits;
             Rgb = rgb;
         }
 
@@ -58,7 +50,7 @@ namespace com.azi.Image
 
         public ColorMap<T> CopyAndUpdateColors(int newMaxBits, ColorMapProcessor processor)
         {
-            var result = new ColorMap<T>(Width, Height, newMaxBits, new T[Width * Height * 3]);
+            var result = new ColorMap<T>(Width, Height, new T[Width * Height * 3]);
             var input = GetPixel();
             var output = result.GetPixel();
             for (var y = 0; y < Height; y++)
@@ -90,31 +82,39 @@ namespace com.azi.Image
                 action(2, pix[2]);
             } while (pix.MoveNextAndCheck());
         }
-
-        public static T[,] MakeCurve(int maxBits, Func<int, int, T> processor)
-        {
-            var newcurve = new T[3, 1 << maxBits];
-            for (var c = 0; c < 3; c++)
-                for (var i = 0; i < (1 << maxBits); i++)
-                    newcurve[c, i] = processor(c, i);
-            return newcurve;
-        }
     }
 
-    public static class ColorMapExtensions
+    public class ColorMapUshort : ColorMap<ushort>
     {
-        public static Histogram GetHistogram(this ColorMap<ushort> map)
-        {
-            var result = new Histogram(map.MaxValue);
+        public readonly int MaxBits;
 
-            map.ForEachPixel((comp, b) => result.AddValue(comp, b));
-            return result;
+        public int MaxValue
+        {
+            get { return (1 << MaxBits) - 1; }
         }
-        public static Histogram GetHistogram(this RGB8Map map)
-        {
-            var result = new Histogram(255);
 
-            map.ForEachPixel((comp, b) => result.AddValue(comp, b));
+        public ColorMapUshort(int w, int h, int maxBits)
+            : this(w, h, maxBits, new ushort[w * h * 3])
+        {
+
+        }
+
+        public ColorMapUshort(int w, int h, int maxBits, ushort[] rgb)
+            : base(w, h, rgb)
+        {
+            MaxBits = maxBits;
+        }
+
+        public ColorMapUshort(ColorMapUshort m, ushort[] rgb)
+            : this(m.Width, m.Height, m.MaxBits, rgb)
+        {
+        }
+
+        public Histogram GetHistogram()
+        {
+            var result = new Histogram(MaxValue);
+
+            ForEachPixel((comp, b) => result.AddValue(comp, b));
             return result;
         }
     }

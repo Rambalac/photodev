@@ -57,5 +57,13 @@ namespace com.azi.Image
                 } while (pix.MoveNextAndCheck());
             }
         }
+
+        public Histogram GetHistogram()
+        {
+            var result = new Histogram(255);
+
+            ForEachPixel((comp, b) => result.AddValue(comp, b));
+            return result;
+        }
     }
 }

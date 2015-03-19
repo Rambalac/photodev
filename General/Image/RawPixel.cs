@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace com.azi.Image
 {
-    public class RawPixel<T> where T : IComparable<T>
+    public class RawPixel<T>
     {
         private readonly int _limit;
         private readonly RawMap<T> _map;

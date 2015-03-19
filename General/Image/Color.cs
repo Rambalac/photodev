@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace com.azi.Image
 {
-    public class Color<T> where T : IComparable<T>
+    public class Color<T>
     {
         private readonly int _limit;
         public readonly T[] Map;

@@ -1,7 +1,7 @@
 ﻿using System;
 namespace com.azi.Image
 {
-    public class RawImageFile<T> : ImageFile where T : IComparable<T>
+    public class RawImageFile<T> : ImageFile
     {
         public readonly RawMap<T> Raw;
 

@@ -1,6 +1,8 @@
-﻿namespace com.azi.Filters.ColorMap16
+﻿using com.azi.Filters.ColorMap16ToRgb8;
+
+namespace com.azi.Filters.ColorMap16
 {
-    class ColorMatrixFilter : ColorFilter
+    class ColorMatrixFilter : ColorToColorFilter<float, float>
     {
         public float[,] Matrix
         {

@@ -34,14 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Filters\ColorToColorFilter.cs" />
+    <Compile Include="Filters\IndependentComponentColorToColorFilter.cs" />
     <Compile Include="Filters\ColorMap16\SaturationFilter.cs" />
     <Compile Include="Filters\RawToColorMap16\Demosaic\AverageBGGRDebayer.cs" />
     <Compile Include="Filters\RawToColorMap16\Demosaic\AverageDebayer.cs" />
     <Compile Include="Filters\RawToColorMap16\Demosaic\BinningDebayer.cs" />
     <Compile Include="Decoder\IRawDecoder.cs" />
-    <Compile Include="Filters\ColorMap16ToRgb8\ColorMapToRgb8Filter.cs" />
+    <Compile Include="Filters\IColorToColorFilter.cs" />
     <Compile Include="Filters\ColorMap16ToRgb8\RGBCompressorFilter.cs" />
-    <Compile Include="Filters\ColorMap16\ColorFilter.cs" />
     <Compile Include="Filters\ColorMap16\ColorMatrix.cs" />
     <Compile Include="Filters\ColorMap16\GammaFilter.cs" />
     <Compile Include="Filters\ColorMap16\WhiteBalanceFilter.cs" />

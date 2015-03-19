@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace com.azi.Filters.ColorMap16
 {
-    public class SaturationFilter : IColorFilter
+    public class SaturationFilter : IColorToColorFilter<float, float>
     {
         public float Saturation
         {

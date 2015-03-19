@@ -35,7 +35,7 @@ namespace General.Tests
                 var light = new LightFilter();
                 //light.AutoAdjust(color16Image);
 
-                var compressor = new RGBCompressorFilter();
+                var compressor = new ColorCompressorFilter();
                 var pipeline = new FiltersPipeline(new IFilter[] {
                     debayer,
                     white,
@@ -72,7 +72,7 @@ namespace General.Tests
                 var light = new LightFilter();
                 //light.AutoAdjust(color16Image);
 
-                var compressor = new RGBCompressorFilter();
+                var compressor = new ColorCompressorFilter();
                 var pipeline = new FiltersPipeline(new IFilter[] {
                     debayer,
                     white,
@@ -110,7 +110,7 @@ namespace General.Tests
                 var light = new LightFilter();
                 //light.AutoAdjust(color16Image);
 
-                var compressor = new RGBCompressorFilter();
+                var compressor = new ColorCompressorFilter();
                 var pipeline = new FiltersPipeline(new IFilter[] {
                     debayer,
                     white,

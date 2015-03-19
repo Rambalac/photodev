@@ -10,7 +10,7 @@ namespace com.azi.WpfFilters
 
     }
 
-    abstract class AWpfRawDecoder<T> : WpfFilter, IRawDecoder<T> where T : IComparable<T>
+    abstract class AWpfRawDecoder<T> : WpfFilter, IRawDecoder<T>
     {
         IRawDecoder<T> Decoder { get; set; }
         public abstract RawImageFile<T> Decode(Stream stream);

@@ -35,7 +35,7 @@ namespace photodev
                 var saturation = new SaturationFilter();
                 saturation.Saturation = 1.2f;
 
-                var compressor = new RGBCompressorFilter();
+                var compressor = new ColorCompressorFilter();
                 var pipeline = new FiltersPipeline(new IFilter[] {
                     debayer,
                     white,

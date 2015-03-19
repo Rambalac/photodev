@@ -4,7 +4,7 @@ using com.azi.Image;
 
 namespace com.azi.Decoder
 {
-    public interface IRawDecoder<T> where T : IComparable<T>
+    public interface IRawDecoder<T>
     {
         RawImageFile<T> Decode(Stream stream);
     }

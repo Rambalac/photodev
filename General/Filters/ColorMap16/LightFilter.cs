@@ -5,7 +5,7 @@ using com.azi.Image;
 
 namespace com.azi.Filters.ColorMap16
 {
-    public class LightFilter : IndependentColorComponentFilter, IAutoAdjustableFilter
+    public class LightFilter : IndependentComponentColorToColorFilter<float, float>, IAutoAdjustableFilter
     {
         private float[] _inoutLen = { 1f, 1f, 1f };
         private float[] _minIn = { 0f, 0f, 0f };
@@ -65,7 +65,7 @@ namespace com.azi.Filters.ColorMap16
             _inoutLen = MaxIn.Select((v, c) => (_maxOut[c] - _minOut[c]) / (v - MinIn[c])).ToArray();
         }
 
-        public void AutoAdjust(ColorMap<ushort> map)
+        public void AutoAdjust(ColorMapUshort map)
         {
             var h = map.GetHistogram();
 

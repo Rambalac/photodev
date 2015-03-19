@@ -2,7 +2,7 @@
 
 namespace com.azi.Image
 {
-    public class ColorImageFile<T> : ImageFile where T : IComparable<T>
+    public class ColorImageFile<T> : ImageFile
     {
         public ColorMap<T> Pixels { get; set; }
 

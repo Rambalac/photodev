@@ -6,7 +6,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
     {
         public ColorMap<ushort> Process(RawMap<ushort> map)
         {
-            var res = new ColorMap<ushort>(map.Width / 2, map.Height / 2, map.MaxBits);
+            var res = new ColorMapUshort(map.Width / 2, map.Height / 2, map.MaxBits);
             var c = new ushort[4];
             var pix = res.GetPixel();
             for (var y = 0; y < res.Height; y++)

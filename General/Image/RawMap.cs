@@ -2,7 +2,7 @@
 
 namespace com.azi.Image
 {
-    public class RawBGGRMap<T> : RawMap<T> where T : IComparable<T>
+    public class RawBGGRMap<T> : RawMap<T>
     {
         public RawBGGRMap(int w, int h, int maxBits)
             : base(w, h, maxBits)
@@ -10,7 +10,7 @@ namespace com.azi.Image
         }
     }
 
-    public class RawMap<T> : IColorMap where T : IComparable<T>
+    public class RawMap<T> : IColorMap
     {
         public readonly int Height;
         public readonly T[] Raw;

@@ -13,7 +13,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
         public ColorMap<ushort> Process(RawBGGRMap<ushort> file)
         {
             if (file.Width % 2 != 0 || file.Height % 2 != 0) throw new ArgumentException("Width and Height should be even");
-            var res = new ColorMap<ushort>(file.Width, file.Height, file.MaxBits + 1);
+            var res = new ColorMapUshort(file.Width, file.Height, file.MaxBits + 1);
 
             ProcessTopLine(file, res);
 
@@ -24,10 +24,10 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             return res;
         }
 
-        private static void ProcessMiddleRows(RawBGGRMap<ushort> file, ColorMap<ushort> res)
+        private static void ProcessMiddleRows(RawBGGRMap<ushort> file, ColorMapUshort res)
         {
             // Middle Rows
-            Parallel.For(0, (res.Height - 2) / 2, (yy) =>
+            Parallel.For(0, (res.Height - 2) / 2, yy =>
             {
                 var y = yy * 2 + 1;
                 ProcessMiddleOddRows(file.GetRow(y), res.Width, res.GetRow(y));
@@ -113,7 +113,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             raw.MoveNext();
         }
 
-        private static void ProcessTopLine(RawBGGRMap<ushort> map, ColorMap<ushort> res)
+        private static void ProcessTopLine(RawBGGRMap<ushort> map, ColorMapUshort res)
         {
             var pix = res.GetPixel();
             var raw = map.GetRow(0);
@@ -153,7 +153,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
         // G R G R
         // B G B G
         // G R G R
-        private static void ProcessBottomLine(RawBGGRMap<ushort> map, ColorMap<ushort> res)
+        private static void ProcessBottomLine(RawBGGRMap<ushort> map, ColorMapUshort res)
         {
             var pix = res.GetPixel();
             var raw = map.GetRow(res.Height - 1);

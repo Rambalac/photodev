@@ -5,7 +5,7 @@ using com.azi.Image;
 
 namespace com.azi.Filters.ColorMap16
 {
-    public class WhiteBalanceFilter : IndependentColorComponentFilter, IAutoAdjustableFilter
+    public class WhiteBalanceFilter : IndependentComponentColorToColorFilter<float, float>, IAutoAdjustableFilter
     {
         public float[] WhiteColor
         {
@@ -22,7 +22,7 @@ namespace com.azi.Filters.ColorMap16
         private float[] _whiteColor1 = { 1f, 1f, 1f };
 
 
-        public void AutoAdjust(ColorMap<ushort> map)
+        public void AutoAdjust(ColorMapUshort map)
         {
             double maxbright = 0;
             var whiteColor = new ushort[] { 1, 1, 1 };

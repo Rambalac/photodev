@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace com.azi.Filters.ColorMap16
 {
-    public class GammaFilter : IndependentColorComponentFilter
+    public class GammaFilter : IndependentComponentColorToColorFilter<float, float>
     {
         public float[] Gamma
         {
