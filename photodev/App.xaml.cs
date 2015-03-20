@@ -32,8 +32,16 @@ namespace photodev
 
                 var light = new LightFilter();
                 //light.AutoAdjust(color16Image);
-                var saturation = new SaturationFilter();
-                saturation.Saturation = 1.2f;
+                var saturation = new SaturationFilter { Saturation = 1.2f };
+
+                var colorMatrix = new ColorMatrixFilter
+                {
+                    Matrix = new[,] {
+                        {1.87f,-0.81f,-0.06f},
+                        {-0.16f,1.55f,-0.39f},
+                        {0.05f,-0.47f,1.42f}
+                    }
+                };
 
                 var compressor = new ColorCompressorFilter();
                 var pipeline = new FiltersPipeline(new IFilter[] {
@@ -42,6 +50,7 @@ namespace photodev
                     gamma,
                     light,
                     //saturation,
+                    //colorMatrix,
                     compressor
                 });
                 pipeline.AutoAdjust(rawimage.Raw, white);

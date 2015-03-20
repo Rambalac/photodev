@@ -2,7 +2,7 @@
 
 namespace com.azi.Filters.ColorMap16
 {
-    class ColorMatrixFilter : ColorToColorFilter<float, float>
+    public class ColorMatrixFilter : ColorToColorFilter<float, float>
     {
         public float[,] Matrix
         {

@@ -123,8 +123,20 @@ namespace com.azi.Image
                 : (c.G > c.B) ? c.G : c.B;
         }
 
+        public static float MaxComponent(this Color<float> c)
+        {
+            return (c.R > c.G)
+                ? (c.R > c.B) ? c.R : c.B
+                : (c.G > c.B) ? c.G : c.B;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Brightness(this Color<ushort> c)
+        {
+            return c.R * c.R + c.G * c.G + c.B * c.B;
+        }
+
+        public static float Brightness(this Color<float> c)
         {
             return c.R * c.R + c.G * c.G + c.B * c.B;
         }

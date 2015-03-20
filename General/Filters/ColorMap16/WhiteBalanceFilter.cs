@@ -5,7 +5,7 @@ using com.azi.Image;
 
 namespace com.azi.Filters.ColorMap16
 {
-    public class WhiteBalanceFilter : IndependentComponentColorToColorFilter<float, float>, IAutoAdjustableFilter
+    public class WhiteBalanceFilter : IndependentComponentColorToColorFilter<float, float>, IAutoAdjustableFilter<ColorMapFloat>
     {
         public float[] WhiteColor
         {
@@ -22,20 +22,19 @@ namespace com.azi.Filters.ColorMap16
         private float[] _whiteColor1 = { 1f, 1f, 1f };
 
 
-        public void AutoAdjust(ColorMapUshort map)
+        public void AutoAdjust(ColorMapFloat map)
         {
             double maxbright = 0;
-            var whiteColor = new ushort[] { 1, 1, 1 };
-            var maxVal = (ushort)map.MaxValue;
+            var whiteColor = new float[] { 1, 1, 1 };
             map.ForEachPixel(color =>
             {
                 var bright = color.Brightness();
-                if (bright < maxbright || color.MaxComponent() == maxVal) return;
+                if (bright < maxbright || color.MaxComponent() >= 1f) return;
 
                 maxbright = bright;
                 whiteColor = color.GetCopy();
             });
-            var maxComp = (float)whiteColor.Max();
+            var maxComp = whiteColor.Max();
             WhiteColor = whiteColor.Select(v => v / maxComp).ToArray();
         }
 

@@ -12,9 +12,9 @@ namespace com.azi.Image
 
     public class RawMap<T> : IColorMap
     {
-        public readonly int Height;
+        readonly int _height;
         public readonly T[] Raw;
-        public readonly int Width;
+        readonly int _width;
         public readonly int MaxBits;
 
         public int MaxValue
@@ -24,8 +24,8 @@ namespace com.azi.Image
 
         public RawMap(int w, int h, int maxBits)
         {
-            Width = w;
-            Height = h;
+            _width = w;
+            _height = h;
             MaxBits = maxBits;
             Raw = new T[h * w];
         }
@@ -44,5 +44,8 @@ namespace com.azi.Image
         {
             return new RawPixel<T>(this, 0, y, (y + 1) * Width);
         }
+
+        public int Width { get { return _width; } }
+        public int Height { get { return _height; } }
     }
 }

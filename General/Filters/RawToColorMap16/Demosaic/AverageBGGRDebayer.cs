@@ -38,7 +38,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             });
         }
 
-        private static void ProcessMiddleEvenRows(RawPixel<ushort> raw, int width, Color<ushort> pix)
+        private static void ProcessMiddleEvenRows(RawPixel<ushort> raw, int Width, Color<ushort> pix)
         {
             // Second left pixel
             pix.SetAndMoveNext(
@@ -47,7 +47,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
                 (ushort)(raw.Value << 1));
             raw.MoveNext();
 
-            var lastX = width - 1;
+            var lastX = Width - 1;
             for (var x = 1; x < lastX; x += 2)
             {
                 var xy = raw.Value;
@@ -76,7 +76,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             raw.MoveNext();
         }
 
-        private static void ProcessMiddleOddRows(RawPixel<ushort> raw, int width, Color<ushort> pix)
+        private static void ProcessMiddleOddRows(RawPixel<ushort> raw, int Width, Color<ushort> pix)
         {
             // First left pixel
             pix.SetAndMoveNext(
@@ -85,7 +85,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
                 (ushort)((raw.GetRel(0, -1) + raw.GetRel(0, +1))));
             raw.MoveNext();
 
-            var lastX = width - 1;
+            var lastX = Width - 1;
             for (var x = 1; x < lastX; x += 2)
             {
                 var xy = raw.Value;

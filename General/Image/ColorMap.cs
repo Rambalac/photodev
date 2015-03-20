@@ -9,9 +9,9 @@ namespace com.azi.Image
 
         public delegate T CurveProcessor(int component, int index, T input);
 
-        public readonly int Height;
+        readonly int _height;
         public readonly T[] Rgb;
-        public readonly int Width;
+        readonly int _width;
 
         public ColorMap(int w, int h)
             : this(w, h, new T[w * h * 3])
@@ -21,15 +21,15 @@ namespace com.azi.Image
 
         public ColorMap(int w, int h, T[] rgb)
         {
-            Width = w;
-            Height = h;
+            _width = w;
+            _height = h;
             Rgb = rgb;
         }
 
-        public ColorMap(ColorMap<T> m, T[] rgb)
+        public ColorMap(IColorMap m, T[] rgb)
         {
-            Width = m.Width;
-            Height = m.Height;
+            _width = m.Width;
+            _height = m.Height;
             Rgb = rgb;
         }
 
@@ -50,11 +50,11 @@ namespace com.azi.Image
 
         public ColorMap<T> CopyAndUpdateColors(int newMaxBits, ColorMapProcessor processor)
         {
-            var result = new ColorMap<T>(Width, Height, new T[Width * Height * 3]);
+            var result = new ColorMap<T>(_width, _height, new T[_width * _height * 3]);
             var input = GetPixel();
             var output = result.GetPixel();
-            for (var y = 0; y < Height; y++)
-                for (var x = 0; x < Width; x++)
+            for (var y = 0; y < _height; y++)
+                for (var x = 0; x < _width; x++)
                 {
                     processor(x, y, input, output);
                     input.MoveNext();
@@ -81,6 +81,42 @@ namespace com.azi.Image
                 action(1, pix[1]);
                 action(2, pix[2]);
             } while (pix.MoveNextAndCheck());
+        }
+
+        public int Width
+        {
+            get { return _width; }
+        }
+        public int Height
+        {
+            get { return _height; }
+        }
+    }
+
+    public class ColorMapFloat : ColorMap<float>
+    {
+        public ColorMapFloat(int w, int h)
+            : this(w, h, new float[w * h * 3])
+        {
+
+        }
+
+        public ColorMapFloat(int w, int h, float[] rgb)
+            : base(w, h, rgb)
+        {
+        }
+
+        public ColorMapFloat(IColorMap m, float[] rgb)
+            : this(m.Width, m.Height, rgb)
+        {
+        }
+
+        public Histogram GetHistogram(int maxIndex)
+        {
+            var result = new Histogram(maxIndex);
+
+            ForEachPixel((comp, b) => result.AddValue(comp, (int)(maxIndex * b)));
+            return result;
         }
     }
 

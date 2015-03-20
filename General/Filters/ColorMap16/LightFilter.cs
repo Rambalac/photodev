@@ -5,7 +5,7 @@ using com.azi.Image;
 
 namespace com.azi.Filters.ColorMap16
 {
-    public class LightFilter : IndependentComponentColorToColorFilter<float, float>, IAutoAdjustableFilter
+    public class LightFilter : IndependentComponentColorToColorFilter<float, float>, IAutoAdjustableFilter<ColorMapFloat>
     {
         private float[] _inoutLen = { 1f, 1f, 1f };
         private float[] _minIn = { 0f, 0f, 0f };
@@ -65,20 +65,24 @@ namespace com.azi.Filters.ColorMap16
             _inoutLen = MaxIn.Select((v, c) => (_maxOut[c] - _minOut[c]) / (v - MinIn[c])).ToArray();
         }
 
-        public void AutoAdjust(ColorMapUshort map)
+        public void AutoAdjust(ColorMapFloat map)
         {
-            var h = map.GetHistogram();
+            const int maxValue = 1023;
+            var h = map.GetHistogram(maxValue);
 
-            ushort[] max;
-            ushort[] min;
-            h.FindMinMax(out min, out max);
-            var wcenter = h.FindWeightCenter(min, max);
-
-            _maxIn = max.ToFloat(map.MaxBits);
-            _minIn = min.ToFloat(map.MaxBits);
-            var wcenterf = wcenter.ToFloat(map.MaxBits).Select((v, c) => (v - _minIn[c]) / (_maxIn[c] - _minIn[c]));
-            _contrast = Enumerable.Repeat(wcenterf.Select(v => (float)Math.Log(0.3, v)).Average(), 3).ToArray();
+            var wcenter = h.FindWeightCenter();
+            var wcenterf = wcenter.Select((v, c) => (v - _minIn[c]) / (_maxIn[c] - _minIn[c]));
             //_contrast = wcenterf.Select(v => (float)Math.Log(0.3, v)).ToArray();
+            //_contrast = Enumerable.Repeat(wcenterf.Select(v => (float)Math.Log(0.4, v)).Average(), 3).ToArray();
+
+            h.Transform((index, value, comp) => (int)(1023 * Math.Pow(index / 1023f, _contrast[comp])));
+
+            float[] max;
+            float[] min;
+            h.FindMinMax(out min, out max, 0.005f);
+
+            _maxIn = max;
+            _minIn = min;
             Recalculate();
         }
 

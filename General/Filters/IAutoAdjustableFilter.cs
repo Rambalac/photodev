@@ -2,7 +2,10 @@
 
 namespace com.azi.Filters
 {
-    public interface IAutoAdjustableFilter<T> where T : IColorMap
+    public interface IIAutoAdjustableFilter
+    {
+    }
+    public interface IAutoAdjustableFilter<in T> : IIAutoAdjustableFilter where T : IColorMap
     {
         void AutoAdjust(T map);
     }

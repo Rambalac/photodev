@@ -2,5 +2,7 @@
 {
     public interface IColorMap
     {
+        int Width { get; }
+        int Height { get; }
     }
 }
