@@ -12,7 +12,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
     {
         public RawImageFile<ushort> Decode(Stream stream)
         {
-            var exif = PanasonicExif.Parse(stream);
+            PanasonicExif exif = PanasonicExif.Parse(stream);
 
             stream.Seek(exif.RawOffset, SeekOrigin.Begin);
 
@@ -24,20 +24,20 @@ namespace com.azi.Decoder.Panasonic.Rw2
             int row, col, i, j, sh = 0;
             int[] pred = new int[2], nonz = new int[2];
 
-            var resultHeight = exif.ImageHeight;
-            var resultWidth = exif.CropRight;
+            int resultHeight = exif.ImageHeight;
+            int resultWidth = exif.CropRight;
             var map = new RawBGGRMap<ushort>(resultWidth, resultHeight, 12);
-            var raw = map.GetPixel();
+            RawPixel<ushort> raw = map.GetPixel();
             int value;
             var bits = new PanasonicBitStream(stream);
             for (row = 0; row < exif.ImageHeight; row++)
                 for (col = 0; col < exif.ImageWidth; col++)
                     unchecked
                     {
-                        i = col % 14;
+                        i = col%14;
                         if (i == 0)
                             pred[0] = pred[1] = nonz[0] = nonz[1] = 0;
-                        if (i % 3 == 2)
+                        if (i%3 == 2)
                             sh = 4 >> (3 - bits.Read(2));
                         if (nonz[i & 1] != 0)
                         {
@@ -63,7 +63,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
                         if (value > 4098)
                             throw new Exception("Decoding error");
 
-                        raw.SetAndMoveNext((ushort)Math.Min(4095, value));
+                        raw.SetAndMoveNext((ushort) Math.Min(4095, value));
                     }
             var result = new RawImageFile<ushort>(map)
             {
@@ -78,14 +78,14 @@ namespace com.azi.Decoder.Panasonic.Rw2
         private class PanasonicBitStream
         {
             private const int Bufsize = 16384;
+            private const int LoadFlags = 8200;
             private readonly byte[] _buf = new byte[Bufsize + 1];
             private readonly Stream _stream;
             private int _bitsLeft;
-            private const int LoadFlags = 8200;
 
             public PanasonicBitStream(Stream stream)
             {
-                this._stream = stream;
+                _stream = stream;
             }
 
             /// <summary>
@@ -103,7 +103,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
                         _stream.Read(_buf, 0, LoadFlags);
                     }
                     _bitsLeft = (_bitsLeft - numberOfBits) & 0x1ffff;
-                    var bytepos = _bitsLeft >> 3 ^ 0x3ff0;
+                    int bytepos = _bitsLeft >> 3 ^ 0x3ff0;
 
                     return ((_buf[bytepos] | _buf[bytepos + 1] << 8) >> (_bitsLeft & 7)) & (~(-1 << numberOfBits));
                 }

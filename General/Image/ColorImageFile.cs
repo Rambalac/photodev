@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace com.azi.Image
+﻿namespace com.azi.Image
 {
     public class ColorImageFile<T> : ImageFile
     {

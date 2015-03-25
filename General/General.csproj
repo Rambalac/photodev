@@ -67,8 +67,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tiff\Exif.cs" />
     <Compile Include="Tiff\Fraction.cs" />
-    <Compile Include="Tiff\IdfBlock.cs" />
-    <Compile Include="Tiff\IdfTag.cs" />
+    <Compile Include="Tiff\IfdType.cs" />
+    <Compile Include="Tiff\IfdTag.cs" />
+    <Compile Include="Tiff\IfdBlock.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

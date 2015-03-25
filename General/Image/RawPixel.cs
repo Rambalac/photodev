@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.CompilerServices;
 
 namespace com.azi.Image
@@ -13,36 +12,35 @@ namespace com.azi.Image
         {
             _map = map;
             _limit = limit;
-            _index = y * map.Width + x;
+            _index = y*map.Width + x;
         }
 
         public RawPixel(RawMap<T> map)
-            : this(map, 0, 0, map.Width * map.Height)
+            : this(map, 0, 0, map.Width*map.Height)
         {
         }
 
         public RawPixel(RawMap<T> map, int x, int y)
-            : this(map, x, y, map.Width * map.Height)
+            : this(map, x, y, map.Width*map.Height)
         {
         }
 
         public T Value
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _map.Raw[_index]; }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set { _map.Raw[_index] = value; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return _map.Raw[_index]; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { _map.Raw[_index] = value; }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetRel(int x, int y)
         {
-            return _map.Raw[_index + x + y * _map.Width];
+            return _map.Raw[_index + x + y*_map.Width];
         }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T SetRel(int x, int y, T val)
         {
-            return _map.Raw[_index + x + y * _map.Width] = val;
+            return _map.Raw[_index + x + y*_map.Width] = val;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

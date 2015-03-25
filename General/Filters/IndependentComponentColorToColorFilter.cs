@@ -20,6 +20,15 @@ namespace com.azi.Filters
             output[outputOffset + 0] = ProcessColor(input[inputOffset + 0], 0);
             output[outputOffset + 1] = ProcessColor(input[inputOffset + 1], 1);
             output[outputOffset + 2] = ProcessColor(input[inputOffset + 2], 2);
+
+#if DEBUG
+            if (typeof (TB) is float[])
+            {
+                if ((output as float[])[outputOffset + 0] > 1 || float.IsNaN((output as float[])[outputOffset + 0])) throw new Exception();
+                if ((output as float[])[outputOffset + 1] > 1 || float.IsNaN((output as float[])[outputOffset + 1])) throw new Exception();
+                if ((output as float[])[outputOffset + 2] > 1 || float.IsNaN((output as float[])[outputOffset + 2])) throw new Exception();
+            }
+#endif
         }
     }
 }

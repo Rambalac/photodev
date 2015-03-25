@@ -1,4 +1,3 @@
-using System;
 using com.azi.Image;
 
 namespace com.azi.Filters.RawToColorMap16.Demosaic

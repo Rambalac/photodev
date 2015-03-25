@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using com.azi.Image;
 
 namespace com.azi.Decoder

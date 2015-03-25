@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace com.azi.Image
+﻿namespace com.azi.Image
 {
     public class RawBGGRMap<T> : RawMap<T>
     {
@@ -12,22 +10,32 @@ namespace com.azi.Image
 
     public class RawMap<T> : IColorMap
     {
-        readonly int _height;
-        public readonly T[] Raw;
-        readonly int _width;
         public readonly int MaxBits;
-
-        public int MaxValue
-        {
-            get { return (1 << MaxBits) - 1; }
-        }
+        public readonly T[] Raw;
+        private readonly int _height;
+        private readonly int _width;
 
         public RawMap(int w, int h, int maxBits)
         {
             _width = w;
             _height = h;
             MaxBits = maxBits;
-            Raw = new T[h * w];
+            Raw = new T[h*w];
+        }
+
+        public int MaxValue
+        {
+            get { return (1 << MaxBits) - 1; }
+        }
+
+        public int Width
+        {
+            get { return _width; }
+        }
+
+        public int Height
+        {
+            get { return _height; }
         }
 
         public RawPixel<T> GetPixel()
@@ -42,10 +50,7 @@ namespace com.azi.Image
 
         public RawPixel<T> GetRow(int y)
         {
-            return new RawPixel<T>(this, 0, y, (y + 1) * Width);
+            return new RawPixel<T>(this, 0, y, (y + 1)*Width);
         }
-
-        public int Width { get { return _width; } }
-        public int Height { get { return _height; } }
     }
 }

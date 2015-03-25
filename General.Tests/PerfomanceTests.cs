@@ -5,7 +5,6 @@ using com.azi.Decoder.Panasonic.Rw2;
 using com.azi.Filters;
 using com.azi.Filters.ColorMap16;
 using com.azi.Filters.ColorMap16ToRgb8;
-using com.azi.Filters.RawToColorMap16;
 using com.azi.Filters.RawToColorMap16.Demosaic;
 using com.azi.Image;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,13 +17,13 @@ namespace General.Tests
         [TestMethod]
         public void FullProcessTest()
         {
-            var stopwatch = Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
             const int maxIter = 5;
-            for (var iter = 0; iter < maxIter; iter++)
+            for (int iter = 0; iter < maxIter; iter++)
             {
                 Stream stream = new FileStream(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2", FileMode.Open,
                     FileAccess.Read);
-                var rawimage = new PanasonicRW2Decoder().Decode(stream);
+                RawImageFile<ushort> rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new AverageBGGRDebayer();
 
                 var white = new WhiteBalanceFilter();
@@ -36,7 +35,8 @@ namespace General.Tests
                 //light.AutoAdjust(color16Image);
 
                 var compressor = new ColorCompressorFilter();
-                var pipeline = new FiltersPipeline(new IFilter[] {
+                var pipeline = new FiltersPipeline(new IFilter[]
+                {
                     debayer,
                     white,
                     gamma,
@@ -46,7 +46,7 @@ namespace General.Tests
                 pipeline.RawMapToRGB(rawimage.Raw);
             }
             stopwatch.Stop();
-            Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds / maxIter + "ms");
+            Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds/maxIter + "ms");
 
             //Before Curve - Release 3756ms
             //After Curve - Release 1900ms
@@ -55,13 +55,13 @@ namespace General.Tests
         [TestMethod]
         public void FullProcessP1460461Test()
         {
-            var stopwatch = Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
             const int maxIter = 1;
-            for (var iter = 0; iter < maxIter; iter++)
+            for (int iter = 0; iter < maxIter; iter++)
             {
                 Stream stream = new FileStream(@"..\..\..\PanasonicRW2.Tests\P1460461.RW2", FileMode.Open,
                     FileAccess.Read);
-                var rawimage = new PanasonicRW2Decoder().Decode(stream);
+                RawImageFile<ushort> rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new AverageBGGRDebayer();
 
                 var white = new WhiteBalanceFilter();
@@ -73,7 +73,8 @@ namespace General.Tests
                 //light.AutoAdjust(color16Image);
 
                 var compressor = new ColorCompressorFilter();
-                var pipeline = new FiltersPipeline(new IFilter[] {
+                var pipeline = new FiltersPipeline(new IFilter[]
+                {
                     debayer,
                     white,
                     gamma,
@@ -83,23 +84,23 @@ namespace General.Tests
                 pipeline.RawMapToRGB(rawimage.Raw);
             }
             stopwatch.Stop();
-            Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds / maxIter + "ms");
+            Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds/maxIter + "ms");
 
             //Before Curve - Release 3756ms
             //After Curve - Release 1900ms
         }
-                
+
 
         [TestMethod]
         public void FullProcessWithAutoAdjustTest()
         {
-            var stopwatch = Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
             const int maxIter = 5;
-            for (var iter = 0; iter < maxIter; iter++)
+            for (int iter = 0; iter < maxIter; iter++)
             {
                 Stream stream = new FileStream(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2", FileMode.Open,
                     FileAccess.Read);
-                var rawimage = new PanasonicRW2Decoder().Decode(stream);
+                RawImageFile<ushort> rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new AverageBGGRDebayer();
 
                 var white = new WhiteBalanceFilter();
@@ -111,7 +112,8 @@ namespace General.Tests
                 //light.AutoAdjust(color16Image);
 
                 var compressor = new ColorCompressorFilter();
-                var pipeline = new FiltersPipeline(new IFilter[] {
+                var pipeline = new FiltersPipeline(new IFilter[]
+                {
                     debayer,
                     white,
                     gamma,
@@ -124,7 +126,7 @@ namespace General.Tests
                 pipeline.RawMapToRGB(rawimage.Raw);
             }
             stopwatch.Stop();
-            Console.WriteLine("FullProcessWithAutoAdjust: " + stopwatch.ElapsedMilliseconds / maxIter + "ms");
+            Console.WriteLine("FullProcessWithAutoAdjust: " + stopwatch.ElapsedMilliseconds/maxIter + "ms");
 
             //Before Curve - Release 3756ms
             //After Curve - Release 1900ms

@@ -6,9 +6,10 @@ namespace com.azi.tiff
 {
     public class Exif
     {
-        private readonly List<IdfBlock> _idfBlocks = new List<IdfBlock>();
+        private readonly List<IfdBlock> _ifdBlocks = new List<IfdBlock>();
 
         public Fraction Aperture;
+        public float[,] ColorMatrix;
         public string DateTimeDigitized;
         public string DateTimeOriginal;
         public string ExifVersion;
@@ -23,26 +24,26 @@ namespace com.azi.tiff
         public Fraction MaxApertureValue;
         public int MeteringMode;
         public string Model;
+        public float? Multiplier;
         public int Orientation;
         public Fraction Shutter;
         public int StripByteCounts;
         public int StripOffset;
         public string SubsecTimeDigitized;
         public string SubsecTimeOriginal;
+        public byte[] Thumbnail;
         public float[] WhiteColor;
-        public float? Multiplier;
-        public float[,] ColorMatrix;
 
         protected void InternalParse(Stream stream)
         {
             var reader = new BinaryReader(stream);
-            var order = reader.ReadUInt16();
+            ushort order = reader.ReadUInt16();
             if (order != 0x4949 && order != 0x4d4d) throw new ArgumentException("Wrong file");
             reader.ReadUInt16();
 
             while (reader.PeekChar() != -1)
             {
-                var offset = reader.ReadUInt32();
+                uint offset = reader.ReadUInt32();
                 if (offset == 0) return;
                 reader.BaseStream.Seek(offset, SeekOrigin.Begin);
                 ParseIfd(reader);
@@ -56,91 +57,89 @@ namespace com.azi.tiff
             return result;
         }
 
-        protected virtual void ParseIdfBlock(IdfBlock block, BinaryReader reader)
+        protected virtual void ParseIfdBlock(IfdBlock block, BinaryReader reader)
         {
             switch (block.tag)
             {
-                case IdfTag.ImageWidth:
+                case IfdTag.ImageWidth:
                     ImageWidth = block.GetUInt16();
                     break;
-                case IdfTag.ImageLength:
+                case IfdTag.ImageLength:
                     ImageHeight = block.GetUInt16();
                     break;
-                case IdfTag.Make:
+                case IfdTag.Make:
                     Maker = block.GetString();
                     break;
-                case IdfTag.Model:
+                case IfdTag.Model:
                     Model = block.GetString();
                     break;
-                case IdfTag.StripOffsets:
-                    StripOffset = (int)block.GetUInt32();
+                case IfdTag.StripOffsets:
+                    StripOffset = (int) block.GetUInt32();
                     break;
-                case IdfTag.Orientation:
-                    Orientation = (int)block.GetUInt32();
+                case IfdTag.Orientation:
+                    Orientation = (int) block.GetUInt32();
                     break;
-                case IdfTag.RowsPerStrip:
-                    StripByteCounts = (int)block.GetUInt32();
+                case IfdTag.RowsPerStrip:
+                    StripByteCounts = (int) block.GetUInt32();
                     break;
-                case IdfTag.ExifIFD:
+                case IfdTag.ExifIFD:
                     reader.BaseStream.Seek(block.GetUInt32(), SeekOrigin.Begin);
                     ParseIfd(reader);
                     break;
-                case IdfTag.ExposureTime:
+                case IfdTag.ExposureTime:
                     Shutter = block.GetFraction();
                     break;
-                case IdfTag.FNumber:
+                case IfdTag.FNumber:
                     Aperture = block.GetFraction();
                     break;
-                case IdfTag.ExposureProgram:
-                    ExposureProgram = (int)block.GetUInt32();
+                case IfdTag.ExposureProgram:
+                    ExposureProgram = (int) block.GetUInt32();
                     break;
-                case IdfTag.ExifVersion:
+                case IfdTag.ExifVersion:
                     ExifVersion = block.GetString();
                     break;
-                case IdfTag.DateTimeOriginal:
+                case IfdTag.DateTimeOriginal:
                     DateTimeOriginal = block.GetString();
                     break;
-                case IdfTag.DateTimeDigitized:
+                case IfdTag.DateTimeDigitized:
                     DateTimeDigitized = block.GetString();
                     break;
-                case IdfTag.ExposureBiasValue:
+                case IfdTag.ExposureBiasValue:
                     ExposureBiasValue = block.GetFraction();
                     break;
-                case IdfTag.MaxApertureValue:
+                case IfdTag.MaxApertureValue:
                     MaxApertureValue = block.GetFraction();
                     break;
-                case IdfTag.MeteringMode:
-                    MeteringMode = (int)block.GetUInt32();
+                case IfdTag.MeteringMode:
+                    MeteringMode = (int) block.GetUInt32();
                     break;
-                case IdfTag.Flash:
-                    Flash = (int)block.GetUInt32();
+                case IfdTag.Flash:
+                    Flash = (int) block.GetUInt32();
                     break;
-                case IdfTag.FocalLength:
+                case IfdTag.FocalLength:
                     FocalLength = block.GetFraction();
                     break;
-                case IdfTag.SubsecTimeOriginal:
+                case IfdTag.SubsecTimeOriginal:
                     SubsecTimeOriginal = block.GetString();
                     break;
-                case IdfTag.SubsecTimeDigitized:
+                case IfdTag.SubsecTimeDigitized:
                     SubsecTimeDigitized = block.GetString();
                     break;
-                case IdfTag.FileSource:
-                    FileSource = (int)block.GetUInt32();
-                    break;
-                default: //skip 
+                case IfdTag.FileSource:
+                    FileSource = (int) block.GetUInt32();
                     break;
             }
         }
 
         private void ParseIfd(BinaryReader reader)
         {
-            var blocksnumber = reader.ReadUInt16();
+            ushort blocksnumber = reader.ReadUInt16();
             if (blocksnumber > 512) throw new ArgumentException("Too many items in ifd");
             while (blocksnumber-- > 0)
             {
-                var block = IdfBlock.parse(reader);
-                _idfBlocks.Add(block);
-                ParseIdfBlock(block, reader);
+                IfdBlock block = IfdBlock.parse(reader);
+                _ifdBlocks.Add(block);
+                ParseIfdBlock(block, reader);
                 block.moveNext(reader);
             }
         }

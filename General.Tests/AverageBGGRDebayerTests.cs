@@ -17,17 +17,17 @@ namespace General.Tests
             var decoder = new PanasonicRW2Decoder();
 
             var file = new FileStream(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2", FileMode.Open, FileAccess.Read);
-            var raw = decoder.Decode(file);
+            RawImageFile<ushort> raw = decoder.Decode(file);
 
             var debayer = new AverageBGGRDebayer();
 
-            var stopwatch = Stopwatch.StartNew();
+            Stopwatch stopwatch = Stopwatch.StartNew();
             const int maxIter = 3;
-            for (var iter = 0; iter < maxIter; iter++)
-                debayer.Process((RawBGGRMap<ushort>)raw.Raw);
+            for (int iter = 0; iter < maxIter; iter++)
+                debayer.Process((RawBGGRMap<ushort>) raw.Raw);
             stopwatch.Stop();
 
-            Console.WriteLine("AverageBGGRDebayer: " + stopwatch.ElapsedMilliseconds / 3 + "ms");
+            Console.WriteLine("AverageBGGRDebayer: " + stopwatch.ElapsedMilliseconds/3 + "ms");
         }
     }
 }

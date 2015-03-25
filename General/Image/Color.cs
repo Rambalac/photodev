@@ -6,24 +6,24 @@ namespace com.azi.Image
 {
     public class Color<T>
     {
-        private readonly int _limit;
         public readonly T[] Map;
+        private readonly int _limit;
         public int Offset;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Color(ColorMap<T> map, int x, int y)
         {
             Map = map.Rgb;
-            Offset = (y * map.Width + x) * 3;
-            _limit = map.Height * map.Width * 3;
+            Offset = (y*map.Width + x)*3;
+            _limit = map.Height*map.Width*3;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Color(ColorMap<T> map, int y)
         {
             Map = map.Rgb;
-            Offset = y * map.Width * 3;
-            _limit = Offset + map.Width * 3;
+            Offset = y*map.Width*3;
+            _limit = Offset + map.Width*3;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -36,32 +36,20 @@ namespace com.azi.Image
 
         public T R
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Map[Offset + 0]; }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set { Map[Offset + 0] = value; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Map[Offset + 0]; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Map[Offset + 0] = value; }
         }
 
         public T G
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Map[Offset + 1]; }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set { Map[Offset + 1] = value; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Map[Offset + 1]; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Map[Offset + 1] = value; }
         }
 
         public T B
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Map[Offset + 2]; }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set { Map[Offset + 2] = value; }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] GetCopy()
-        {
-            return new[] { R, G, B };
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Map[Offset + 2]; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)] set { Map[Offset + 2] = value; }
         }
 
         public T this[int i]
@@ -76,11 +64,14 @@ namespace com.azi.Image
             set
             {
                 //if (i > 2) throw new ArgumentException("Should be less than 3");
-#if DEBUG
-                if (value as int? >= (1 << 13)) throw new ArgumentException("Too big value");
-#endif
                 Map[Offset + i] = value;
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] GetCopy()
+        {
+            return new[] {R, G, B};
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -99,18 +90,11 @@ namespace com.azi.Image
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAndMoveNext(T r, T g, T b)
         {
-#if DEBUG
-            if (r as ushort? >= (1 << 13)) throw new ArgumentException("Too big value");
-            if (g as ushort? >= (1 << 13)) throw new ArgumentException("Too big value");
-            if (b as ushort? >= (1 << 13)) throw new ArgumentException("Too big value");
-#endif
-
             Map[Offset + 0] = r;
             Map[Offset + 1] = g;
             Map[Offset + 2] = b;
             MoveNext();
         }
-
     }
 
     public static class ColorExtensions
@@ -133,12 +117,12 @@ namespace com.azi.Image
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Brightness(this Color<ushort> c)
         {
-            return c.R * c.R + c.G * c.G + c.B * c.B;
+            return c.R*c.R + c.G*c.G + c.B*c.B;
         }
 
         public static float Brightness(this Color<float> c)
         {
-            return c.R * c.R + c.G * c.G + c.B * c.B;
+            return c.R*c.R + c.G*c.G + c.B*c.B;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -150,7 +134,7 @@ namespace com.azi.Image
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Brightness(this ushort[] c)
         {
-            return c[0] * c[0] + c[1] * c[1] + c[2] * c[2];
+            return c[0]*c[0] + c[1]*c[1] + c[2]*c[2];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -162,7 +146,7 @@ namespace com.azi.Image
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Brightness(this double[] c)
         {
-            return c[0] * c[0] + c[1] * c[1] + c[2] * c[2];
+            return c[0]*c[0] + c[1]*c[1] + c[2]*c[2];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -174,17 +158,17 @@ namespace com.azi.Image
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float[] ToFloat(this ushort[] c, int bits)
         {
-            var maxValue = (float)((1 << bits) - 1);
-            return c.Select(v => v / maxValue).ToArray();
+            var maxValue = (float) ((1 << bits) - 1);
+            return c.Select(v => v/maxValue).ToArray();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort[] Normalize(this ushort[] color, int maxBits)
         {
-            var colorNorma = color.BrightnessSqrt();
+            double colorNorma = color.BrightnessSqrt();
 
-            var d = (double)((1 << maxBits) - 1);
-            return color.Select(v => (ushort)(v * d / colorNorma)).ToArray();
+            var d = (double) ((1 << maxBits) - 1);
+            return color.Select(v => (ushort) (v*d/colorNorma)).ToArray();
         }
     }
 }

@@ -6,35 +6,45 @@ namespace com.azi.Image
     {
         public const int BytesPerPixel = 3;
 
-        readonly int _height;
         public readonly byte[] Rgb;
         public readonly int Stride;
-        readonly int _width;
+        private readonly int _height;
+        private readonly int _width;
 
         public RGB8Map(int w, int h)
-            : this(w, h, (4 * (w * 3 + 3) / 4), null)
+            : this(w, h, (4*(w*3 + 3)/4), null)
         {
-            Rgb = new byte[Stride * h * 3];
+            Rgb = new byte[Stride*h*3];
         }
 
         private RGB8Map(int width, int height, int stride, byte[] rgb)
         {
-            this._width = width;
-            this._height = height;
+            _width = width;
+            _height = height;
             Stride = stride;
             Rgb = rgb;
         }
 
+        public int Width
+        {
+            get { return _width; }
+        }
+
+        public int Height
+        {
+            get { return _height; }
+        }
+
         public Color<byte> GetRow(int y)
         {
-            return new Color<byte>(Rgb, y * Stride, y * Stride + _width * 3);
+            return new Color<byte>(Rgb, y*Stride, y*Stride + _width*3);
         }
 
         public void ForEachPixel(Action<Color<byte>> action)
         {
-            for (var y = 0; y < _height; y++)
+            for (int y = 0; y < _height; y++)
             {
-                var pix = GetRow(y);
+                Color<byte> pix = GetRow(y);
 
                 do
                 {
@@ -45,9 +55,9 @@ namespace com.azi.Image
 
         public void ForEachPixel(Action<int, byte> action)
         {
-            for (var y = 0; y < _height; y++)
+            for (int y = 0; y < _height; y++)
             {
-                var pix = GetRow(y);
+                Color<byte> pix = GetRow(y);
 
                 do
                 {
@@ -65,8 +75,5 @@ namespace com.azi.Image
             ForEachPixel((comp, b) => result.AddValue(comp, b));
             return result;
         }
-
-        public int Width { get { return _width; } }
-        public int Height { get { return _height; } }
     }
 }

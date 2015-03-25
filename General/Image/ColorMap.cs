@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 
 namespace com.azi.Image
 {
@@ -9,14 +8,13 @@ namespace com.azi.Image
 
         public delegate T CurveProcessor(int component, int index, T input);
 
-        readonly int _height;
         public readonly T[] Rgb;
-        readonly int _width;
+        private readonly int _height;
+        private readonly int _width;
 
         public ColorMap(int w, int h)
-            : this(w, h, new T[w * h * 3])
+            : this(w, h, new T[w*h*3])
         {
-
         }
 
         public ColorMap(int w, int h, T[] rgb)
@@ -31,6 +29,16 @@ namespace com.azi.Image
             _width = m.Width;
             _height = m.Height;
             Rgb = rgb;
+        }
+
+        public int Width
+        {
+            get { return _width; }
+        }
+
+        public int Height
+        {
+            get { return _height; }
         }
 
         public Color<T> GetPixel()
@@ -50,11 +58,11 @@ namespace com.azi.Image
 
         public ColorMap<T> CopyAndUpdateColors(int newMaxBits, ColorMapProcessor processor)
         {
-            var result = new ColorMap<T>(_width, _height, new T[_width * _height * 3]);
-            var input = GetPixel();
-            var output = result.GetPixel();
-            for (var y = 0; y < _height; y++)
-                for (var x = 0; x < _width; x++)
+            var result = new ColorMap<T>(_width, _height, new T[_width*_height*3]);
+            Color<T> input = GetPixel();
+            Color<T> output = result.GetPixel();
+            for (int y = 0; y < _height; y++)
+                for (int x = 0; x < _width; x++)
                 {
                     processor(x, y, input, output);
                     input.MoveNext();
@@ -65,7 +73,7 @@ namespace com.azi.Image
 
         public void ForEachPixel(Action<Color<T>> action)
         {
-            var pix = GetPixel();
+            Color<T> pix = GetPixel();
             do
             {
                 action(pix);
@@ -74,7 +82,7 @@ namespace com.azi.Image
 
         public void ForEachPixel(Action<int, T> action)
         {
-            var pix = GetPixel();
+            Color<T> pix = GetPixel();
             do
             {
                 action(0, pix[0]);
@@ -82,23 +90,13 @@ namespace com.azi.Image
                 action(2, pix[2]);
             } while (pix.MoveNextAndCheck());
         }
-
-        public int Width
-        {
-            get { return _width; }
-        }
-        public int Height
-        {
-            get { return _height; }
-        }
     }
 
     public class ColorMapFloat : ColorMap<float>
     {
         public ColorMapFloat(int w, int h)
-            : this(w, h, new float[w * h * 3])
+            : this(w, h, new float[w*h*3])
         {
-
         }
 
         public ColorMapFloat(int w, int h, float[] rgb)
@@ -115,7 +113,7 @@ namespace com.azi.Image
         {
             var result = new Histogram(maxIndex);
 
-            ForEachPixel((comp, b) => result.AddValue(comp, (int)(maxIndex * b)));
+            ForEachPixel((comp, b) => result.AddValue(comp, (int) (maxIndex*b)));
             return result;
         }
     }
@@ -124,15 +122,9 @@ namespace com.azi.Image
     {
         public readonly int MaxBits;
 
-        public int MaxValue
-        {
-            get { return (1 << MaxBits) - 1; }
-        }
-
         public ColorMapUshort(int w, int h, int maxBits)
-            : this(w, h, maxBits, new ushort[w * h * 3])
+            : this(w, h, maxBits, new ushort[w*h*3])
         {
-
         }
 
         public ColorMapUshort(int w, int h, int maxBits, ushort[] rgb)
@@ -144,6 +136,11 @@ namespace com.azi.Image
         public ColorMapUshort(ColorMapUshort m, ushort[] rgb)
             : this(m.Width, m.Height, m.MaxBits, rgb)
         {
+        }
+
+        public int MaxValue
+        {
+            get { return (1 << MaxBits) - 1; }
         }
 
         public Histogram GetHistogram()

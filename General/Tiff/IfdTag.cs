@@ -1,6 +1,6 @@
 ﻿namespace com.azi.tiff
 {
-    public enum IdfTag
+    public enum IfdTag
     {
         NewSubfileType,
         SubfileType,

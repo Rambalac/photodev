@@ -1,18 +1,16 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using com.azi.Decoder;
 using com.azi.Image;
 
 namespace com.azi.WpfFilters
 {
-    interface WpfFilter
+    internal interface WpfFilter
     {
-
     }
 
-    abstract class AWpfRawDecoder<T> : WpfFilter, IRawDecoder<T>
+    internal abstract class AWpfRawDecoder<T> : WpfFilter, IRawDecoder<T>
     {
-        IRawDecoder<T> Decoder { get; set; }
+        private IRawDecoder<T> Decoder { get; set; }
         public abstract RawImageFile<T> Decode(Stream stream);
     }
 }
