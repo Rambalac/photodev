@@ -37,13 +37,13 @@ namespace com.azi.tiff
         protected void InternalParse(Stream stream)
         {
             var reader = new BinaryReader(stream);
-            ushort order = reader.ReadUInt16();
+            var order = reader.ReadUInt16();
             if (order != 0x4949 && order != 0x4d4d) throw new ArgumentException("Wrong file");
             reader.ReadUInt16();
 
             while (reader.PeekChar() != -1)
             {
-                uint offset = reader.ReadUInt32();
+                var offset = reader.ReadUInt32();
                 if (offset == 0) return;
                 reader.BaseStream.Seek(offset, SeekOrigin.Begin);
                 ParseIfd(reader);
@@ -133,11 +133,11 @@ namespace com.azi.tiff
 
         private void ParseIfd(BinaryReader reader)
         {
-            ushort blocksnumber = reader.ReadUInt16();
+            var blocksnumber = reader.ReadUInt16();
             if (blocksnumber > 512) throw new ArgumentException("Too many items in ifd");
             while (blocksnumber-- > 0)
             {
-                IfdBlock block = IfdBlock.parse(reader);
+                var block = IfdBlock.parse(reader);
                 _ifdBlocks.Add(block);
                 ParseIfdBlock(block, reader);
                 block.moveNext(reader);

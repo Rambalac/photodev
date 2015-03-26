@@ -20,7 +20,7 @@ namespace photodev
             return await Task.Run(() =>
             {
                 Stream stream = new FileStream(p, FileMode.Open, FileAccess.Read);
-                RawImageFile<ushort> rawimage = new PanasonicRW2Decoder().Decode(stream);
+                var rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new AverageBGGRDebayer();
 
                 var white = new WhiteBalanceFilter();

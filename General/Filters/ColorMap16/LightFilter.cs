@@ -69,10 +69,10 @@ namespace com.azi.Filters.ColorMap16
         public void AutoAdjust(ColorMapFloat map)
         {
             const int maxValue = 1023;
-            Histogram h = map.GetHistogram(maxValue);
+            var h = map.GetHistogram(maxValue);
 
-            float[] wcenter = h.FindWeightCenter();
-            IEnumerable<float> wcenterf = wcenter.Select((v, c) => (v - _minIn[c])/(_maxIn[c] - _minIn[c]));
+            var wcenter = h.FindWeightCenter();
+            var wcenterf = wcenter.Select((v, c) => (v - _minIn[c])/(_maxIn[c] - _minIn[c]));
             _contrast = wcenterf.Select(v => (float) Math.Log(0.5, v)).ToArray();
             _contrast = Enumerable.Repeat(_contrast.Average(), 3).ToArray();
 
@@ -102,7 +102,7 @@ namespace com.azi.Filters.ColorMap16
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override float ProcessColor(float input, int component)
         {
-            float f = ((input - _minIn[component])*_inoutLen[component] + _minOut[component]);
+            var f = ((input - _minIn[component])*_inoutLen[component] + _minOut[component]);
             if (f < 0) f = 0;
             return (float) Math.Pow(f, _contrast[component]);
         }

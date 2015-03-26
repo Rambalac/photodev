@@ -12,10 +12,10 @@
 
         public override void ProcessColor(float[] input, int inputOffset, float[] output, int outputOffset)
         {
-            float r = input[inputOffset + 0];
-            float g = input[inputOffset + 1];
-            float b = input[inputOffset + 2];
-            float chroma = (r + g + b)/3;
+            var r = input[inputOffset + 0];
+            var g = input[inputOffset + 1];
+            var b = input[inputOffset + 2];
+            var chroma = (r + g + b)/3;
             output[outputOffset + 0] = chroma + (r - chroma)*_saturation;
             output[outputOffset + 1] = chroma + (g - chroma)*_saturation;
             output[outputOffset + 2] = chroma + (b - chroma)*_saturation;

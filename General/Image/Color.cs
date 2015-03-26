@@ -165,7 +165,7 @@ namespace com.azi.Image
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort[] Normalize(this ushort[] color, int maxBits)
         {
-            double colorNorma = color.BrightnessSqrt();
+            var colorNorma = color.BrightnessSqrt();
 
             var d = (double) ((1 << maxBits) - 1);
             return color.Select(v => (ushort) (v*d/colorNorma)).ToArray();

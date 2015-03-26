@@ -42,9 +42,9 @@ namespace com.azi.Image
 
         public void ForEachPixel(Action<Color<byte>> action)
         {
-            for (int y = 0; y < _height; y++)
+            for (var y = 0; y < _height; y++)
             {
-                Color<byte> pix = GetRow(y);
+                var pix = GetRow(y);
 
                 do
                 {
@@ -55,9 +55,9 @@ namespace com.azi.Image
 
         public void ForEachPixel(Action<int, byte> action)
         {
-            for (int y = 0; y < _height; y++)
+            for (var y = 0; y < _height; y++)
             {
-                Color<byte> pix = GetRow(y);
+                var pix = GetRow(y);
 
                 do
                 {

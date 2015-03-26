@@ -17,13 +17,13 @@ namespace General.Tests
         [TestMethod]
         public void FullProcessTest()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             const int maxIter = 5;
-            for (int iter = 0; iter < maxIter; iter++)
+            for (var iter = 0; iter < maxIter; iter++)
             {
                 Stream stream = new FileStream(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2", FileMode.Open,
                     FileAccess.Read);
-                RawImageFile<ushort> rawimage = new PanasonicRW2Decoder().Decode(stream);
+                var rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new AverageBGGRDebayer();
 
                 var white = new WhiteBalanceFilter();
@@ -55,13 +55,13 @@ namespace General.Tests
         [TestMethod]
         public void FullProcessP1460461Test()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             const int maxIter = 1;
-            for (int iter = 0; iter < maxIter; iter++)
+            for (var iter = 0; iter < maxIter; iter++)
             {
                 Stream stream = new FileStream(@"..\..\..\PanasonicRW2.Tests\P1460461.RW2", FileMode.Open,
                     FileAccess.Read);
-                RawImageFile<ushort> rawimage = new PanasonicRW2Decoder().Decode(stream);
+                var rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new AverageBGGRDebayer();
 
                 var white = new WhiteBalanceFilter();
@@ -94,13 +94,13 @@ namespace General.Tests
         [TestMethod]
         public void FullProcessWithAutoAdjustTest()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             const int maxIter = 5;
-            for (int iter = 0; iter < maxIter; iter++)
+            for (var iter = 0; iter < maxIter; iter++)
             {
                 Stream stream = new FileStream(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2", FileMode.Open,
                     FileAccess.Read);
-                RawImageFile<ushort> rawimage = new PanasonicRW2Decoder().Decode(stream);
+                var rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new AverageBGGRDebayer();
 
                 var white = new WhiteBalanceFilter();

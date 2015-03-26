@@ -66,7 +66,7 @@ namespace com.azi.Decoder.Panasonic
 
             if (result.CamMul == null) return result;
 
-            float max = result.CamMul.Max();
+            var max = result.CamMul.Max();
             result.WhiteColor = result.CamMul.Select(v => max/v).Reverse().ToArray();
             result.Multiplier = max;
 

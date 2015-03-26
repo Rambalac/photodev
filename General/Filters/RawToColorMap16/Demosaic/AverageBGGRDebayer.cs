@@ -29,7 +29,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             // Middle Rows
             Parallel.For(0, (res.Height - 2)/2, yy =>
             {
-                int y = yy*2 + 1;
+                var y = yy*2 + 1;
                 ProcessMiddleOddRows(file.GetRow(y), res.Width, res.GetRow(y));
 
                 y++;
@@ -47,12 +47,12 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
                 (ushort) (raw.Value << 1));
             raw.MoveNext();
 
-            int lastX = Width - 1;
-            for (int x = 1; x < lastX; x += 2)
+            var lastX = Width - 1;
+            for (var x = 1; x < lastX; x += 2)
             {
-                ushort xy = raw.Value;
-                ushort x1y = raw.GetRel(+1, 0);
-                int xy12 = raw.GetRel(0, -1) + raw.GetRel(0, +1);
+                var xy = raw.Value;
+                var x1y = raw.GetRel(+1, 0);
+                var xy12 = raw.GetRel(0, -1) + raw.GetRel(0, +1);
 
                 pix.SetAndMoveNext(
                     (ushort) (xy12),
@@ -85,12 +85,12 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
                 (ushort) ((raw.GetRel(0, -1) + raw.GetRel(0, +1))));
             raw.MoveNext();
 
-            int lastX = Width - 1;
-            for (int x = 1; x < lastX; x += 2)
+            var lastX = Width - 1;
+            for (var x = 1; x < lastX; x += 2)
             {
-                ushort xy = raw.Value;
-                ushort x1y = raw.GetRel(+1, 0);
-                int x11y12 = raw.GetRel(+1, -1) + raw.GetRel(+1, +1);
+                var xy = raw.Value;
+                var x1y = raw.GetRel(+1, 0);
+                var x11y12 = raw.GetRel(+1, -1) + raw.GetRel(+1, +1);
 
                 pix.SetAndMoveNext(
                     (ushort) (xy << 1),
@@ -115,8 +115,8 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
 
         private static void ProcessTopLine(RawBGGRMap<ushort> map, ColorMapUshort res)
         {
-            Color<ushort> pix = res.GetPixel();
-            RawPixel<ushort> raw = map.GetRow(0);
+            var pix = res.GetPixel();
+            var raw = map.GetRow(0);
             // Top Left pixel
 
             pix.SetAndMoveNext(
@@ -126,7 +126,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             raw.MoveNext();
 
             // Top row
-            for (int x = 1; x < res.Width - 1; x += 2)
+            for (var x = 1; x < res.Width - 1; x += 2)
             {
                 pix.SetAndMoveNext(
                     (ushort) (raw.GetRel(0, 1) << 1),
@@ -155,11 +155,11 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
         // G R G R
         private static void ProcessBottomLine(RawBGGRMap<ushort> map, ColorMapUshort res)
         {
-            Color<ushort> pix = res.GetPixel();
-            RawPixel<ushort> raw = map.GetRow(res.Height - 1);
+            var pix = res.GetPixel();
+            var raw = map.GetRow(res.Height - 1);
 
             // Bottom Left pixel
-            int lastY = res.Height - 1;
+            var lastY = res.Height - 1;
 
             pix.SetAndMoveNext(
                 (ushort) (raw.GetRel(1, 0) << 1),
@@ -168,7 +168,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
             raw.MoveNext();
 
             // Bottom row
-            for (int x = 1; x < res.Width - 1; x += 2)
+            for (var x = 1; x < res.Width - 1; x += 2)
             {
                 pix.SetAndMoveNext(
                     (ushort) (raw.Value << 1),

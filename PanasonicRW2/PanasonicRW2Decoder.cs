@@ -12,7 +12,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
     {
         public RawImageFile<ushort> Decode(Stream stream)
         {
-            PanasonicExif exif = PanasonicExif.Parse(stream);
+            var exif = PanasonicExif.Parse(stream);
 
             stream.Seek(exif.RawOffset, SeekOrigin.Begin);
 
@@ -24,10 +24,10 @@ namespace com.azi.Decoder.Panasonic.Rw2
             int row, col, i, j, sh = 0;
             int[] pred = new int[2], nonz = new int[2];
 
-            int resultHeight = exif.ImageHeight;
-            int resultWidth = exif.CropRight;
+            var resultHeight = exif.ImageHeight;
+            var resultWidth = exif.CropRight;
             var map = new RawBGGRMap<ushort>(resultWidth, resultHeight, 12);
-            RawPixel<ushort> raw = map.GetPixel();
+            var raw = map.GetPixel();
             int value;
             var bits = new PanasonicBitStream(stream);
             for (row = 0; row < exif.ImageHeight; row++)
@@ -103,7 +103,7 @@ namespace com.azi.Decoder.Panasonic.Rw2
                         _stream.Read(_buf, 0, LoadFlags);
                     }
                     _bitsLeft = (_bitsLeft - numberOfBits) & 0x1ffff;
-                    int bytepos = _bitsLeft >> 3 ^ 0x3ff0;
+                    var bytepos = _bitsLeft >> 3 ^ 0x3ff0;
 
                     return ((_buf[bytepos] | _buf[bytepos + 1] << 8) >> (_bitsLeft & 7)) & (~(-1 << numberOfBits));
                 }

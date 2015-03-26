@@ -8,11 +8,11 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
         {
             var res = new ColorMapUshort(map.Width/2, map.Height/2, map.MaxBits);
             var c = new ushort[4];
-            Color<ushort> pix = res.GetPixel();
-            for (int y = 0; y < res.Height; y++)
+            var pix = res.GetPixel();
+            for (var y = 0; y < res.Height; y++)
             {
-                RawPixel<ushort> raw = map.GetRow(y*2);
-                for (int x = 0; x < res.Width; x++)
+                var raw = map.GetRow(y*2);
+                for (var x = 0; x < res.Width; x++)
                 {
                     c[0] = raw.Value;
                     c[1] = raw.GetRel(+1, +0);

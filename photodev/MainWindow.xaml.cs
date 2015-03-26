@@ -19,8 +19,8 @@ namespace photodev
 
         private async void MainImage_Loaded(object sender, RoutedEventArgs e)
         {
-            RgbImageFile image = await App.OpenFile(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2");
-            WriteableBitmap bmp = MakeBitmap(image.Pixels);
+            var image = await App.OpenFile(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2");
+            var bmp = MakeBitmap(image.Pixels);
             Save(bmp);
             MainImage.Source = bmp;
         }
@@ -28,11 +28,11 @@ namespace photodev
         private static void Save(BitmapSource bmp, string path = null)
         {
             var encoder = new JpegBitmapEncoder();
-            BitmapFrame outputFrame = BitmapFrame.Create(bmp);
+            var outputFrame = BitmapFrame.Create(bmp);
             encoder.Frames.Add(outputFrame);
             encoder.QualityLevel = 80;
 
-            using (FileStream file = File.OpenWrite(path ?? "P1350577.jpg"))
+            using (var file = File.OpenWrite(path ?? "P1350577.jpg"))
             {
                 encoder.Save(file);
             }
@@ -54,14 +54,14 @@ namespace photodev
             dlg.Multiselect = false;
 
             // Show open file dialog box
-            bool? result = dlg.ShowDialog();
+            var result = dlg.ShowDialog();
 
             // Process open file dialog box results 
             if (result != true) return;
 
-            RgbImageFile image = await App.OpenFile(Path.GetFullPath(dlg.FileName));
+            var image = await App.OpenFile(Path.GetFullPath(dlg.FileName));
 
-            WriteableBitmap bmp = MakeBitmap(image.Pixels);
+            var bmp = MakeBitmap(image.Pixels);
             Save(bmp, Path.ChangeExtension(dlg.FileName, ".jpg"));
             MainImage.Source = bmp;
 

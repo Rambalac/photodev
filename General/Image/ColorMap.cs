@@ -59,10 +59,10 @@ namespace com.azi.Image
         public ColorMap<T> CopyAndUpdateColors(int newMaxBits, ColorMapProcessor processor)
         {
             var result = new ColorMap<T>(_width, _height, new T[_width*_height*3]);
-            Color<T> input = GetPixel();
-            Color<T> output = result.GetPixel();
-            for (int y = 0; y < _height; y++)
-                for (int x = 0; x < _width; x++)
+            var input = GetPixel();
+            var output = result.GetPixel();
+            for (var y = 0; y < _height; y++)
+                for (var x = 0; x < _width; x++)
                 {
                     processor(x, y, input, output);
                     input.MoveNext();
@@ -73,7 +73,7 @@ namespace com.azi.Image
 
         public void ForEachPixel(Action<Color<T>> action)
         {
-            Color<T> pix = GetPixel();
+            var pix = GetPixel();
             do
             {
                 action(pix);
@@ -82,7 +82,7 @@ namespace com.azi.Image
 
         public void ForEachPixel(Action<int, T> action)
         {
-            Color<T> pix = GetPixel();
+            var pix = GetPixel();
             do
             {
                 action(0, pix[0]);

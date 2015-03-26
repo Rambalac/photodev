@@ -31,13 +31,13 @@ namespace com.azi.Image
             if (index > _maxIndex) index = _maxIndex;
             MinIndex[comp] = Math.Min(MinIndex[comp], index);
             MaxIndex[comp] = Math.Max(MaxIndex[comp], index);
-            int val = Values[comp][index]++;
+            var val = Values[comp][index]++;
             MaxValues[comp] = Math.Max(MaxValues[comp], val);
         }
 
         public ushort[] FindWeightCenter(ushort[] min, ushort[] max)
         {
-            int[] result = FindWeightCenter(min.Cast<int>().ToArray(), max.Cast<int>().ToArray());
+            var result = FindWeightCenter(min.Cast<int>().ToArray(), max.Cast<int>().ToArray());
             return result.Cast<ushort>().ToArray();
         }
 
@@ -46,7 +46,7 @@ namespace com.azi.Image
             if (min == null) min = new[] {0f, 0f, 0f};
             if (max == null) max = new[] {1f, 1f, 1f};
 
-            int[] result = FindWeightCenter(FromFloat(min), FromFloat(max));
+            var result = FindWeightCenter(FromFloat(min), FromFloat(max));
             return ToFloat(result);
         }
 
@@ -63,21 +63,21 @@ namespace com.azi.Image
         public void Transform(HistogramTransformFunc func)
         {
             var newval = new[] {new int[_maxIndex + 1], new int[_maxIndex + 1], new int[_maxIndex + 1]};
-            for (int c = 0; c < 3; c++)
-                for (int i = 0; i <= _maxIndex; i++)
+            for (var c = 0; c < 3; c++)
+                for (var i = 0; i <= _maxIndex; i++)
                     newval[c][func(i, Values[c][i], c)] += Values[c][i];
         }
 
         public int[] FindWeightCenter(int[] min, int[] max)
         {
             var result = new int[3];
-            for (int c = 0; c < 3; c++)
+            for (var c = 0; c < 3; c++)
             {
-                int[] vals = Values[c];
-                int minsum = 0;
-                int maxsum = 0;
-                int mini = min[c];
-                int maxi = max[c];
+                var vals = Values[c];
+                var minsum = 0;
+                var maxsum = 0;
+                var mini = min[c];
+                var maxi = max[c];
 
                 do
                 {
@@ -112,14 +112,14 @@ namespace com.azi.Image
             min = new[] {0, 0, 0};
 
             var amount = (int) (e*TotalPixels);
-            for (int c = 0; c < 3; c++)
+            for (var c = 0; c < 3; c++)
             {
-                int[] vals = Values[c];
-                int minsum = 0;
-                int maxsum = 0;
-                int start = Math.Min(1, Math.Min(MinIndex[c], _maxIndex - MaxIndex[c]));
+                var vals = Values[c];
+                var minsum = 0;
+                var maxsum = 0;
+                var start = Math.Min(1, Math.Min(MinIndex[c], _maxIndex - MaxIndex[c]));
 
-                for (int i = start; i < _maxIndex; i++)
+                for (var i = start; i < _maxIndex; i++)
                 {
                     minsum += vals[i];
                     if (minsum < amount)

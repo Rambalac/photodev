@@ -394,10 +394,10 @@ namespace com.azi.tiff
             result.rawtype = reader.ReadUInt16();
             result.type = IfdTypes[result.rawtype];
 
-            uint length = reader.ReadUInt32();
+            var length = reader.ReadUInt32();
             result.length = length;
             result.nextOffset = ((uint) reader.BaseStream.Position) + 4;
-            long datalength = length*result.type.BytesLength;
+            var datalength = length*result.type.BytesLength;
             if (datalength > 4)
                 reader.BaseStream.Seek(reader.ReadUInt32(), SeekOrigin.Begin);
 
@@ -425,7 +425,7 @@ namespace com.azi.tiff
 
         public ushort GetUInt16()
         {
-            uint res = GetUInt32();
+            var res = GetUInt32();
             if (res > ushort.MaxValue)
                 throw new ArgumentException("rawdata", "GetUInt16 failed on value bigger than UInt16: " + res);
             return (ushort) res;

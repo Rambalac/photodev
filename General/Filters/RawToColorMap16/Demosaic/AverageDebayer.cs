@@ -19,21 +19,21 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
         public ColorMap<ushort> Process(RawMap<ushort> map)
         {
             var res = new ColorMapUshort(map.Width, map.Height, map.MaxBits + 2);
-            Color<ushort> pix = res.GetPixel();
-            RawPixel<ushort> file = map.GetPixel();
-            for (int x = 0; x < res.Width; x++)
+            var pix = res.GetPixel();
+            var file = map.GetPixel();
+            for (var x = 0; x < res.Width; x++)
             {
                 pix.MoveNext();
                 file.MoveNext();
             }
-            for (int y = 1; y < res.Height - 1; y++)
+            for (var y = 1; y < res.Height - 1; y++)
             {
                 pix.MoveNext();
                 file.MoveNext();
-                for (int x = 1; x < res.Width - 1; x++)
+                for (var x = 1; x < res.Width - 1; x++)
                 {
-                    ColorComponent component = _componentsMap[(y + 0)%2, (x + 0)%2];
-                    bool invertRb = ((x%2) ^ (y%2)) == 0;
+                    var component = _componentsMap[(y + 0)%2, (x + 0)%2];
+                    var invertRb = ((x%2) ^ (y%2)) == 0;
                     switch (component)
                     {
                         case ColorComponent.R:
@@ -68,7 +68,7 @@ namespace com.azi.Filters.RawToColorMap16.Demosaic
                 pix.MoveNext();
                 file.MoveNext();
             }
-            for (int x = 0; x < res.Width; x++)
+            for (var x = 0; x < res.Width; x++)
             {
                 pix.MoveNext();
                 file.MoveNext();

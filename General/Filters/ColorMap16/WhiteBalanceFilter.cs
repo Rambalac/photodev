@@ -29,13 +29,13 @@ namespace com.azi.Filters.ColorMap16
             var whiteColor = new float[] {1, 1, 1};
             map.ForEachPixel(color =>
             {
-                float bright = color.Brightness();
+                var bright = color.Brightness();
                 if (bright < maxbright || color.MaxComponent() >= 1f) return;
 
                 maxbright = bright;
                 whiteColor = color.GetCopy();
             });
-            float maxComp = whiteColor.Max();
+            var maxComp = whiteColor.Max();
             WhiteColor = whiteColor.Select(v => v/maxComp).ToArray();
         }
 
