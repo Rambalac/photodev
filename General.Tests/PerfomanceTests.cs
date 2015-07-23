@@ -25,7 +25,6 @@ namespace General.Tests
                     FileAccess.Read);
                 var rawimage = new PanasonicRW2Decoder().Decode(stream);
                 var debayer = new AverageBGGRDebayer();
-
                 var white = new WhiteBalanceFilter();
                 //white.AutoAdjust(color16Image);
                 var gamma = new GammaFilter();
@@ -50,6 +49,7 @@ namespace General.Tests
 
             //Before Curve - Release 3756ms
             //After Curve - Release 1900ms
+            //2015 - 409
         }
 
         [TestMethod]

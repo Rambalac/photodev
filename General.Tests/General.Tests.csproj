@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>General.Tests</RootNamespace>
     <AssemblyName>General.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,11 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\General\General.csproj">
-      <Project>{61FDABA3-FAB6-4DFC-952D-EA13B45979E1}</Project>
+      <Project>{9da58da9-306f-4cab-87b1-cde34e34d883}</Project>
       <Name>General</Name>
     </ProjectReference>
     <ProjectReference Include="..\PanasonicRW2\PanasonicRW2.csproj">
-      <Project>{38678C2D-444F-4F69-AA59-61929EA1EC62}</Project>
+      <Project>{c833c2d7-2f6a-44ce-8290-1423066559cb}</Project>
       <Name>PanasonicRW2</Name>
     </ProjectReference>
   </ItemGroup>

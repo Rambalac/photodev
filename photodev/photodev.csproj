@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>photodev</RootNamespace>
     <AssemblyName>photodev</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,6 +37,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -95,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\General\General.csproj">
-      <Project>{61fdaba3-fab6-4dfc-952d-ea13b45979e1}</Project>
+      <Project>{9da58da9-306f-4cab-87b1-cde34e34d883}</Project>
       <Name>General</Name>
     </ProjectReference>
     <ProjectReference Include="..\PanasonicRW2Control\PanasonicRW2Control.csproj">
@@ -103,7 +106,7 @@
       <Name>PanasonicRW2Control</Name>
     </ProjectReference>
     <ProjectReference Include="..\PanasonicRW2\PanasonicRW2.csproj">
-      <Project>{38678c2d-444f-4f69-aa59-61929ea1ec62}</Project>
+      <Project>{c833c2d7-2f6a-44ce-8290-1423066559cb}</Project>
       <Name>PanasonicRW2</Name>
     </ProjectReference>
   </ItemGroup>
