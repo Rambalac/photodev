@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace com.azi.Image
 {
@@ -20,9 +21,9 @@ namespace com.azi.Image
         {
             _maxIndex = maxIndex;
             MaxValues = new int[3];
-            Values = new[] {new int[maxIndex + 1], new int[maxIndex + 1], new int[maxIndex + 1]};
-            MinIndex = new[] {maxIndex, maxIndex, maxIndex};
-            MaxIndex = new[] {0, 0, 0};
+            Values = new[] { new int[maxIndex + 1], new int[maxIndex + 1], new int[maxIndex + 1] };
+            MinIndex = new[] { maxIndex, maxIndex, maxIndex };
+            MaxIndex = new[] { 0, 0, 0 };
         }
 
         public void AddValue(int comp, int index)
@@ -41,28 +42,44 @@ namespace com.azi.Image
             return result.Cast<ushort>().ToArray();
         }
 
-        public float[] FindWeightCenter(float[] min = null, float[] max = null)
+        public float[] FindWeightCenter(float[] min=null, float[] max=null)
         {
-            if (min == null) min = new[] {0f, 0f, 0f};
-            if (max == null) max = new[] {1f, 1f, 1f};
+            if (min == null) min = new[] { 0f, 0f, 0f };
+            if (max == null) max = new[] { 1f, 1f, 1f };
 
             var result = FindWeightCenter(FromFloat(min), FromFloat(max));
             return ToFloat(result);
         }
 
+        public Vector3 FindWeightCenter(Vector3 min, Vector3 max)
+        {
+            var result = FindWeightCenter(FromVector(min), FromVector(max));
+            return ToVector(result);
+        }
+
+        private int[] FromVector(Vector3 a)
+        {
+            return new[] { (int)(a.X * _maxIndex), (int)(a.Y * _maxIndex), (int)(a.Z * _maxIndex) };
+        }
+
+        private Vector3 ToVector(int[] a)
+        {
+            return new Vector3(a[0] / (float)_maxIndex, a[1] / (float)_maxIndex, a[2] / (float)_maxIndex);
+        }
+
         private int[] FromFloat(IEnumerable<float> a)
         {
-            return a.Select(v => (int) (v*_maxIndex)).ToArray();
+            return a.Select(v => (int)(v * _maxIndex)).ToArray();
         }
 
         private float[] ToFloat(IEnumerable<int> a)
         {
-            return a.Select(v => v/(float) _maxIndex).ToArray();
+            return a.Select(v => v / (float)_maxIndex).ToArray();
         }
 
         public void Transform(HistogramTransformFunc func)
         {
-            var newval = new[] {new int[_maxIndex + 1], new int[_maxIndex + 1], new int[_maxIndex + 1]};
+            var newval = new[] { new int[_maxIndex + 1], new int[_maxIndex + 1], new int[_maxIndex + 1] };
             for (var c = 0; c < 3; c++)
                 for (var i = 0; i <= _maxIndex; i++)
                     newval[c][func(i, Values[c][i], c)] += Values[c][i];
@@ -106,12 +123,20 @@ namespace com.azi.Image
             maxout = ToFloat(max);
         }
 
+        public void FindMinMax(out Vector3 minout, out Vector3 maxout, float e = 0.005f)
+        {
+            int[] min, max;
+            FindMinMax(out min, out max, e);
+            minout = ToVector(min);
+            maxout = ToVector(max);
+        }
+
         public void FindMinMax(out int[] min, out int[] max, float e = 0.005f)
         {
-            max = new[] {_maxIndex, _maxIndex, _maxIndex};
-            min = new[] {0, 0, 0};
+            max = new[] { _maxIndex, _maxIndex, _maxIndex };
+            min = new[] { 0, 0, 0 };
 
-            var amount = (int) (e*TotalPixels);
+            var amount = (int)(e * TotalPixels);
             for (var c = 0; c < 3; c++)
             {
                 var vals = Values[c];
@@ -124,13 +149,13 @@ namespace com.azi.Image
                     minsum += vals[i];
                     if (minsum < amount)
                     {
-                        min[c] = (ushort) i;
+                        min[c] = (ushort)i;
                     }
 
                     maxsum += vals[_maxIndex - i];
                     if (maxsum < amount)
                     {
-                        max[c] = (ushort) (_maxIndex - i);
+                        max[c] = (ushort)(_maxIndex - i);
                     }
                 }
             }

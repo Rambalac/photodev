@@ -71,9 +71,9 @@ namespace com.azi.Filters.ColorMap16
             const int maxValue = 1023;
             var h = map.GetHistogram(maxValue);
 
-            var wcenter = h.FindWeightCenter();
+            var wcenter = h.FindWeightCenter((float[])null, (float[])null);
             var wcenterf = wcenter.Select((v, c) => (v - _minIn[c])/(_maxIn[c] - _minIn[c]));
-            _contrast = wcenterf.Select(v => (float) Math.Log(0.5, v)).ToArray();
+            _contrast = wcenterf.Select(v => (float)Math.Log(0.5, v)).ToArray();
             _contrast = Enumerable.Repeat(_contrast.Average(), 3).ToArray();
 
             //            h.Transform((index, value, comp) => (int)(1023 * Math.Pow(index / 1023f, _contrast[comp])));

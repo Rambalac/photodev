@@ -1,8 +1,8 @@
 using com.azi.Image;
 
-namespace com.azi.Filters.RawToColorMap16.Demosaic
+namespace com.azi.Filters.RawToVectorMap.Demosaic
 {
-    public interface IDebayer<in T, TC> : IRawToColorMap16Filter<T, TC>
+    public interface IDebayer<in T, TC> : IRawToVectorMapFilter<T, TC>
         where T : RawMap<TC>
     {
     }

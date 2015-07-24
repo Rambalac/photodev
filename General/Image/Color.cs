@@ -4,6 +4,10 @@ using System.Runtime.CompilerServices;
 
 namespace com.azi.Image
 {
+    public interface IColor<T>
+    {
+
+    }
     public class Color<T>
     {
         public readonly T[] Map;

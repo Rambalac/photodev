@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using com.azi.Decoder.Panasonic.Rw2;
 using com.azi.Filters;
-using com.azi.Filters.ColorMap16;
+using com.azi.Filters.VectorMapFilters;
 using com.azi.Filters.ColorMap16ToRgb8;
 using com.azi.Filters.RawToColorMap16.Demosaic;
 using com.azi.Image;
@@ -49,7 +49,7 @@ namespace General.Tests
 
             //Before Curve - Release 3756ms
             //After Curve - Release 1900ms
-            //2015 - 409
+            //2015 - 409ms
         }
 
         [TestMethod]
