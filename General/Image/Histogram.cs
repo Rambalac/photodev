@@ -26,6 +26,20 @@ namespace com.azi.Image
             MaxIndex = new[] { 0, 0, 0 };
         }
 
+        public RGB8Map MakeRGB8Map(int width, int height)
+        {
+            var result = new RGB8Map(width, height);
+            var max = MaxValues.Average();
+            for (int x = 0; x < width; x++)
+            {
+                var ind = x * width / (_maxIndex + 1);
+                var val = (Values[0][ind] + Values[1][ind] + Values[2][ind]) / 3;
+                for (int y = (int)(height - height * val / max); y < height; y++)
+                    result.SetPixel(x, y, 255,255,255);
+            }
+            return result;
+        }
+
         public void AddValue(int comp, int index)
         {
             if (comp == 0) TotalPixels++;
@@ -42,7 +56,7 @@ namespace com.azi.Image
             return result.Cast<ushort>().ToArray();
         }
 
-        public float[] FindWeightCenter(float[] min=null, float[] max=null)
+        public float[] FindWeightCenter(float[] min = null, float[] max = null)
         {
             if (min == null) min = new[] { 0f, 0f, 0f };
             if (max == null) max = new[] { 1f, 1f, 1f };

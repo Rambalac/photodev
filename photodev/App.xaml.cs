@@ -7,6 +7,8 @@ using com.azi.Filters.VectorMapFilters;
 using com.azi.Filters.ColorMap16ToRgb8;
 using com.azi.Filters.RawToColorMap16.Demosaic;
 using com.azi.Image;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace photodev
 {
@@ -15,6 +17,14 @@ namespace photodev
     /// </summary>
     public partial class App : Application
     {
+        public static WriteableBitmap MakeBitmap(RGB8Map image)
+        {
+            var bmp = new WriteableBitmap(image.Width, image.Height, 96, 96, PixelFormats.Rgb24, null);
+            bmp.WritePixels(new Int32Rect(0, 0, image.Width, image.Height), image.Rgb, image.Stride, 0);
+            return bmp;
+        }
+
+
         internal static async Task<RgbImageFile> OpenFile(string p)
         {
             return await Task.Run(() =>

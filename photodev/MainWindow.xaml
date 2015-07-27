@@ -46,7 +46,7 @@
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="175*" />
                         </Grid.RowDefinitions>
-                        <Image Grid.RowSpan="1" />
+                        <Image x:Name="HistogramImage" Grid.RowSpan="1" Stretch="Fill" />
                         <GridSplitter Height="10" Grid.Row="1" HorizontalAlignment="Stretch" />
                         <ScrollViewer x:Name="FiltersList" Grid.Row="2" VerticalScrollBarVisibility="Auto" />
                     </Grid>

@@ -12,9 +12,9 @@ namespace com.azi.Image
         private readonly int _width;
 
         public RGB8Map(int w, int h)
-            : this(w, h, (4*(w*3 + 3)/4), null)
+            : this(w, h, (4 * (w * 3 + 3) / 4), null)
         {
-            Rgb = new byte[Stride*h*3];
+            Rgb = new byte[Stride * h * 3];
         }
 
         private RGB8Map(int width, int height, int stride, byte[] rgb)
@@ -37,7 +37,7 @@ namespace com.azi.Image
 
         public Color<byte> GetRow(int y)
         {
-            return new Color<byte>(Rgb, y*Stride, y*Stride + _width*3);
+            return new Color<byte>(Rgb, y * Stride, y * Stride + _width * 3);
         }
 
         public void ForEachPixel(Action<Color<byte>> action)
@@ -51,6 +51,14 @@ namespace com.azi.Image
                     action(pix);
                 } while (pix.MoveNextAndCheck());
             }
+        }
+
+        internal void SetPixel(int x, int y, byte r, byte g, byte b)
+        {
+            var ind = Stride * y + x * 3;
+            Rgb[ind + 0] = r;
+            Rgb[ind + 1] = g;
+            Rgb[ind + 2] = b;
         }
 
         public void ForEachPixel(Action<int, byte> action)

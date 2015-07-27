@@ -20,9 +20,12 @@ namespace photodev
         private async void MainImage_Loaded(object sender, RoutedEventArgs e)
         {
             var image = await App.OpenFile(@"..\..\..\PanasonicRW2.Tests\P1350577.RW2");
-            var bmp = MakeBitmap(image.Pixels);
+            var bmp = App.MakeBitmap(image.Pixels);
             Save(bmp);
             MainImage.Source = bmp;
+
+            var histbmp = App.MakeBitmap(image.Pixels.GetHistogram().MakeRGB8Map(200, 100));
+            HistogramImage.Source = histbmp;
         }
 
         private static void Save(BitmapSource bmp, string path = null)
@@ -36,13 +39,6 @@ namespace photodev
             {
                 encoder.Save(file);
             }
-        }
-
-        private static WriteableBitmap MakeBitmap(RGB8Map image)
-        {
-            var bmp = new WriteableBitmap(image.Width, image.Height, 96, 96, PixelFormats.Rgb24, null);
-            bmp.WritePixels(new Int32Rect(0, 0, image.Width, image.Height), image.Rgb, image.Stride, 0);
-            return bmp;
         }
 
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -61,7 +57,7 @@ namespace photodev
 
             var image = await App.OpenFile(Path.GetFullPath(dlg.FileName));
 
-            var bmp = MakeBitmap(image.Pixels);
+            var bmp = App.MakeBitmap(image.Pixels);
             Save(bmp, Path.ChangeExtension(dlg.FileName, ".jpg"));
             MainImage.Source = bmp;
 
