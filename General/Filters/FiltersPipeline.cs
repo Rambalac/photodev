@@ -21,7 +21,7 @@ namespace com.azi.Filters
         {
             var currentMap = ProcessFilters(map);
 
-            return (RGB8Map) currentMap;
+            return (RGB8Map)currentMap;
         }
 
         private IColorMap ProcessFilters(RawMap<ushort> map, IIAutoAdjustableFilter autoFilter = null)
@@ -47,10 +47,19 @@ namespace com.azi.Filters
                     {
                         if (currentMap is ColorMapUshort)
                         {
-                            currentMap = ApplyIndependentColorToFloatFilters((ColorMapUshort) currentMap,
-                                indColorFilter.ToArray());
+                            currentMap = ApplyIndependentColorToFloatFilters((ColorMapUshort)currentMap,
+                                indColorFilter);
                         }
-                        ((IAutoAdjustableFilter<ColorMapFloat>) autoFilter).AutoAdjust((ColorMapFloat) currentMap);
+                        ((IAutoAdjustableFilter<ColorMapFloat>)autoFilter).AutoAdjust((ColorMapFloat)currentMap);
+                    }
+                    else  if (filter is IAutoAdjustableFilter<VectorMap>)
+                    {
+                        if (currentMap is ColorMapUshort)
+                        {
+                            currentMap = ApplyIndependentColorToVectorFilters((ColorMapUshort)currentMap,
+                                indVectorFilter);
+                        }
+                        ((IAutoAdjustableFilter<VectorMap>)autoFilter).AutoAdjust((VectorMap)currentMap);
                     }
                     else
                         throw new NotSupportedException("Not supported AutoAdjust Filter: " + filter.GetType() +
@@ -62,8 +71,8 @@ namespace com.azi.Filters
                 {
                     if (filter is IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort>)
                     {
-                        currentMap = ApplyRawBGGRToColorMapFilter((RawBGGRMap<ushort>) currentMap,
-                            (IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort>) filter);
+                        currentMap = ApplyRawBGGRToColorMapFilter((RawBGGRMap<ushort>)currentMap,
+                            (IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort>)filter);
                     }
                     else
                     {
@@ -83,25 +92,25 @@ namespace com.azi.Filters
                     }
                     else if (filter is ColorToColorFilter<float, byte>)
                     {
-                        currentMap = ApplyIndependentColorFiltersWithRGB((ColorMapUshort) currentMap,
-                            indColorFilter, (IndependentComponentColorToColorFilter<float, byte>) filter);
+                        currentMap = ApplyIndependentColorFiltersWithRGB((ColorMapUshort)currentMap,
+                            indColorFilter, (IndependentComponentColorToColorFilter<float, byte>)filter);
                     }
                     else if (filter is ColorToColorFilter<float, float>)
                     {
-                        currentMap = ApplyIndependentColorToFloatFilters((ColorMapUshort) currentMap,
-                            indColorFilter.ToArray());
-                        ApplySingleFilterInplace((ColorMap<float>) currentMap, (ColorToColorFilter<float, float>) filter);
+                        currentMap = ApplyIndependentColorToFloatFilters((ColorMapUshort)currentMap,
+                            indColorFilter);
+                        ApplySingleFilterInplace((ColorMap<float>)currentMap, (ColorToColorFilter<float, float>)filter);
                     }
                     else if (filter is VectorToColorFilter<byte>)
                     {
-                        currentMap = ApplyIndependentColorFiltersWithRGB((ColorMapUshort)currentMap,
-                            indColorFilter, (VectorToColorFilter<byte>)filter);
+                        currentMap = ApplyIndependentVectorFiltersWithRGB((ColorMapUshort)currentMap,
+                            indVectorFilter, (IndependentComponentVectorToColorFilter<byte>)filter);
                     }
                     else if (filter is VectorToVectorFilter)
                     {
-                        currentMap = ApplyIndependentColorToFloatFilters((ColorMapUshort)currentMap,
-                            indColorFilter.ToArray());
-                        ApplySingleFilterInplace((ColorMap<float>)currentMap, (VectorToVectorFilter)filter);
+                        currentMap = ApplyIndependentColorToVectorFilters((ColorMapUshort)currentMap,
+                            indVectorFilter);
+                        ApplySingleFilterInplace((VectorMap)currentMap, (VectorToVectorFilter)filter);
                     }
                     else
                         throw new NotSupportedException("Not supported Filter: " + filter.GetType() + " for Map: " +
@@ -129,7 +138,7 @@ namespace com.azi.Filters
                     }
                     else if (filter is VectorToColorFilter<byte>)
                     {
-                        currentMap = ConvertToRGB((ColorMapFloat)currentMap, (ColorToColorFilter<float, byte>)filter);
+                        currentMap = ConvertToRGB((VectorMap)currentMap, (VectorToColorFilter<byte>)filter);
                     }
                     else
                         throw new NotSupportedException("Not supported Filter: " + filter.GetType() + " for Map: " +
@@ -191,24 +200,22 @@ namespace com.azi.Filters
             });
             return result;
         }
-
-        private static ColorMapFloat ConvertToFloat(ColorMapUshort map)
+        private static RGB8Map ConvertToRGB(VectorMap map, VectorToColorFilter<byte> filter)
         {
-            var result = new ColorMapFloat(map.Width, map.Height);
-            var mult = (float) map.MaxValue;
+            var result = new RGB8Map(map.Width, map.Height);
             Parallel.For(0, map.Height, y =>
             {
                 var input = map.GetRow(y);
                 var output = result.GetRow(y);
                 for (var x = 0; x < map.Width; x++)
                 {
-                    output.SetAndMoveNext(input.R/mult, input.G/mult, input.B/mult);
+                    filter.ProcessColor(input, output);
                     input.MoveNext();
+                    output.MoveNext();
                 }
             });
             return result;
         }
-
         private static IColorMap ApplyRawBGGRToColorMapFilter(RawBGGRMap<ushort> map,
             IRawToColorMap16Filter<RawBGGRMap<ushort>, ushort> filter)
         {
@@ -239,7 +246,7 @@ namespace com.azi.Filters
 
             var maxValue = map.MaxValue;
             var curve = new[] { new byte[maxValue + 1], new byte[maxValue + 1], new byte[maxValue + 1] };
-            var curvef = ConvertToCurveF(indColorFilters, maxValue);
+            var curvef = ConvertToCurveV(indColorFilters, maxValue);
 
             Parallel.For(0, maxValue + 1, i => colorFilter.ProcessColorInCurve(i, curvef, curve));
 
@@ -250,11 +257,11 @@ namespace com.azi.Filters
         private static float[][] ConvertToCurveF(
             IEnumerable<IndependentComponentColorToColorFilter<float, float>> indColorFilters, int maxIndex)
         {
-            var curvef = new[] {new float[maxIndex + 1], new float[maxIndex + 1], new float[maxIndex + 1]};
+            var curvef = new[] { new float[maxIndex + 1], new float[maxIndex + 1], new float[maxIndex + 1] };
 
             Parallel.For(0, maxIndex + 1, i =>
             {
-                var fi = i/(float) maxIndex;
+                var fi = i / (float)maxIndex;
                 curvef[0][i] = fi;
                 curvef[1][i] = fi;
                 curvef[2][i] = fi;
@@ -268,16 +275,35 @@ namespace com.azi.Filters
             return curvef;
         }
 
-        private static ushort[][] ConvertToUshortCurve(float[][] input)
+        private static Vector3[] ConvertToCurveV(
+            IEnumerable<IndependentComponentVectorToVectorFilter> indColorFilters, int maxIndex)
         {
-            var maxIndex = input[0].Length - 1;
-            var result = new[] {new ushort[maxIndex + 1], new ushort[maxIndex + 1], new ushort[maxIndex + 1]};
+            var curvef = new Vector3[maxIndex + 1];
 
             Parallel.For(0, maxIndex + 1, i =>
             {
-                result[0][i] = (ushort) (maxIndex*Math.Max(0, Math.Min(1f, input[0][i])));
-                result[1][i] = (ushort) (maxIndex*Math.Max(0, Math.Min(1f, input[1][i])));
-                result[2][i] = (ushort) (maxIndex*Math.Max(0, Math.Min(1f, input[2][i])));
+                var fi = i / (float)maxIndex;
+                curvef[i] = new Vector3(fi);
+            });
+
+            foreach (var f in indColorFilters)
+            {
+                var filter = f;
+                Parallel.For(0, maxIndex + 1, i => filter.ProcessColorInCurve(i, curvef, curvef));
+            }
+            return curvef;
+        }
+
+        private static ushort[][] ConvertToUshortCurve(float[][] input)
+        {
+            var maxIndex = input[0].Length - 1;
+            var result = new[] { new ushort[maxIndex + 1], new ushort[maxIndex + 1], new ushort[maxIndex + 1] };
+
+            Parallel.For(0, maxIndex + 1, i =>
+            {
+                result[0][i] = (ushort)(maxIndex * Math.Max(0, Math.Min(1f, input[0][i])));
+                result[1][i] = (ushort)(maxIndex * Math.Max(0, Math.Min(1f, input[1][i])));
+                result[2][i] = (ushort)(maxIndex * Math.Max(0, Math.Min(1f, input[2][i])));
             });
             return result;
         }
@@ -298,10 +324,21 @@ namespace com.azi.Filters
         private static ColorMapFloat ApplyIndependentColorToFloatFilters(ColorMapUshort map,
             ICollection<IndependentComponentColorToColorFilter<float, float>> indColorFilters)
         {
-            if (indColorFilters.Count == 0) return ConvertToFloat(map);
+            if (indColorFilters.Count == 0) return map.ConvertToFloat();
 
             var maxValue = map.MaxValue;
             var curvef = ConvertToCurveF(indColorFilters, maxValue);
+
+            return ApplyCurve(map, curvef);
+        }
+
+        private static VectorMap ApplyIndependentColorToVectorFilters(ColorMapUshort map,
+            ICollection<IndependentComponentVectorToVectorFilter> indColorFilters)
+        {
+            if (indColorFilters.Count == 0) return map.ConvertToVector();
+
+            var maxValue = map.MaxValue;
+            var curvef = ConvertToCurveV(indColorFilters, maxValue);
 
             return ApplyCurve(map, curvef);
         }
@@ -328,6 +365,22 @@ namespace com.azi.Filters
                 for (var x = 0; x < result.Width; x++)
                 {
                     output.SetAndMoveNext(curve[0][input.R], curve[1][input.G], curve[2][input.B]);
+                    input.MoveNext();
+                }
+            });
+            return result;
+        }
+
+        private static VectorMap ApplyCurve(ColorMapUshort map, Vector3[] curve)
+        {
+            var result = new VectorMap(map.Width, map.Height);
+            Parallel.For(0, result.Height, y =>
+            {
+                var input = map.GetRow(y);
+                var output = result.GetRow(y);
+                for (var x = 0; x < result.Width; x++)
+                {
+                    output.SetAndMoveNext(curve[input.R].X, curve[input.G].Y, curve[input.B].Z);
                     input.MoveNext();
                 }
             });

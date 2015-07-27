@@ -33,7 +33,7 @@ namespace General.Tests
                 var light = new LightFilter();
                 //light.AutoAdjust(color16Image);
 
-                var compressor = new ColorCompressorFilter();
+                var compressor = new VectorCompressorFilter();
                 var pipeline = new FiltersPipeline(new IFilter[]
                 {
                     debayer,
@@ -72,7 +72,7 @@ namespace General.Tests
                 var light = new LightFilter();
                 //light.AutoAdjust(color16Image);
 
-                var compressor = new ColorCompressorFilter();
+                var compressor = new VectorCompressorFilter();
                 var pipeline = new FiltersPipeline(new IFilter[]
                 {
                     debayer,
@@ -111,7 +111,7 @@ namespace General.Tests
                 var light = new LightFilter();
                 //light.AutoAdjust(color16Image);
 
-                var compressor = new ColorCompressorFilter();
+                var compressor = new VectorCompressorFilter();
                 var pipeline = new FiltersPipeline(new IFilter[]
                 {
                     debayer,
@@ -130,6 +130,7 @@ namespace General.Tests
 
             //Before Curve - Release 3756ms
             //After Curve - Release 1900ms
+            //2015 Vector3 - Release 1305ms
         }
     }
 }

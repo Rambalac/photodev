@@ -43,7 +43,7 @@ namespace com.azi.Image
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetAndMoveNext(Vector3 val)
+        public void SetAndMoveNext(ref Vector3 val)
         {
             _map[_index] = val;
             MoveNext();
@@ -59,7 +59,10 @@ namespace com.azi.Image
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetAndMoveNext(float r, float g, float b)
         {
-            SetAndMoveNext(new Vector3(r, g, b));
+            _map[_index].X = r;
+            _map[_index].Y = g;
+            _map[_index].Z = b;
+            MoveNext();
         }
 
     }

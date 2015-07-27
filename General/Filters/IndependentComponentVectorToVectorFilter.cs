@@ -9,22 +9,7 @@ namespace com.azi.Filters
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ProcessColorInCurve(int index, Vector3[] input, T[][] output)
         {
-            ProcessColor(input[index]);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public abstract void ProcessColor(ref Vector3 input, ref T[] output)
-        {
-            output = ProcessColor(input);
-
-#if DEBUG
-            if (typeof (TB) is float[])
-            {
-                if ((output as float[])[outputOffset + 0] > 1 || float.IsNaN((output as float[])[outputOffset + 0])) throw new Exception();
-                if ((output as float[])[outputOffset + 1] > 1 || float.IsNaN((output as float[])[outputOffset + 1])) throw new Exception();
-                if ((output as float[])[outputOffset + 2] > 1 || float.IsNaN((output as float[])[outputOffset + 2])) throw new Exception();
-            }
-#endif
+            ProcessColor(ref input[index], ref output[0][index], ref output[1][index], ref output[2][index]);
         }
     }
 
@@ -39,18 +24,9 @@ namespace com.azi.Filters
             output[index] = ProcessColor(input[index]);
         }
 
-        public override void ProcessColor(ref Vector3 input,ref Vector3 output)
+        public override void ProcessColor(ref Vector3 input, ref Vector3 output)
         {
             output = ProcessColor(input);
-
-#if DEBUG
-            if (typeof (TB) is float[])
-            {
-                if ((output as float[])[outputOffset + 0] > 1 || float.IsNaN((output as float[])[outputOffset + 0])) throw new Exception();
-                if ((output as float[])[outputOffset + 1] > 1 || float.IsNaN((output as float[])[outputOffset + 1])) throw new Exception();
-                if ((output as float[])[outputOffset + 2] > 1 || float.IsNaN((output as float[])[outputOffset + 2])) throw new Exception();
-            }
-#endif
         }
     }
 }

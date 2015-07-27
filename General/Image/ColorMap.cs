@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace com.azi.Image
 {
@@ -148,6 +149,41 @@ namespace com.azi.Image
             var result = new Histogram(MaxValue);
 
             ForEachPixel((comp, b) => result.AddValue(comp, b));
+            return result;
+        }
+
+
+        public ColorMapFloat ConvertToFloat()
+        {
+            var result = new ColorMapFloat(Width, Height);
+            var mult = (float)MaxValue;
+            Parallel.For(0, Height, y =>
+            {
+                var input = GetRow(y);
+                var output = result.GetRow(y);
+                for (var x = 0; x < Width; x++)
+                {
+                    output.SetAndMoveNext(input.R / mult, input.G / mult, input.B / mult);
+                    input.MoveNext();
+                }
+            });
+            return result;
+        }
+
+        public VectorMap ConvertToVector()
+        {
+            var result = new VectorMap(Width, Height);
+            var mult = (float)MaxValue;
+            Parallel.For(0, Height, y =>
+            {
+                var input = GetRow(y);
+                var output = result.GetRow(y);
+                for (var x = 0; x < Width; x++)
+                {
+                    output.SetAndMoveNext(input.R / mult, input.G / mult, input.B / mult);
+                    input.MoveNext();
+                }
+            });
             return result;
         }
     }

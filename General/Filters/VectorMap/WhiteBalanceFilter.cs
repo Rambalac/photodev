@@ -7,7 +7,7 @@ using System.Numerics;
 namespace com.azi.Filters.VectorMapFilters
 {
     public class WhiteBalanceFilter : IndependentComponentVectorToVectorFilter,
-        IAutoAdjustableFilter<com.azi.Image.VectorMap>
+        IAutoAdjustableFilter<VectorMap>
     {
         private Vector3 _whiteColor = Vector3.One;
         private Vector3 _whiteColor1 = Vector3.One;

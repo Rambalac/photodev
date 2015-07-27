@@ -4,10 +4,10 @@ using System.Numerics;
 
 namespace com.azi.Filters
 {
-    public abstract class VectorToVectorFilter: IFilter
+    public abstract class VectorToVectorFilter : IFilter
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public abstract void ProcessColor(ref Vector3 input,ref Vector3 output);
+        public abstract void ProcessColor(ref Vector3 input, ref Vector3 output);
 
         public void ProcessColor(Vector3[] input, int inputOffset, Vector3[] output, int outputOffset)
         {
@@ -30,14 +30,14 @@ namespace com.azi.Filters
         }
     }
 
-    public abstract class VectorToColorFilter<T>
+    public abstract class VectorToColorFilter<T> : IFilter
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public abstract void ProcessColor(ref Vector3 input, T[] output, int outputOffset);
+        public abstract void ProcessColor(ref Vector3 input, ref T outR, ref T outG, ref T outB);
 
         public void ProcessColor(Vector3[] input, int inputOffset, T[] output, int outputOffset)
         {
-            ProcessColor(ref input[inputOffset], output,outputOffset);
+            ProcessColor(ref input[inputOffset], ref output[outputOffset + 0], ref output[outputOffset + 1], ref output[outputOffset + 2]);
         }
 
         public void ProcessColor(Vector3[] input, int inputOffset, Color<T> output)
@@ -47,7 +47,7 @@ namespace com.azi.Filters
 
         public void ProcessColor(Vector3 input, Color<T> output)
         {
-            ProcessColor(ref input, output.Map, output.Offset);
+            ProcessColor(ref input, ref output.Map[output.Offset + 0], ref output.Map[output.Offset + 1], ref output.Map[output.Offset + 2]);
         }
 
         public void ProcessColor(VectorPixel input, Color<T> output)

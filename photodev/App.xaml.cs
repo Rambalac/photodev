@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using com.azi.Decoder.Panasonic.Rw2;
 using com.azi.Filters;
-using com.azi.Filters.ColorMap16;
+using com.azi.Filters.VectorMapFilters;
 using com.azi.Filters.ColorMap16ToRgb8;
 using com.azi.Filters.RawToColorMap16.Demosaic;
 using com.azi.Image;
@@ -24,7 +24,7 @@ namespace photodev
                 var debayer = new AverageBGGRDebayer();
 
                 var white = new WhiteBalanceFilter();
-                white.WhiteColor = rawimage.Exif.WhiteColor;
+                white.WhiteColor = rawimage.Exif.WhiteColor.ToVector3();
 
                 var gamma = new GammaFilter();
 
@@ -38,10 +38,10 @@ namespace photodev
                         {1.87f, -0.81f, -0.06f},
                         {-0.06f, 1.35f, -0.29f},
                         {0.05f, -0.37f, 1.32f}
-                    }
+                    }.ToMatrix4x4()
                 };
 
-                var compressor = new ColorCompressorFilter();
+                var compressor = new VectorCompressorFilter();
                 var pipeline = new FiltersPipeline(new IFilter[]
                 {
                     debayer,

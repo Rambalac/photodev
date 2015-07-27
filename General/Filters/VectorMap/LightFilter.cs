@@ -9,7 +9,7 @@ using static com.azi.Image.Vector3Extensions;
 namespace com.azi.Filters.VectorMapFilters
 {
     public class LightFilter : IndependentComponentVectorToVectorFilter,
-        IAutoAdjustableFilter<ColorMapFloat>
+        IAutoAdjustableFilter<VectorMap>
     {
         private Vector3 _contrast = new Vector3(1f, 1f, 1f);
         private Vector3 _inoutLen = new Vector3(1f, 1f, 1f);
@@ -64,7 +64,7 @@ namespace com.azi.Filters.VectorMapFilters
             }
         }
 
-        public void AutoAdjust(ColorMapFloat map)
+        public void AutoAdjust(VectorMap map)
         {
             const int maxValue = 1023;
             var h = map.GetHistogram(maxValue);
