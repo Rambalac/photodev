@@ -56,6 +56,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SQLite.cs" />
+    <Compile Include="SQLiteAsync.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -87,6 +89,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -97,17 +100,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\General\General.csproj">
-      <Project>{9da58da9-306f-4cab-87b1-cde34e34d883}</Project>
-      <Name>General</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PanasonicRW2Control\PanasonicRW2Control.csproj">
       <Project>{3487157a-0f70-49f5-a318-0f751b09c673}</Project>
       <Name>PanasonicRW2Control</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PanasonicRW2\PanasonicRW2.csproj">
-      <Project>{c833c2d7-2f6a-44ce-8290-1423066559cb}</Project>
-      <Name>PanasonicRW2</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

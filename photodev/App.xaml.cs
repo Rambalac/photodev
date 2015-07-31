@@ -1,12 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using com.azi.Decoder.Panasonic.Rw2;
-using com.azi.Filters;
-using com.azi.Filters.VectorMapFilters;
-using com.azi.Filters.ColorMap16ToRgb8;
-using com.azi.Filters.RawToColorMap16.Demosaic;
-using com.azi.Image;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 

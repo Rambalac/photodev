@@ -1,13 +1,11 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using com.azi.Decoder.Panasonic.Rw2;
 using com.azi.Filters;
 using com.azi.Filters.VectorMapFilters;
 using com.azi.Filters.ColorMap16ToRgb8;
 using com.azi.Filters.RawToColorMap16.Demosaic;
-using com.azi.Image;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
 namespace General.Tests
 {
@@ -45,7 +43,7 @@ namespace General.Tests
                 pipeline.RawMapToRGB(rawimage.Raw);
             }
             stopwatch.Stop();
-            Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds/maxIter + "ms");
+            //Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds/maxIter + "ms");
 
             //Before Curve - Release 3756ms
             //After Curve - Release 1900ms
@@ -84,7 +82,7 @@ namespace General.Tests
                 pipeline.RawMapToRGB(rawimage.Raw);
             }
             stopwatch.Stop();
-            Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds/maxIter + "ms");
+            //Console.WriteLine("FullProcess: " + stopwatch.ElapsedMilliseconds/maxIter + "ms");
 
             //Before Curve - Release 3756ms
             //After Curve - Release 1900ms
@@ -126,7 +124,7 @@ namespace General.Tests
                 pipeline.RawMapToRGB(rawimage.Raw);
             }
             stopwatch.Stop();
-            Console.WriteLine("FullProcessWithAutoAdjust: " + stopwatch.ElapsedMilliseconds/maxIter + "ms");
+            //Console.WriteLine("FullProcessWithAutoAdjust: " + stopwatch.ElapsedMilliseconds/maxIter + "ms");
 
             //Before Curve - Release 3756ms
             //After Curve - Release 1900ms

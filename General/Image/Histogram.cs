@@ -35,7 +35,7 @@ namespace com.azi.Image
                 var ind = x * width / (_maxIndex + 1);
                 var val = (Values[0][ind] + Values[1][ind] + Values[2][ind]) / 3;
                 for (int y = (int)(height - height * val / max); y < height; y++)
-                    result.SetPixel(x, y, 255,255,255);
+                    result.SetPixel(x, y, 255, 255, 255);
             }
             return result;
         }
@@ -113,7 +113,7 @@ namespace com.azi.Image
                 do
                 {
                     while (minsum <= maxsum && mini < maxi) minsum += vals[mini++];
-                    while (maxsum < minsum && maxi > mini) maxsum += vals[maxi--];
+                    while (maxsum < minsum && mini < maxi) maxsum += vals[maxi--];
                 } while (mini < maxi);
 
                 result[c] = mini;

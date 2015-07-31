@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using com.azi.Decoder.Panasonic.Rw2;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
 namespace Tests
 {

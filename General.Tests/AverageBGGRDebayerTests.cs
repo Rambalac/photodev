@@ -1,10 +1,9 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using com.azi.Decoder.Panasonic.Rw2;
 using com.azi.Filters.RawToColorMap16.Demosaic;
 using com.azi.Image;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 
 namespace General.Tests
 {
@@ -27,7 +26,7 @@ namespace General.Tests
                 debayer.Process((RawBGGRMap<ushort>) raw.Raw);
             stopwatch.Stop();
 
-            Console.WriteLine("AverageBGGRDebayer: " + stopwatch.ElapsedMilliseconds/3 + "ms");
+            //Console.WriteLine("AverageBGGRDebayer: " + stopwatch.ElapsedMilliseconds/3 + "ms");
         }
     }
 }
